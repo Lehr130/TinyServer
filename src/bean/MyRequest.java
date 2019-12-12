@@ -1,12 +1,9 @@
 package bean;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Scanner;
-
-import exceptions.EmptyRequestException;
 
 /**
  * @author Lehr
@@ -62,52 +59,72 @@ public class MyRequest {
 		this.bodys = bodyList;
 	}
 
-	
-	public MyRequest(Socket socket) throws IOException{
+	public MyRequest(Socket socket) throws IOException {
 
-		long startTime = System.currentTimeMillis();  
+		long startTime = System.currentTimeMillis();
 		
-		// 这里千万不能关闭  我也不知道为什么，以后去研究下
-//		Scanner input = new Scanner(socket.getInputStream(), "UTF-8");
-//		String[] hs = input.nextLine().split(" ");
-//		this.method = hs[0];
-//		this.uri = hs[1];
-//		this.version = hs[2];
+
+//		buffer和scanner哪个快-----buffer快！！！		
+		
+		
+		
+//		----------------------------buffered------------------------------
+//		BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 //		
+//		Integer len = 0;
+//		
+//		char[] buffer = new char[600];
+//		
+//		//单线程，快速拼接
+//		StringBuilder res = new StringBuilder();
+//		
+//		while((len=input.read(buffer))!=-1)
+//		{
+//			res.append(buffer);
+//		}
+//		
+//		String re = new String(res);
+//		
+//		packUp(re);
 
 		
-		InputStream input = socket.getInputStream();
-//		Integer readed = input.available();  并不是说chrome的问题，貌似对有些情况发送的报文（比如Jmeter发的）就完全接受不了，这个变为0了但实际是有报文的
-		byte[] buffer = new byte[100];   //好像再大点也对性能没有太大影响
+//------------------------------------stream---------------------		
+		BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
+		
+		//Integer readed = input.available();  							//并不是说chrome的问题，貌似对有些情况发送的报文（比如Jmeter发的）就完全接受不了，这个变为0了但实际是有报文的
+		 																//	而且有的时候还是会偶尔来一个空请求，是真的全空的那种，然后导致数组越界
+		byte[] buffer = new byte[1024];   								//好像再大点也对性能没有太大影响
+		
+		
+		
+		System.out.println("准备读入！");
+		
 		
 		input.read(buffer);
 		
-		String re = new String(buffer);
 		
+		
+		//https://www.jianshu.com/p/e52db372d986
+		String re = new String(buffer);
 		
 		packUp(re);
 		
-		long endTime= System.currentTimeMillis();  
-		
-		System.out.println("解析请求的程序运行时间： "+(endTime-startTime)+"ms");  
-		
-		
-		
-		//开始封装请求
-		
+		long endTime = System.currentTimeMillis();
+
+		System.out.println("解析请求的程序运行时间： " + (endTime - startTime) + "ms");
+
+		// 开始封装请求
 
 	}
-	
-	
-	public void packUp(String re)
-	{
+
+	public void packUp(String re) {
 		String[] body = re.split("\r\n");
-		
+
 		String[] reh = body[0].split(" ");
 		this.method = reh[0];
 		this.uri = reh[1];
 		this.version = reh[2];
-		
+
 //		for(String s : body)
 //		{
 //			System.out.println("It's : "+s +"  |||");

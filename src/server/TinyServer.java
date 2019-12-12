@@ -66,7 +66,8 @@ public class TinyServer {
 						try {	
 							
 							serveIt(socket);
-							socket.close();
+							
+							//套接字将在发送了响应之后关闭，也就是myResponse方法里
 					
 						} catch (Exception e1) {
 							e1.printStackTrace();

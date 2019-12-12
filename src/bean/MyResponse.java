@@ -65,21 +65,26 @@ public class MyResponse {
 		Date date = new Date();
 
 		
-		//获取输出流
-		PrintStream output = new PrintStream(socket.getOutputStream(), true);
+		//获取输出流	然后执行完后自动关闭socket（高的关了低的自动关）
+		try(PrintStream output = new PrintStream(socket.getOutputStream(), true))
+		{
+			//响应头
+			output.print(version + " "+ code +" \r\n");
+			output.print("Date:" + sdf.format(date) + "\r\n");
+			output.print("Server:Lehr's Tiny Server \r\n");
+			output.print("Content-length: " + resBody.length + "\r\n");
+			output.print("Content-type: " + fileType + ";charset=utf-8" + "\r\n\r\n");
+			
+			//响应体
+			output.write(resBody);
+			output.print("\r\n");
+			
+			System.out.println("响应成功！");
+			
+			
+		}
 		
-		//响应头
-		output.print(version + " "+ code +" \r\n");
-		output.print("Date:" + sdf.format(date) + "\r\n");
-		output.print("Server:Lehr's Tiny Server \r\n");
-		output.print("Content-length: " + resBody.length + "\r\n");
-		output.print("Content-type: " + fileType + ";charset=utf-8" + "\r\n\r\n");
-
-		//响应体
-		output.write(resBody);
-		output.print("\r\n");
 		
-		System.out.println("响应成功！");
 		
 		//而且我还是很好奇这里println自动刷出的问题，如果已经发送了一部分报文的话，那么那边会不会是接收到的是不完整的报文？主要是这里恰巧就...欸我也不知道这个了
 		
