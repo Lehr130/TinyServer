@@ -11,7 +11,6 @@ public interface Message {
 
 	public static final String ROOT_PATH = "D://LehrsJavaEE/TinyServer/src/main" ;
 	
-	
 	public static final String DEFAULT_SUFFIX = "index.html";
 	
 	public static final String GET = "GET";
@@ -21,6 +20,8 @@ public interface Message {
 	public static final String DELETE = "DELETE";
 	
 	public static final String PUT = "PUT";
+	
+	
 	
 	
 }

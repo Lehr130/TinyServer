@@ -5,10 +5,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import bean.MyRequest;
 import bean.MyResponse;
+import exceptions.EmptyRequestException;
 import exceptions.SystemFileException;
 import message.Code;
 import message.Message;
@@ -26,6 +26,7 @@ public class TinyServer {
 	 */
 	private MyCache cache;
 
+	
 	/**
 	 * 启动整个服务器并响应服务，大概步骤都在这个方法里面
 	 * 
@@ -54,17 +55,24 @@ public class TinyServer {
 				//我发现之前没有写.close()的时候，就会出现NPE的情况
 				//所以对于浏览器来说，结束到底是收到响应之后还是关闭套接字之后呢？  那个半关闭的问题？我还没有细细处理过关哪个流的问题
 				//而且try-resources还不能用在这里，自己思考一下跨线程的问题
+				
+				
+				//拿到一个socket之后线程池里的一群就会去抢
 				Socket socket = server.accept();
 				
+				
+				
 					e.execute(() -> {
-						try {
+						try {	
+							
 							serveIt(socket);
 							socket.close();
+					
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
 					});					
-				
+					
 			}
 		}
 
@@ -81,16 +89,17 @@ public class TinyServer {
 	 */
 	public void serveIt(Socket socket) throws Exception {
 		
-
 		// 处理请求
-		MyRequest request = new MyRequest(socket);
+		MyRequest request = new MyRequest(socket);			
+		
+		
 
 
 		// 我发现发请求的时候会发两次？！然后有一个叫做favicon.ico的东西？？
 
+		
 		// 去看看是不是静态文件
 		String parseUri = UrlUtils.parseUri(request.getUri());
-
 		
 		// 目前强制要求获取资源只能用GET方法！
 		if (!Message.DYNAMIC.equals(parseUri)) {
@@ -98,6 +107,8 @@ public class TinyServer {
 			if (!Message.GET.equals(request.getMethod())) {
 
 				clientError(socket, request.getVersion(), Code.METHODNOTSUPPORT);
+				
+				return ;
 			}
 
 			// 静态文件处理
@@ -111,7 +122,7 @@ public class TinyServer {
 			{
 				clientError(socket, request.getVersion(), Code.INTERNALSERVERERROR);
 			}
-			
+
 			return ;
 			
 		}
@@ -122,6 +133,8 @@ public class TinyServer {
 			
 			return ;
 		}
+		
+		return ;
 
 	}
 

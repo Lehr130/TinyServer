@@ -17,7 +17,7 @@ public class UrlUtils {
 	 * @return
 	 */
 	public static String parseUri(String uri) {
-		// 处理默认目录
+		// 处理默认目录   
 		if ('/' == uri.charAt(uri.length() - 1)) {
 			uri = uri + Message.DEFAULT_SUFFIX;
 		}
