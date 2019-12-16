@@ -1,6 +1,5 @@
 package server;
 
-
 /**
  * @author Lehr
  * @date 2019年12月11日
@@ -8,9 +7,11 @@ package server;
 public class Startup {
 
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-
+		//FIXME:hey
 		new TinyServer().startUp();
+		
+		
+
 	}
 
 }

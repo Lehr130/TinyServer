@@ -64,7 +64,6 @@ public class MyResponse {
 		sdf.applyPattern("yyyy-MM-dd HH:mm:ss a");
 		Date date = new Date();
 
-		
 		//获取输出流	然后执行完后自动关闭socket（高的关了低的自动关）
 		try(PrintStream output = new PrintStream(socket.getOutputStream(), true))
 		{
@@ -72,26 +71,39 @@ public class MyResponse {
 			output.print(version + " "+ code +" \r\n");
 			output.print("Date:" + sdf.format(date) + "\r\n");
 			output.print("Server:Lehr's Tiny Server \r\n");
-			output.print("Content-length: " + resBody.length + "\r\n");
-			output.print("Content-type: " + fileType + ";charset=utf-8" + "\r\n\r\n");
 			
-			//响应体
-			output.write(resBody);
-			output.print("\r\n");
+			if(resBody==null)
+			{
+				output.print("Content-length: 0\r\n\r\n");
+			}
+			else
+			{				
+				//所以这个最后浏览器渲染的结果还和这几个响应头的顺序有关？！？！
+				output.print("Content-length: " + resBody.length + "\r\n");
+				output.print("Content-type: " + fileType + ";charset=utf-8" + "\r\n\r\n");
+				//响应体
+				output.write(resBody);
+				output.print("\r\n");
+			}
 			
-			System.out.println("响应成功！");
 			
+			
+		
+		
 			
 		}
 		
-		
-		
 		//而且我还是很好奇这里println自动刷出的问题，如果已经发送了一部分报文的话，那么那边会不会是接收到的是不完整的报文？主要是这里恰巧就...欸我也不知道这个了
-		
+		//根据实验得到的结果是：socket关闭了之后才会发送回去
+		//不对，好像取决于是不是一个完整的http请求？》？？
 		
 		//关于关闭资源的问题？？？
 		//半关闭？？？？？
 
+		//http长连接是什么情况下在用一个socket发多次请求？
+		
+		System.out.println("Is it closed?:"+socket.isClosed());
+		
 	}
 	
 

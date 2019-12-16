@@ -73,7 +73,7 @@ public class MyCache {
 	 */
 	public static MyCache getInstance() throws Exception {
 		if (cache == null) {
-			return new MyCache();
+			cache =  new MyCache();
 		}
 		return cache;
 

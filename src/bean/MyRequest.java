@@ -5,26 +5,30 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 
+import message.RequestType;
+
 /**
  * @author Lehr
  * @date 2019年12月11日
  */
 public class MyRequest {
 
-	private String method;
+	private RequestType requestType;
 	private String uri;
 	private String version;
-
+	
+	
+	
 	private HashMap<String, String> heads;
 
 	private HashMap<String, String> bodys;
 
-	public String getMethod() {
-		return method;
+	public RequestType getRequestType() {
+		return requestType;
 	}
 
-	public void setMethod(String method) {
-		this.method = method;
+	public void setRequestType(RequestType requestType) {
+		this.requestType = requestType;
 	}
 
 	public String getUri() {
@@ -61,59 +65,25 @@ public class MyRequest {
 
 	public MyRequest(Socket socket) throws IOException {
 
-		long startTime = System.currentTimeMillis();
-		
-
-//		buffer和scanner哪个快-----buffer快！！！		
-		
-		
-		
-//		----------------------------buffered------------------------------
-//		BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//		
-//		Integer len = 0;
-//		
-//		char[] buffer = new char[600];
-//		
-//		//单线程，快速拼接
-//		StringBuilder res = new StringBuilder();
-//		
-//		while((len=input.read(buffer))!=-1)
-//		{
-//			res.append(buffer);
-//		}
-//		
-//		String re = new String(res);
-//		
-//		packUp(re);
-
-		
-//------------------------------------stream---------------------		
 		BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
-		
-		//Integer readed = input.available();  							//并不是说chrome的问题，貌似对有些情况发送的报文（比如Jmeter发的）就完全接受不了，这个变为0了但实际是有报文的
-		 																//	而且有的时候还是会偶尔来一个空请求，是真的全空的那种，然后导致数组越界
-		byte[] buffer = new byte[1024];   								//好像再大点也对性能没有太大影响
-		
-		
-		
-		System.out.println("准备读入！");
-		
-		
+
+		// Integer len = input.available();
+
+		byte[] buffer = new byte[100];
+
+		long startTime = System.currentTimeMillis();
+
+		// read()方法当读取完数据之后就开始阻塞，等待返回-1结束，这个等待的过程占到了总时间的99%
 		input.read(buffer);
-		
-		
-		
-		//https://www.jianshu.com/p/e52db372d986
-		String re = new String(buffer);
-		
-		packUp(re);
-		
+
 		long endTime = System.currentTimeMillis();
 
 		System.out.println("解析请求的程序运行时间： " + (endTime - startTime) + "ms");
 
-		// 开始封装请求
+		// https://www.jianshu.com/p/e52db372d986
+		String re = new String(buffer);
+
+		packUp(re);
 
 	}
 
@@ -121,7 +91,24 @@ public class MyRequest {
 		String[] body = re.split("\r\n");
 
 		String[] reh = body[0].split(" ");
-		this.method = reh[0];
+		
+		if("GET".equals(reh[0]))
+		{
+			this.requestType = RequestType.GET;
+		}
+		if("POST".equals(reh[0]))
+		{
+			this.requestType = RequestType.POST;
+		}
+		if("PUT".equals(reh[0]))
+		{
+			this.requestType = RequestType.PUT;
+		}
+		if("DELETE".equals(reh[0]))
+		{
+			this.requestType = RequestType.DELETE;
+		}
+		
 		this.uri = reh[1];
 		this.version = reh[2];
 
