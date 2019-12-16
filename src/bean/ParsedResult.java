@@ -6,7 +6,7 @@ public class ParsedResult {
 
 	private String parseUri;
 
-	private Boolean isStatic;
+	private boolean isStatic;
 
 	private HashMap<String,String> params;
 
@@ -14,7 +14,7 @@ public class ParsedResult {
 		return parseUri;
 	}
 
-	public ParsedResult(String parseUri, Boolean isStatic, HashMap<String,String> params) {
+	public ParsedResult(String parseUri, boolean isStatic, HashMap<String,String> params) {
 		super();
 		this.parseUri = parseUri;
 		this.isStatic = isStatic;
@@ -25,7 +25,7 @@ public class ParsedResult {
 		this.parseUri = parseUri;
 	}
 
-	public Boolean isStatic() {
+	public boolean isStatic() {
 		return isStatic;
 	}
 
@@ -37,7 +37,7 @@ public class ParsedResult {
 		this.params = params;
 	}
 
-	public void setIsStatic(Boolean isStatic) {
+	public void setIsStatic(boolean isStatic) {
 		this.isStatic = isStatic;
 	}
 }

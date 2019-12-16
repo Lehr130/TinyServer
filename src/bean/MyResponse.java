@@ -56,9 +56,8 @@ public class MyResponse {
 		this.resBody = resBody;
 	}
 	
-	public void sendResponse(Socket socket) throws IOException
+	public void sendResponse(Socket socket)
 	{
-		
 		//记录时间
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		sdf.applyPattern("yyyy-MM-dd HH:mm:ss a");
@@ -86,23 +85,21 @@ public class MyResponse {
 				output.print("\r\n");
 			}
 			
-			
-			
-		
-		
-			
+		} catch (IOException e) {
+			//这个还是没能处理
+			e.printStackTrace();
 		}
-		
-		//而且我还是很好奇这里println自动刷出的问题，如果已经发送了一部分报文的话，那么那边会不会是接收到的是不完整的报文？主要是这里恰巧就...欸我也不知道这个了
-		//根据实验得到的结果是：socket关闭了之后才会发送回去
-		//不对，好像取决于是不是一个完整的http请求？》？？
-		
-		//关于关闭资源的问题？？？
-		//半关闭？？？？？
 
-		//http长连接是什么情况下在用一个socket发多次请求？
-		
-		System.out.println("Is it closed?:"+socket.isClosed());
+		System.err.println("sended");
+		/*
+		 *而且我还是很好奇这里println自动刷出的问题，如果已经发送了一部分报文的话，那么那边会不会是接收到的是不完整的报文？主要是这里恰巧就...欸我也不知道这个了
+		 *根据实验得到的结果是：socket关闭了之后才会发送回去
+		 *不对，好像取决于是不是一个完整的http请求？》？？
+		 *关于关闭资源的问题？？？半关闭？？？？？
+		 *http长连接是什么情况下在用一个socket发多次请求？ 
+		 */
+
+	
 		
 	}
 	

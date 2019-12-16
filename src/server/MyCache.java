@@ -1,5 +1,6 @@
 package server;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class MyCache {
 	/**
 	 * 缓存本体
 	 */
-	private Map<String, byte[]> map = new HashMap<String, byte[]>();
+	private Map<String, byte[]> map = new HashMap<>();
 
 	
 	private static final Integer CACHE_SIZE = 15;
@@ -27,30 +28,30 @@ public class MyCache {
 	/**
 	 * Least Frequently Used算法需要的数据
 	 */
-	private Map<String, HitRate> lfuMap = new HashMap<String, HitRate>();
+	private Map<String, HitRate> lfuMap = new HashMap<>();
 
 	/**
 	 * 错误设计缓存：垃圾设计
 	 */
-	private Map<String, String> eMap = new HashMap<String, String>();
+	private Map<String, String> eMap = new HashMap<>();
 
 	/**
 	 * 错误设计缓存：内容栏
 	 */
-	private Map<String, byte[]> epMap = new HashMap<String, byte[]>();
+	private Map<String, byte[]> epMap = new HashMap<>();
 
 	/**
 	 * 单例对象
 	 */
 	private static MyCache cache;
 
-	private MyCache() throws Exception {
+	private MyCache() throws SystemFileException  {
 		// 预先放入错误页面
 
 		
-		eMap.put(Code.NOTFOUND, Message.ROOT_PATH+"/"+Code.NOTFOUND+".html");
-		eMap.put(Code.METHODNOTSUPPORT, Message.ROOT_PATH+"/"+Code.METHODNOTSUPPORT+".html");
-		eMap.put(Code.INTERNALSERVERERROR,Message.ROOT_PATH+"/"+Code.INTERNALSERVERERROR+".html");
+		eMap.put(Code.NOTFOUND, Message.ROOT_PATH+Message.SLASH+Code.NOTFOUND+Message.HTML_SUFFIX);
+		eMap.put(Code.METHODNOTSUPPORT, Message.ROOT_PATH+Message.SLASH+Code.METHODNOTSUPPORT+Message.HTML_SUFFIX);
+		eMap.put(Code.INTERNALSERVERERROR,Message.ROOT_PATH+Message.SLASH+Code.INTERNALSERVERERROR+Message.HTML_SUFFIX);
 		
 		loadSysFile(eMap.get(Code.NOTFOUND));
 		loadSysFile(eMap.get(Code.METHODNOTSUPPORT));
@@ -58,20 +59,32 @@ public class MyCache {
 
 	}
 
-	private void loadSysFile(String filename) throws Exception {
+	private void loadSysFile(String filename) throws SystemFileException {
 
-		byte[] fileContent = FileUtils.fileToByte(filename, new SystemFileException());
-
+		
+		byte[] fileContent = null;
+		
+		try {			
+			FileUtils.fileToByte(filename);
+		} catch (IOException e) {
+			//将异常附带信息包裹出去
+			SystemFileException se = new SystemFileException("Fail To Load System File!");
+			se.initCause(e);
+			throw se;
+		}
+		
 		epMap.put(filename, fileContent);
+
 	}
 
 	/**
 	 * 单例模式（管你懒汉饿汉安不安全）
 	 * 
 	 * @return
+	 * @throws SystemFileException 
 	 * @throws Exception
 	 */
-	public static MyCache getInstance() throws Exception {
+	public static MyCache getInstance() throws SystemFileException {
 		if (cache == null) {
 			cache =  new MyCache();
 		}
@@ -131,7 +144,9 @@ public class MyCache {
 
 	public byte[] getErrorCache(String code) {
 
+		System.err.println("using "+code);
 		String filename = eMap.get(code);
+		System.err.println(epMap.get(filename));
 		return epMap.get(filename);
 	}
 

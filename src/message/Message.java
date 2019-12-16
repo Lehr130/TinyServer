@@ -7,21 +7,28 @@ package message;
  */
 public interface Message {
 	
-	public static final String DYNAMIC = "dynamic";
+	String DYNAMIC = "dynamic";
 
-	public static final String ROOT_PATH = "D://LehrsJavaEE/TinyServer/src/main" ;
+	String ROOT_PATH = "D://LehrsJavaEE/TinyServer/src/main" ;
 	
-	public static final String DEFAULT_SUFFIX = "index.html";
+	String DEFAULT_SUFFIX = "index.html";
 	
-	public static final String GET = "GET";
+	String SLASH = "/";
 	
-	public static final String POST = "POST";
+	String HTML_SUFFIX = ".html";
 	
-	public static final String DELETE = "DELETE";
+	String GET = "GET";
 	
-	public static final String PUT = "PUT";
+	String POST = "POST";
 	
+	String DELETE = "DELETE";
 	
+	String PUT = "PUT";
+	
+	/**
+	 * 我觉得每次就为了这一个东西而传参很麻烦所以就偷懒了
+	 */
+	String DEFAULT_HTTP_VERSION = "HTTP/1.1";
 	
 	
 }

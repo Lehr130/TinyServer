@@ -12,7 +12,7 @@ import java.io.IOException;
 public class FileUtils {
 
 	
-	public static byte[] fileToByte(String filename, Exception exc) throws Exception {
+	public static byte[] fileToByte(String filename) throws IOException{
 		
 		
 		
@@ -24,7 +24,7 @@ public class FileUtils {
 			in.read(fileContent);
 			
 		} catch (IOException e) {
-			throw exc;
+			throw e;
 		}
 
 		return fileContent;
