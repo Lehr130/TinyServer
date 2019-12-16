@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import bean.MyMethod;
 import bean.MyRequest;
 import bean.MyResponse;
+import bean.ParsedResult;
 import exceptions.SystemFileException;
 import main.dynamic.Router;
 import message.Code;
@@ -37,7 +38,7 @@ public class TinyServer {
 	 * Router动态方法表
 	 */
 	private Router router;
-	
+
 	/**
 	 * 采用阻塞队列，暂时保证了线程安全
 	 */
@@ -98,8 +99,8 @@ public class TinyServer {
 	 */
 	public void serveIt(Socket socket) throws Exception {
 
-		System.out.println("目前的socket是："+socket);
-		
+		System.out.println("目前的socket是：" + socket);
+
 		// 处理请求
 		long startTime = System.currentTimeMillis();
 
@@ -112,12 +113,12 @@ public class TinyServer {
 
 		// 我发现发请求的时候会发两次？！然后有一个叫做favicon.ico的东西？？
 
+		ParsedResult result = UrlUtils.parseUri(request.getUri());
+
 		// 去看看是不是静态文件
-		String parseUri = UrlUtils.parseUri(request.getUri());
+		if (result.isStatic()) {
 
-		// 目前强制要求获取资源只能用GET方法！
-		if (!Message.DYNAMIC.equals(parseUri)) {
-
+			// 目前强制要求获取资源只能用GET方法！
 			if (!RequestType.GET.equals(request.getRequestType())) {
 
 				clientError(socket, request.getVersion(), Code.METHODNOTSUPPORT);
@@ -129,24 +130,23 @@ public class TinyServer {
 
 			try {
 
-				serverStatic(parseUri, socket, request.getVersion());
+				serverStatic(result.getParseUri(), socket, request.getVersion());
 			} catch (Exception e) {
 				clientError(socket, request.getVersion(), Code.INTERNALSERVERERROR);
 			}
 
-			
 			return;
 
 		}
-		if (Message.DYNAMIC.equals(parseUri)) {	
-		      
+		else{
+
 			// 动态程序处理
-			serverDynamic(request, socket);
+			serverDynamic(request,result, socket);
 
 			return;
 		}
 
-		return;
+		
 
 	}
 
@@ -214,42 +214,60 @@ public class TinyServer {
 
 	}
 
-	public void serverDynamic(MyRequest req, Socket socket) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+	public void serverDynamic(MyRequest req, ParsedResult result, Socket socket) throws IOException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, InstantiationException {
 
-		//获取参数列表
-		String[] paramsArray = UrlUtils.getParamArray(req.getUri());
+		// 获取参数列表
+		String[] paramsArray = result.getParams();
 
-		//设计问题，还需要去掉uri后面的传参
-		String uri = req.getUri();
-		uri = uri.substring(0,uri.lastIndexOf("?"));
-		req.setUri(uri);
-		
-		//获取方法
-		MyMethod m = router.getMethod(req.getUri(),req.getRequestType());
-		
-		if(m==null)
-		{
+		// 获取方法
+		MyMethod m = router.getMethod(result.getParseUri(), req.getRequestType());
+
+
+		if (m == null) {
 			clientError(socket, req.getVersion(), Code.NOTFOUND);
-			return ;
+			return;
+		}
+
+		// 获取方法本体
+		Method method = m.getMethod();
+
+		// 现在能获取到注册了了的方法了,所以我们需要做的就是灌入参数，得到返回值
+		
+		// 检查参数----个数检查
+		Integer paraCount = method.getParameterCount();
+		
+		if(paramsArray==null)
+		{
+			if(paraCount!=0)
+			{
+				clientError(socket, req.getVersion(), Code.NOTFOUND);
+				return;
+			}
+		}
+		else
+		{
+			if(paraCount!=paramsArray.length)
+			{
+				clientError(socket, req.getVersion(), Code.NOTFOUND);
+				return;
+			}
 		}
 		
-		//现在能获取到注册了了的方法了,所以我们需要做的就是灌入参数，得到返回值
+
+		// 规定了必须是静态方法所以我这里第一个参数就是null了
+		// 目前形参顺序必须对！
+		String ret = (String) method.invoke(null, paramsArray);
+
 		
-		//获取方法本体
-		Method method = m.getMethod();
-		
-		//规定了必须是静态方法所以我这里第一个参数就是null了
-		//目前形参顺序必须对！
-		String ret =  (String)method.invoke(null,paramsArray);
 		
 		byte[] bytes = null;
-		
-		if(ret!=null)
-		{
+
+		if (ret != null) {
 			bytes = ret.getBytes();
 		}
-		
+
 		sendResponse(socket, req.getVersion(), "text/html", bytes, Code.OK);
-		
+
 	}
 }

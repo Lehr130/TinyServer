@@ -1,11 +1,9 @@
 package utils;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-
+import bean.ParsedResult;
 import message.Message;
 
 /**
@@ -20,27 +18,41 @@ public class UrlUtils {
 	 * @param uri
 	 * @return
 	 */
-	public static String parseUri(String uri) {
+	public static ParsedResult parseUri(String uri) {
 		// 处理默认目录
 		if ('/' == uri.charAt(uri.length() - 1)) {
 			uri = uri + Message.DEFAULT_SUFFIX;
 		}
 
 		// 处理静态文件
+		//动态和静态文件的判断还很模糊
 		if (uri.contains(".")) {
 
 			String filename = Message.ROOT_PATH + uri;
 
-			return filename;
+			return new ParsedResult(filename,true,null);
 		}
 
-		if (!uri.contains(".")) {
+		//处理动态文件
+		else{
 
-			// 和C的情况有点不一样，先不管
-			return Message.DYNAMIC;
+			String[] params = null;
+			
+			//如果包含了有参数就处理参数
+			if(uri.contains("?"))
+			{
+				//获取参数
+				params = getParamArray(uri);
+				
+				//然后变换字符串得到正确的uri
+				uri = uri.substring(0, uri.lastIndexOf("?"));		
+				
+			}
+			
+			return new ParsedResult(uri, false, params);
+			
 		}
 
-		return Message.DYNAMIC;
 	}
 
 	/**
