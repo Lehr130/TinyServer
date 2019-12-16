@@ -5,7 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -15,10 +16,10 @@ import bean.MyMethod;
 import bean.MyRequest;
 import bean.MyResponse;
 import bean.ParsedResult;
+import exceptions.ParamNameException;
 import exceptions.SystemFileException;
 import main.dynamic.Router;
 import message.Code;
-import message.Message;
 import message.RequestType;
 import utils.FileUtils;
 import utils.UrlUtils;
@@ -141,7 +142,13 @@ public class TinyServer {
 		else{
 
 			// 动态程序处理
-			serverDynamic(request,result, socket);
+			try {
+				serverDynamic(request,result, socket);
+			} catch (Exception e) {
+				clientError(socket, request.getVersion(), Code.INTERNALSERVERERROR);
+			}
+
+
 
 			return;
 		}
@@ -214,60 +221,100 @@ public class TinyServer {
 
 	}
 
-	public void serverDynamic(MyRequest req, ParsedResult result, Socket socket) throws IOException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, InstantiationException {
+	public void serverDynamic(MyRequest request, ParsedResult result, Socket socket) throws IOException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, InstantiationException, ParamNameException {
 
 		// 获取参数列表
-		String[] paramsArray = result.getParams();
+		HashMap<String,String> inputParamMap = result.getParams();
 
 		// 获取方法
-		MyMethod m = router.getMethod(result.getParseUri(), req.getRequestType());
+		MyMethod myMethod = router.getMethod(result.getParseUri(), request.getRequestType());
 
 
-		if (m == null) {
-			clientError(socket, req.getVersion(), Code.NOTFOUND);
+		if (myMethod == null) {
+			clientError(socket, request.getVersion(), Code.NOTFOUND);
 			return;
 		}
 
 		// 获取方法本体
-		Method method = m.getMethod();
+		Method method = myMethod.getMethod();
 
 		// 现在能获取到注册了了的方法了,所以我们需要做的就是灌入参数，得到返回值
 		
 		// 检查参数----个数检查
 		Integer paraCount = method.getParameterCount();
 		
-		if(paramsArray==null)
+		if(inputParamMap==null)
 		{
 			if(paraCount!=0)
 			{
-				clientError(socket, req.getVersion(), Code.NOTFOUND);
+				clientError(socket, request.getVersion(), Code.NOTFOUND);
 				return;
 			}
 		}
 		else
 		{
-			if(paraCount!=paramsArray.length)
+			if(paraCount!=inputParamMap.size())
 			{
-				clientError(socket, req.getVersion(), Code.NOTFOUND);
+				clientError(socket, request.getVersion(), Code.NOTFOUND);
 				return;
 			}
 		}
 		
-
-		// 规定了必须是静态方法所以我这里第一个参数就是null了
-		// 目前形参顺序必须对！
-		String ret = (String) method.invoke(null, paramsArray);
-
+		//准备：最终参数数组
+		Object[] paramArray = new Object[paraCount];
 		
+		//参数录入位置校正
+		HashMap<String,Class> standardParamMap = myMethod.getParaMap();
+		
+		Integer i = 0;
+		
+		for (Entry<String, Class> entry : standardParamMap.entrySet()) {
+		
+			Class type = entry.getValue();
+			
+			String paramResult = inputParamMap.get(entry.getKey());
+			
+			if(paramResult==null)
+			{
+				throw new ParamNameException();
+			}
+			
+			
+			//只提供几种常见的转型先？
+			if(type==Integer.class)
+			{
+				paramArray[i++] = Integer.parseInt(paramResult);
+			}
+			else if(type==Double.class)
+			{
+				paramArray[i++] = Double.parseDouble(paramResult);
+			}
+			else if(type==Float.class)
+			{
+				paramArray[i++] = Float.parseFloat(paramResult);
+			}
+			else
+			{
+				paramArray[i++] = type.cast(paramResult);
+			}
+			
+		}
+		
+		
+		// 规定了必须是静态方法所以我这里第一个参数就是null了
+		//这里转型会出问题
+		Object ret = method.invoke(null,paramArray);
+		
+		System.out.println(ret);
 		
 		byte[] bytes = null;
 
 		if (ret != null) {
-			bytes = ret.getBytes();
+			bytes  = String.valueOf(ret).getBytes();
 		}
 
-		sendResponse(socket, req.getVersion(), "text/html", bytes, Code.OK);
+		sendResponse(socket, request.getVersion(), "text/html", bytes, Code.OK);
 
 	}
 }

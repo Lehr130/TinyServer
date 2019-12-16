@@ -1,9 +1,11 @@
 package main.dynamic;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 
 import annotation.LehrsMethod;
+import annotation.ParamName;
 import bean.MyMethod;
 import message.RequestType;
 
@@ -35,15 +37,29 @@ public class Router {
 		
 		Class<?> cls = Class.forName("main.dynamic.Dynamic");
 
+		
+		
 		Method[] methods = cls.getDeclaredMethods();
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(LehrsMethod.class)) {
 				//获取注解
 				LehrsMethod lm = method.getAnnotation(LehrsMethod.class);
-				
 				//注册
 				System.out.println("注册方法："+method.getName()+",uri:" + lm.pathUri() + "，请求类型：" + lm.requestType());
-				map.put(lm.pathUri(), new MyMethod(lm.requestType(), method, cls));
+				
+				
+				HashMap<String,Class> paraMap = new HashMap<>();
+				
+				//记录参数
+				for(Parameter p : method.getParameters())
+				{
+					ParamName pn = p.getAnnotation(ParamName.class);
+					paraMap.put(pn.name(), p.getType());
+					System.out.println("Parameter:"+pn.name()+", Class:"+p.getType());
+				}
+				
+				//存入
+				map.put(lm.pathUri(), new MyMethod(lm.requestType(), method, cls,paraMap));
 				
 			}
 		}

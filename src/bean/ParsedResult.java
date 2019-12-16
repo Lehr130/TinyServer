@@ -1,18 +1,20 @@
 package bean;
 
+import java.util.HashMap;
+
 public class ParsedResult {
 
 	private String parseUri;
 
 	private Boolean isStatic;
 
-	private String[] params;
+	private HashMap<String,String> params;
 
 	public String getParseUri() {
 		return parseUri;
 	}
 
-	public ParsedResult(String parseUri, Boolean isStatic, String[] params) {
+	public ParsedResult(String parseUri, Boolean isStatic, HashMap<String,String> params) {
 		super();
 		this.parseUri = parseUri;
 		this.isStatic = isStatic;
@@ -27,11 +29,11 @@ public class ParsedResult {
 		return isStatic;
 	}
 
-	public String[] getParams() {
+	public HashMap<String,String> getParams() {
 		return params;
 	}
 
-	public void setParams(String[] params) {
+	public void setParams(HashMap<String,String> params) {
 		this.params = params;
 	}
 

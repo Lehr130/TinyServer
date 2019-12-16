@@ -92,6 +92,8 @@ public class MyRequest {
 
 		String[] reh = body[0].split(" ");
 		
+		
+	
 		if("GET".equals(reh[0]))
 		{
 			this.requestType = RequestType.GET;

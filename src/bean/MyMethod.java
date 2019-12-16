@@ -1,12 +1,14 @@
 package bean;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import message.RequestType;
 
 /**
  * 
  * 每个方法注册将会被包装成这样一个对象
+ * 
  * @author Lehr
  * @date 2019年12月16日
  *
@@ -16,8 +18,8 @@ public class MyMethod {
 	private RequestType requestType;
 	private Method method;
 	private Class fromClazz;
-	
-	
+	private HashMap<String, Class> paraMap;
+
 	public Class getFromClazz() {
 		return fromClazz;
 	}
@@ -42,12 +44,20 @@ public class MyMethod {
 		this.method = method;
 	}
 
-	public <T> MyMethod(RequestType requestType, Method method, Class<T> fromClazz) {
+	public HashMap<String, Class> getParaMap() {
+		return paraMap;
+	}
+
+	public void setParaMap(HashMap<String, Class> paraMap) {
+		this.paraMap = paraMap;
+	}
+
+	public MyMethod(RequestType requestType, Method method, Class fromClazz, HashMap<String, Class> paraMap) {
 		super();
 		this.requestType = requestType;
 		this.method = method;
 		this.fromClazz = fromClazz;
+		this.paraMap = paraMap;
 	}
 
-	
 }

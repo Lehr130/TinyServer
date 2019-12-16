@@ -1,7 +1,6 @@
 package utils;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import bean.ParsedResult;
 import message.Message;
@@ -25,7 +24,7 @@ public class UrlUtils {
 		}
 
 		// 处理静态文件
-		//动态和静态文件的判断还很模糊
+		//动态和静态文件的判断还很模糊 	//这里还需要用正则表达式改一下
 		if (uri.contains(".")) {
 
 			String filename = Message.ROOT_PATH + uri;
@@ -36,13 +35,13 @@ public class UrlUtils {
 		//处理动态文件
 		else{
 
-			String[] params = null;
+			HashMap<String,String> params = null;
 			
 			//如果包含了有参数就处理参数
 			if(uri.contains("?"))
 			{
 				//获取参数
-				params = getParamArray(uri);
+				params = getParamMap(uri);
 				
 				//然后变换字符串得到正确的uri
 				uri = uri.substring(0, uri.lastIndexOf("?"));		
@@ -87,8 +86,8 @@ public class UrlUtils {
 		}
 	}
 
-	@Deprecated
-	public static Map<String, String> getParamMap(String uri) {
+	
+	public static HashMap<String, String> getParamMap(String uri) {
 		
 		//如果是没有参数的就是空的 返回 
 		if(!uri.contains("?"))
@@ -98,7 +97,7 @@ public class UrlUtils {
 		
 		String paramStr = uri.substring(uri.lastIndexOf("?") + 1);
 
-		Map<String, String> paramsMap = new HashMap<String, String>();
+		HashMap<String, String> paramsMap = new HashMap<String, String>();
 
 		String[] params = paramStr.split("&");
 
@@ -112,7 +111,7 @@ public class UrlUtils {
 
 	}
 	
-	
+	@Deprecated
 	public static String[] getParamArray(String uri) {
 		
 		//如果是没有参数的就是空的 返回 

@@ -1,8 +1,7 @@
 package main.dynamic;
 
-import org.junit.Test;
-
 import annotation.LehrsMethod;
+import annotation.ParamName;
 import message.RequestType;
 
 /**
@@ -15,19 +14,18 @@ import message.RequestType;
 public class Dynamic {
 
 	@LehrsMethod(pathUri = "/users/sayHey", requestType = RequestType.GET)
-	public static String sayHey(String name, String says) {
+	public static String sayHey(@ParamName(name = "name")String name, @ParamName(name = "says")String says) {
 		return "Hey Lehr! It's Dynamic!" + " and " + name + " says: " + says;
 	}
 
 	@LehrsMethod(pathUri = "/users/sayBye", requestType = RequestType.GET)
-	public static String sayBye(String name, String says) {
+	public static String sayBye(@ParamName(name = "name")String name, @ParamName(name = "says")String says) {
 		return "Bye Lehr" + " and " + name + " says: " + says;
 	}
 	
 	@LehrsMethod(pathUri = "/users/count", requestType = RequestType.GET)
-	public static Integer getName(Integer firstName, Integer lastName) {
-		Integer sum =  firstName+lastName;
-		return sum;
+	public static Integer getName(@ParamName(name = "firstName")Integer firstName, @ParamName(name = "lastName")Integer lastName) {
+		return firstName + lastName;
 	}
 	
 
