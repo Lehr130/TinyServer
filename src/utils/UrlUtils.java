@@ -2,7 +2,10 @@ package utils;
 
 import java.util.HashMap;
 
+import org.junit.Test;
+
 import bean.ParsedResult;
+import exceptions.IllegalParamInputException;
 import message.Message;
 
 /**
@@ -12,36 +15,71 @@ import message.Message;
 public class UrlUtils {
 
 	/**
-	 * 如果是静态文件就返回文件的目录filename 否则返回dynamic这个串
+	 * 反正根据那个什么含蓄类原则，这种全是static的工具类要不能暴露new方法......
+	 */
+	private UrlUtils() {
+		throw new IllegalStateException("Utility class");
+	}
+	
+	
+	
+	/**
+	 * <hr>
+	 * 匹配静态文件or动态方法请求，
+	 * 如果是动态方法，同时记录uri参数
+	 * <hr>
+	 * 以下是几种合法的匹配例子：
+	 * 
+	 * <ul><li>1.lerie/</li>
+	 * 	   <li>以/结尾，默认是lerie/index.html--->静态文件</li></ul>
+	 * 
+	 * <ul><li>2.lerie.html</li>
+	 * 	   <li>以.xxx结尾--->静态文件</li></ul>
+	 * 
+	 * <ul><li>3.lerie.html?abc=2</li>
+	 * 	   <li>以.xxx结尾并带有参数--->静态文件，忽略参数</li></ul>
+	 * 
+	 * <ul><li>4.lerie</li>
+	 * 	   <li>没有/，也没有.xxx--->动态方法且不带参数</li></ul>
+	 * 
+	 * <ul><li>5.lerie?name=var&says=hey</li>
+	 * 	   <li>有参数--->动态方法，带参数</li></ul>
 	 * 
 	 * @param uri
 	 * @return
+	 * @throws IllegalParamInputException 
 	 */
-	public static ParsedResult parseUri(String uri) {
+	public static ParsedResult parseUri(String uri) throws IllegalParamInputException {
 		// 处理默认目录
 		if ('/' == uri.charAt(uri.length() - 1)) {
 			uri = uri + Message.DEFAULT_SUFFIX;
 		}
 
-		// 处理静态文件
-		//动态和静态文件的判断还很模糊 	//这里还需要用正则表达式改一下
-		if (uri.contains(".")) {
+	
+		
+
+		//这是一段很迷惑的正则表达式.....
+		String regex = "^/[-A-Za-z0-9/]+[.][A-Za-z]+[?]?[-A-Za-z0-9+&@#/%?=~_|!:,.;]+?";
+		//判断是静态文件
+		if (uri.matches(regex)) {
 
 			String filename = Message.ROOT_PATH + uri;
 
 			return new ParsedResult(filename,true,null);
 		}
 
-		//处理动态文件
+		//判断是动态文件
 		else{
 
 			HashMap<String,String> params = null;
 			
-			//如果包含了有参数就处理参数
+			//如果包含了有参数就处理参数？？？不行，改一下匹配规则
 			if(uri.contains("?"))
 			{
-				//获取参数
-				params = getParamMap(uri);
+				//获取参数				
+				String paramStr = uri.substring(uri.lastIndexOf("?") + 1);
+
+				params = getParamMap(paramStr);
 				
 				//然后变换字符串得到正确的uri
 				uri = uri.substring(0, uri.lastIndexOf("?"));		
@@ -87,58 +125,28 @@ public class UrlUtils {
 	}
 
 	
-	public static HashMap<String, String> getParamMap(String uri) {
+	public static HashMap<String, String> getParamMap(String paramStr) throws IllegalParamInputException {
 		
-		//如果是没有参数的就是空的 返回 
-		if(!uri.contains("?"))
+		HashMap<String, String> paramsMap = new HashMap<>(16);
+
+		try
 		{
-			return null;
+			String[] params = paramStr.split("&");
+			
+			for (String s : params) {
+				String[] p = s.split("=");
+				paramsMap.put(p[0], p[1]);
+				
+			}			
+		}
+		catch (ArrayIndexOutOfBoundsException|NullPointerException e) {
+			throw new IllegalParamInputException();
 		}
 		
-		String paramStr = uri.substring(uri.lastIndexOf("?") + 1);
-
-		HashMap<String, String> paramsMap = new HashMap<String, String>(16);
-
-		String[] params = paramStr.split("&");
-
-		for (String s : params) {
-			String[] p = s.split("=");
-			paramsMap.put(p[0], p[1]);
-
-		}
 
 		return paramsMap;
 
 	}
-	
-	@Deprecated
-	public static String[] getParamArray(String uri) {
-		
-		//如果是没有参数的就是空的 返回 
-		if(!uri.contains("?"))
-		{
-			return null;
-		}
-		
-		String paramStr = uri.substring(uri.lastIndexOf("?") + 1);
-		
-
-		String[] params = paramStr.split("&");
-
-		String[] results = new String[params.length];
-				
-		Integer i = 0;
-		
-		for (String s : params) {
-			String[] p = s.split("=");
-			results[i++] = p[1];
-
-		}
-
-		return results;
-
-	}
-	
 	
 	
 }

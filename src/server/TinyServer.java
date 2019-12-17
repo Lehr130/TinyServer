@@ -13,9 +13,9 @@ import bean.MyRequest;
 import bean.ParsedResult;
 import exceptions.BadRequestMethodException;
 import exceptions.CannotFindMethodException;
+import exceptions.IllegalParamInputException;
 import exceptions.ParamException;
 import exceptions.SystemFileException;
-import main.dynamic.Router;
 import message.Code;
 import message.Message;
 import message.RequestType;
@@ -44,10 +44,7 @@ public class TinyServer {
 	private Queue<Socket> socketBuffer = new ArrayBlockingQueue<>(1000);
 
 	/**
-	 * 启动整个服务器并响应服务，大概步骤都在这个方法里面
-	 * 1.加载配置文件
-	 * 2.主线程接收请求并放入队列
-	 * 3.工作线程开始从请求队列里取出请求并开始响应
+	 * 启动整个服务器并响应服务，大概步骤都在这个方法里面 1.加载配置文件 2.主线程接收请求并放入队列 3.工作线程开始从请求队列里取出请求并开始响应
 	 * 
 	 * @throws Exception
 	 */
@@ -63,26 +60,22 @@ public class TinyServer {
 		}
 
 		/*
-		 * 创建线程池
-		 *  线程池不允许使用Executors去创建
-		 *  而是通过ThreadPoolExecutor的方式
-		 *  这样的处理方式让写的同学更加明确线程池的运行规则
-		 *  规避资源耗尽的风险
+		 * 创建线程池 线程池不允许使用Executors去创建 而是通过ThreadPoolExecutor的方式 这样的处理方式让写的同学更加明确线程池的运行规则
+		 * 规避资源耗尽的风险
 		 */
 		ExecutorService e = Executors.newFixedThreadPool(3500);
 
-		//开始监听端口，并用try-resources自动关闭资源
+		// 开始监听端口，并用try-resources自动关闭资源
 		try (ServerSocket server = new ServerSocket(1234)) {
 
-
 			while (true) {
-				
-				//请求放入队列里
+
+				// 请求放入队列里
 				socketBuffer.add(server.accept());
-				
-				//工作线程取出请求并工作
+
+				// 工作线程取出请求并工作
 				e.execute(() -> doIt(socketBuffer.remove()));
-				
+
 			}
 		}
 
@@ -97,10 +90,10 @@ public class TinyServer {
 	 */
 	public void doIt(Socket socket) {
 
-		//如果输入？ab=c&d这种不完整的也会炸
-		
+		// 如果输入？ab=c&d这种不完整的也会炸
+
 		try {
-			//处理请求
+			// 处理请求
 			serveIt(socket);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -108,19 +101,22 @@ public class TinyServer {
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 
 		} catch (InvocationTargetException e) {
-			
+
+			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
+		} catch (IllegalParamInputException e) {
+
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (IllegalAccessException e) {
-			
+
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (BadRequestMethodException e) {
-			
+
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (ParamException e) {
-			
+
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
 		} catch (CannotFindMethodException e) {
-			
+
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		}
 
@@ -136,10 +132,11 @@ public class TinyServer {
 	 * @throws CannotFindMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
+	 * @throws IllegalParamInputException
 	 * @throws Exception
 	 */
 	public void serveIt(Socket socket) throws IOException, BadRequestMethodException, IllegalAccessException,
-			InvocationTargetException, CannotFindMethodException, ParamException {
+			InvocationTargetException, CannotFindMethodException, ParamException, IllegalParamInputException {
 
 		// 接收请求
 		MyRequest request = new MyRequest(socket);
