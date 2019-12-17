@@ -35,22 +35,20 @@ public class ServeUtils {
 	}
 
 	public static void serverDynamic(MyRequest request, ParsedResult result, Socket socket, Router router)
-			throws CannotFindMethod, ParamException, IllegalAccessException, InvocationTargetException, IOException {
+			throws CannotFindMethod, ParamException, IllegalAccessException, InvocationTargetException {
 
-		// 获取参数列表
+		// 获取用户输入的参数列表
 		HashMap<String, String> inputParamMap = result.getParams();
 
-		// 获取方法
+		// 获取方法相关的信息，按照uri和请求方法去找，若找不到就报错返回
 		MyMethod myMethod = router.getMethod(result.getParseUri(), request.getRequestType());
 
 		if (myMethod == null) {
-			throw new CannotFindMethod("Cannot Find Method By Your Uri");
+			throw new CannotFindMethod("Cannot Find Method By Your Uri or Request Type");
 		}
 
-		// 获取方法本体
+		// 获取可执行的这个方法本体
 		Method method = myMethod.getMethod();
-
-		// 现在能获取到注册了了的方法了,所以我们需要做的就是灌入参数，得到返回值
 
 		// 检查参数----个数检查
 		Integer paraCount = method.getParameterCount();
@@ -63,7 +61,6 @@ public class ServeUtils {
 		Object[] paramArray = setParam(inputParamMap, myMethod, paraCount);
 
 		// 规定了必须是静态方法所以我这里第一个参数就是null了
-		// 这里转型会出问题
 		Object ret = method.invoke(null, paramArray);
 
 		byte[] bytes = null;
@@ -116,12 +113,21 @@ public class ServeUtils {
 
 	}
 
+	
+	/**
+	 * 通过输入的参数数组，和已知的标准参数列表进行对比并赋值，若不成功就爆错
+	 * @param inputParamMap
+	 * @param myMethod
+	 * @param paraCount
+	 * @return
+	 * @throws ParamException
+	 */
 	public static Object[] setParam(Map<String, String> inputParamMap, MyMethod myMethod, Integer paraCount)
 			throws ParamException {
 
 		// 如果没有参数需求，就无需校正了
 		if (inputParamMap == null) {
-			return null;
+			return new Object[0];
 		}
 
 		// 准备：最终参数数组

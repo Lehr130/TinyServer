@@ -90,7 +90,6 @@ public class MyResponse {
 			e.printStackTrace();
 		}
 
-		System.err.println("sended");
 		/*
 		 *而且我还是很好奇这里println自动刷出的问题，如果已经发送了一部分报文的话，那么那边会不会是接收到的是不完整的报文？主要是这里恰巧就...欸我也不知道这个了
 		 *根据实验得到的结果是：socket关闭了之后才会发送回去

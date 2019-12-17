@@ -1,7 +1,8 @@
 package bean;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.HashMap;
 
@@ -65,35 +66,82 @@ public class MyRequest {
 
 	public MyRequest(Socket socket) throws IOException {
 
-		BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
+		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-		// Integer len = input.available();
-
-		byte[] buffer = new byte[100];
-
-		long startTime = System.currentTimeMillis();
-
+		
+		Integer bufferSize = 1024; 
+		
+		//这里其实应该循环读入
+		char[] buffer = new char[bufferSize];
+				
+		
+		StringBuilder sb = new StringBuilder();
+		
 		// read()方法当读取完数据之后就开始阻塞，等待返回-1结束，这个等待的过程占到了总时间的99%
-		input.read(buffer);
 
-		long endTime = System.currentTimeMillis();
+		Integer count = bufferSize;
+		while(count.equals(bufferSize))
+		{
+			count = br.read(buffer);
+			sb.append(buffer);
+		}
+		
+		
+		String request = new String(sb);
 
-		System.out.println("解析请求的程序运行时间： " + (endTime - startTime) + "ms");
+		packUp(request);
 
-		// https://www.jianshu.com/p/e52db372d986
-		String re = new String(buffer);
+		//收完报文后半关闭
+		socket.shutdownInput();
 
-		packUp(re);
+		/*         下面是一种出错的情况，似乎你一次读过头了之后对于socket就阻塞不返回-1你就死了
+		 *			read(buffer)到截至时的返回值好像不太对劲？？？
+		 *			int count = br.read(buffer);
+		 *			while(count>0)
+		 *			{
+		 *				sb.append(buffer);
+		 *				count = br.read(buffer);
+		 *			} 
+		 */
 
+		
+		
 	}
 
-	public void packUp(String re) {
-		String[] body = re.split("\r\n");
+	public void packUp(String request) {
 
-		String[] reh = body[0].split(" ");
+		String[] requestLine = request.split("\r\n");
 		
+		//处理请求行
+		packLine(requestLine[0]);
 		
-	
+		Integer count;
+		
+		//处理请求头
+		for(count=1;count<requestLine.length && requestLine[count]==null;count++)
+		{
+			String[] repart = requestLine[count].split("=");
+			heads.put(repart[0], repart[1]);
+		}
+		
+		//处理请求体  未完待续......
+		for(;count<requestLine.length;count++)
+		{
+			String[] rbpart = requestLine[count].split("=");
+		}
+				
+				
+		
+	}
+
+	/**
+	 * 处理请求行
+	 * @param line
+	 */
+	public void packLine(String line)
+	{
+		String[] reh = line.split(" ");
+		
 		if("GET".equals(reh[0]))
 		{
 			this.requestType = RequestType.GET;
@@ -114,11 +162,6 @@ public class MyRequest {
 		this.uri = reh[1];
 		this.version = reh[2];
 
-//		for(String s : body)
-//		{
-//			System.out.println("It's : "+s +"  |||");
-//		}
-//		
 	}
-
+	
 }

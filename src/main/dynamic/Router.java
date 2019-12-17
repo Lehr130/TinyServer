@@ -48,6 +48,7 @@ public class Router {
 				System.out.println("注册方法："+method.getName()+",uri:" + lm.pathUri() + "，请求类型：" + lm.requestType());
 				
 				
+				@SuppressWarnings("rawtypes")
 				HashMap<String,Class> paraMap = new HashMap<>();
 				
 				//记录参数

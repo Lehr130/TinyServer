@@ -18,27 +18,29 @@ import utils.FileUtils;
 public class MyCache {
 
 	/**
-	 * 缓存本体
+	 * fileCacheMap的最大容量
 	 */
-	private Map<String, byte[]> map = new HashMap<>();
-
-	
 	private static final Integer CACHE_SIZE = 15;
-	
+
 	/**
-	 * Least Frequently Used算法需要的数据
+	 * 通过uri找到对应的缓存内容
+	 */
+	private Map<String, byte[]> fileCacheMap = new HashMap<>(CACHE_SIZE);
+
+	/**
+	 * Least Frequently Used算法需要的数据:uri和命中频率表
 	 */
 	private Map<String, HitRate> lfuMap = new HashMap<>();
 
 	/**
-	 * 错误设计缓存：垃圾设计
+	 * 通过你给的状态码找到对应的错误页面的uri
 	 */
-	private Map<String, String> eMap = new HashMap<>();
+	private Map<String, String> errorCodeMap = new HashMap<>();
 
 	/**
-	 * 错误设计缓存：内容栏
+	 * 通过错误页面的uri来获取内容，放这里是为了不被lfu刷掉，感觉这样设计不太好
 	 */
-	private Map<String, byte[]> epMap = new HashMap<>();
+	private Map<String, byte[]> errorCacheMap = new HashMap<>();
 
 	/**
 	 * 单例对象
@@ -49,13 +51,13 @@ public class MyCache {
 		// 预先放入错误页面
 
 		
-		eMap.put(Code.NOTFOUND, Message.ROOT_PATH+Message.SLASH+Code.NOTFOUND+Message.HTML_SUFFIX);
-		eMap.put(Code.METHODNOTSUPPORT, Message.ROOT_PATH+Message.SLASH+Code.METHODNOTSUPPORT+Message.HTML_SUFFIX);
-		eMap.put(Code.INTERNALSERVERERROR,Message.ROOT_PATH+Message.SLASH+Code.INTERNALSERVERERROR+Message.HTML_SUFFIX);
+		errorCodeMap.put(Code.NOTFOUND, Message.ROOT_PATH+Message.SLASH+Code.NOTFOUND+Message.HTML_SUFFIX);
+		errorCodeMap.put(Code.METHODNOTSUPPORT, Message.ROOT_PATH+Message.SLASH+Code.METHODNOTSUPPORT+Message.HTML_SUFFIX);
+		errorCodeMap.put(Code.INTERNALSERVERERROR,Message.ROOT_PATH+Message.SLASH+Code.INTERNALSERVERERROR+Message.HTML_SUFFIX);
 		
-		loadSysFile(eMap.get(Code.NOTFOUND));
-		loadSysFile(eMap.get(Code.METHODNOTSUPPORT));
-		loadSysFile(eMap.get(Code.INTERNALSERVERERROR));
+		loadSysFile(errorCodeMap.get(Code.NOTFOUND));
+		loadSysFile(errorCodeMap.get(Code.METHODNOTSUPPORT));
+		loadSysFile(errorCodeMap.get(Code.INTERNALSERVERERROR));
 
 	}
 
@@ -65,7 +67,7 @@ public class MyCache {
 		byte[] fileContent = null;
 		
 		try {			
-			FileUtils.fileToByte(filename);
+			fileContent = FileUtils.fileToByte(filename);
 		} catch (IOException e) {
 			//将异常附带信息包裹出去
 			SystemFileException se = new SystemFileException("Fail To Load System File!");
@@ -73,7 +75,7 @@ public class MyCache {
 			throw se;
 		}
 		
-		epMap.put(filename, fileContent);
+		errorCacheMap.put(filename, fileContent);
 
 	}
 
@@ -103,7 +105,7 @@ public class MyCache {
 		cacheReplace();
 
 		// 放入缓存
-		map.put(uri, fileContent);
+		fileCacheMap.put(uri, fileContent);
 		// 记录信息
 		lfuMap.put(uri, new HitRate(uri, 1, System.nanoTime()));
 	}
@@ -112,13 +114,13 @@ public class MyCache {
 	 * 缓存替换算法，目前写的很简陋
 	 */
 	public void cacheReplace() {
-		if (map.size() > CACHE_SIZE) {
+		if (fileCacheMap.size() > CACHE_SIZE) {
 
 			// 把在一段时间内使用最少的替换了
 			HitRate min = Collections.min(lfuMap.values());
 
 			lfuMap.remove(min.getUri());
-			map.remove(min.getUri());
+			fileCacheMap.remove(min.getUri());
 
 		}
 	}
@@ -139,15 +141,12 @@ public class MyCache {
 			hr.setLastTime(System.nanoTime());
 		}
 
-		return map.get(uri);
+		return fileCacheMap.get(uri);
 	}
 
 	public byte[] getErrorCache(String code) {
 
-		System.err.println("using "+code);
-		String filename = eMap.get(code);
-		System.err.println(epMap.get(filename));
-		return epMap.get(filename);
+		return errorCacheMap.get(errorCodeMap.get(code));
 	}
 
 }

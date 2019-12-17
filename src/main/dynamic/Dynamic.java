@@ -28,7 +28,12 @@ public class Dynamic {
 		return firstName + lastName;
 	}
 	
-
+	@LehrsMethod(pathUri = "/users/yes", requestType = RequestType.GET)
+	public static String getYes() {
+		return "fuck you";
+	}
+	
+	
 	
 
 }

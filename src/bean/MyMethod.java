@@ -13,6 +13,7 @@ import message.RequestType;
  * @date 2019年12月16日
  *
  */
+@SuppressWarnings("rawtypes")
 public class MyMethod {
 
 	private RequestType requestType;

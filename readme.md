@@ -1,9 +1,5 @@
-<html>
-<head><title>test</title></head>
-<body> 
-<h1>Lehr的Tiny Server开发计划</h1>
-<hr>
-<ul>
+# 开发计划
+
 <li>Java输入输出流NIO管道加速</li>
 <li>美化ui</li>
 <li>添加服务器缓存功能（目前有个很简陋的LFU算法的缓存），接下来打算缓存要先判断文件有没有被修改才缓存</li>
@@ -16,7 +12,4 @@
 <li>动态方法注册：防止同名同参同方法的......</li>
 <li>更好的判断动静态页面的方式</li>
 <li>让用户可以像SpringMVC那样随意建包写动态方法</li>
-</ul>
-<hr>
-</body>
-</html>
+
