@@ -2,8 +2,6 @@ package utils;
 
 import java.util.HashMap;
 
-import org.junit.Test;
-
 import bean.ParsedResult;
 import exceptions.IllegalParamInputException;
 import message.Message;

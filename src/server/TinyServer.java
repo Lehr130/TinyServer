@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import bean.MyRequest;
 import bean.ParsedResult;
 import exceptions.BadRequestMethodException;
-import exceptions.CannotFindMethodException;
+import exceptions.CannotFindException;
 import exceptions.IllegalParamInputException;
 import exceptions.ParamException;
 import exceptions.SystemFileException;
@@ -96,27 +96,28 @@ public class TinyServer {
 			// 处理请求
 			serveIt(socket);
 		} catch (IOException e) {
+			//SocketIO报错
 			e.printStackTrace();
 			e.getMessage();
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 
 		} catch (InvocationTargetException e) {
-
+			//反射报错
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (IllegalParamInputException e) {
-
+			//入参非法（类型不对）
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (IllegalAccessException e) {
-
+			//反射报错
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (BadRequestMethodException e) {
-
+			//请求方式不对
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (ParamException e) {
-
+			//参数错误（名字or个数）
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
-		} catch (CannotFindMethodException e) {
-
+		} catch (CannotFindException e) {
+			//找不到方法or资源
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		}
 
@@ -129,14 +130,14 @@ public class TinyServer {
 	 * @throws IOException
 	 * @throws BadRequestMethodException
 	 * @throws ParamException
-	 * @throws CannotFindMethodException
+	 * @throws CannotFindException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
 	 * @throws IllegalParamInputException
 	 * @throws Exception
 	 */
 	public void serveIt(Socket socket) throws IOException, BadRequestMethodException, IllegalAccessException,
-			InvocationTargetException, CannotFindMethodException, ParamException, IllegalParamInputException {
+			InvocationTargetException, CannotFindException, ParamException, IllegalParamInputException {
 
 		// 接收请求
 		MyRequest request = new MyRequest(socket);

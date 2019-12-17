@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import exceptions.CannotFindException;
+
 
 /**
  * @author Lehr
@@ -12,7 +14,7 @@ import java.io.IOException;
 public class FileUtils {
 
 	
-	public static byte[] fileToByte(String filename) throws IOException{
+	public static byte[] fileToByte(String filename) throws CannotFindException{
 		
 		
 		
@@ -24,7 +26,7 @@ public class FileUtils {
 			in.read(fileContent);
 			
 		} catch (IOException e) {
-			throw e;
+			throw new CannotFindException("Cannot Find This Resource");
 		}
 
 		return fileContent;

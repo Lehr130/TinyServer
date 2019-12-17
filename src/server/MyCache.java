@@ -1,11 +1,11 @@
 package server;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import bean.HitRate;
+import exceptions.CannotFindException;
 import exceptions.SystemFileException;
 import message.Code;
 import message.Message;
@@ -13,6 +13,7 @@ import utils.FileUtils;
 
 /**
  * 一个垃圾的缓存池设计
+ * 
  * @author Lehr
  * @date 2019年12月10日
  */
@@ -50,39 +51,39 @@ public class MyCache {
 
 	/**
 	 * 构造的时候预先放入错误页面.....
+	 * 
 	 * @throws SystemFileException
 	 */
-	private MyCache() throws SystemFileException  {
-			
-		errorCodeMap.put(Code.NOTFOUND, Message.ROOT_PATH+Message.SLASH+Code.NOTFOUND+Message.HTML_SUFFIX);
-		errorCodeMap.put(Code.METHODNOTSUPPORT, Message.ROOT_PATH+Message.SLASH+Code.METHODNOTSUPPORT+Message.HTML_SUFFIX);
-		errorCodeMap.put(Code.INTERNALSERVERERROR,Message.ROOT_PATH+Message.SLASH+Code.INTERNALSERVERERROR+Message.HTML_SUFFIX);
+	private MyCache() throws SystemFileException {
 
-		loadSysFile(errorCodeMap.get(Code.NOTFOUND));
-		loadSysFile(errorCodeMap.get(Code.METHODNOTSUPPORT));
-		loadSysFile(errorCodeMap.get(Code.INTERNALSERVERERROR));
+		for (Code c : Code.values()) {
+			if (!c.getCode().equals("200")) {
+				errorCodeMap.put(c.getCode(), Message.ROOT_PATH + Message.SLASH+"system/" + c.getCode() + Message.HTML_SUFFIX);
+				loadSysFile(errorCodeMap.get(c.getCode()));
+			}
+		}
 
 	}
 
 	/**
 	 * 加载系统文件
+	 * 
 	 * @param filename
 	 * @throws SystemFileException
 	 */
 	private void loadSysFile(String filename) throws SystemFileException {
 
-		
 		byte[] fileContent = null;
-		
-		try {			
+
+		try {
 			fileContent = FileUtils.fileToByte(filename);
-		} catch (IOException e) {
-			//将异常附带信息包裹出去
+		} catch (CannotFindException e) {
+			// 将异常附带信息包裹出去
 			SystemFileException se = new SystemFileException("Fail To Load System File!");
 			se.initCause(e);
 			throw se;
 		}
-		
+
 		errorCacheMap.put(filename, fileContent);
 
 	}
@@ -91,20 +92,19 @@ public class MyCache {
 	 * 单例模式（管你懒汉饿汉安不安全）
 	 * 
 	 * @return
-	 * @throws SystemFileException 
+	 * @throws SystemFileException
 	 * @throws Exception
 	 */
 	public static MyCache getInstance() throws SystemFileException {
 		if (cache == null) {
-			cache =  new MyCache();
+			cache = new MyCache();
 		}
 		return cache;
 
 	}
 
 	/**
-	 * 存入缓存，哈希线程不安全，所以我就先放着这样粗粒度的解决这个问题
-	 * 以后心情好了再ReentrantLock
+	 * 存入缓存，哈希线程不安全，所以我就先放着这样粗粒度的解决这个问题 以后心情好了再ReentrantLock
 	 * 
 	 * @param uri
 	 * @param response

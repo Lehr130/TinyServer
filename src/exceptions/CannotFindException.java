@@ -5,9 +5,9 @@ package exceptions;
  * @author Lehr
  * @date 2019年12月11日
  */
-public class CannotFindMethodException extends Exception {
+public class CannotFindException extends Exception {
 
-	public CannotFindMethodException(String message) {
+	public CannotFindException(String message) {
 		super(message);
 	}
 

@@ -12,7 +12,7 @@ import bean.MyMethod;
 import bean.MyRequest;
 import bean.MyResponse;
 import bean.ParsedResult;
-import exceptions.CannotFindMethodException;
+import exceptions.CannotFindException;
 import exceptions.ParamException;
 import message.Code;
 import message.RequestType;
@@ -42,13 +42,13 @@ public class ServeUtils {
 	 * @param result
 	 * @param socket
 	 * @param router
-	 * @throws CannotFindMethodException
+	 * @throws CannotFindException
 	 * @throws ParamException
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
 	public static void serverDynamic(MyRequest request, ParsedResult result, Socket socket, Router router)
-			throws CannotFindMethodException, ParamException, IllegalAccessException, InvocationTargetException {
+			throws CannotFindException, ParamException, IllegalAccessException, InvocationTargetException {
 
 		HashMap<String, String> inputParamMap;
 
@@ -66,7 +66,7 @@ public class ServeUtils {
 		MyMethod myMethod = router.getMethod(result.getParseUri(), request.getRequestType());
 
 		if (myMethod == null) {
-			throw new CannotFindMethodException("Cannot Find Method By Your Uri or Request Type");
+			throw new CannotFindException("Cannot Find Method By Your Uri or Request Type");
 		}
 
 		// 获取可执行的这个方法本体
@@ -110,7 +110,7 @@ public class ServeUtils {
 	 * @param cache
 	 * @throws IOException
 	 */
-	public static void serverStatic(String filename, Socket socket, String version, MyCache cache) throws IOException {
+	public static void serverStatic(String filename, Socket socket, String version, MyCache cache) throws CannotFindException {
 
 		// out方法不一定会及时输出，err更方便debug，可以及时输出，常见场景：循环出错
 		System.err.println(filename);
@@ -145,13 +145,13 @@ public class ServeUtils {
 	 * @param code
 	 * @param cache
 	 */
-	public static void clientError(Socket socket, String version, String code, MyCache cache) {
+	public static void clientError(Socket socket, String version, Code code, MyCache cache) {
 
 		// 向服务器记录报错信息
 		System.err.println("fuck that!");
 
 		// 获取报错页面并去响应
-		sendResponse(socket, version, "text/html", cache.getErrorCache(code), code);
+		sendResponse(socket, version, "text/html", cache.getErrorCache(code.getCode()), code);
 
 	}
 
@@ -164,10 +164,10 @@ public class ServeUtils {
 	 * @param fileContent
 	 * @param code
 	 */
-	public static void sendResponse(Socket socket, String version, String fileType, byte[] fileContent, String code) {
+	public static void sendResponse(Socket socket, String version, String fileType, byte[] fileContent, Code code) {
 
 		// 把所有的数据聚合成一个响应
-		MyResponse res = new MyResponse(version, code, fileType, fileContent);
+		MyResponse res = new MyResponse(version, code.getCode(), fileType, fileContent);
 
 		// 并发送响应
 		res.sendResponse(socket);

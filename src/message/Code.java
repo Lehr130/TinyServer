@@ -5,18 +5,33 @@ package message;
  * @author Lehr
  * @date 2019年12月11日
  */
-public interface Code {
+public enum Code {
 	
+	OK("200","Success To Response GET Request"),
 	
+	INTERNALSERVERERROR("500","Server's Error"),
 	
-	public static final String OK = "200";
+	PARAMILLEGAL("1000","The Wrong Type of Parameter Has Been Input"),
 	
-	public static final String METHODNOTSUPPORT = "1000";
+	BADREQUEST("400","Do Not Support The Method To Do This Request"),
 	
-	public static final String NOTFOUND = "404";
+	PARAMWRONG("1001","Wrong Name or Number of Parameters"),
 	
-	public static final String INTERNALSERVERERROR = "500";
-
+	NOTFOUND("404","Cannot Find The Method Or The Resource");
+	
+	String CODE;
+	String TIP;
+	
+	private Code(String cODE, String tIP) {
+		CODE = cODE;
+		TIP = tIP;
+	}
+	
+	public String getCode()
+	{
+		return CODE;
+	}
+	
 	
 	
 }
