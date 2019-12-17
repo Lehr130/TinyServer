@@ -112,20 +112,24 @@ public class MyRequest {
 
 		String[] requestLine = request.split("\r\n");
 		
-		//处理请求行
+		//处理请求行   "POST /path/uri HTTP/1.1"
 		packLine(requestLine[0]);
 		
 		Integer count;
 		
-		//处理请求头
-		for(count=1;count<requestLine.length && requestLine[count]==null;count++)
+		this.heads = new HashMap<>(16);
+		this.bodys = new HashMap<>(16);
+		
+		//处理请求头   "Connection: keep-alive" 多行
+		for(count=1;count<requestLine.length && requestLine[count].length()>0;count++)
 		{
-			String[] repart = requestLine[count].split("=");
+			String[] repart = requestLine[count].split(": ");
 			heads.put(repart[0], repart[1]);
 		}
 		
-		//处理请求体  未完待续......
-		for(;count<requestLine.length;count++)
+		
+		//跳过空行 处理请求体  未完待续......   "adsf=dsaf&adsf=dsaf"
+		for(count++;count<requestLine.length;count++)
 		{
 			String[] rbpart = requestLine[count].split("=");
 		}
