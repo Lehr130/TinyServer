@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import bean.MyRequest;
 import bean.ParsedResult;
 import exceptions.BadRequestMethodException;
-import exceptions.CannotFindMethod;
+import exceptions.CannotFindMethodException;
 import exceptions.ParamException;
 import exceptions.SystemFileException;
 import main.dynamic.Router;
@@ -119,7 +119,7 @@ public class TinyServer {
 		} catch (ParamException e) {
 			
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
-		} catch (CannotFindMethod e) {
+		} catch (CannotFindMethodException e) {
 			
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		}
@@ -133,13 +133,13 @@ public class TinyServer {
 	 * @throws IOException
 	 * @throws BadRequestMethodException
 	 * @throws ParamException
-	 * @throws CannotFindMethod
+	 * @throws CannotFindMethodException
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
 	 * @throws Exception
 	 */
 	public void serveIt(Socket socket) throws IOException, BadRequestMethodException, IllegalAccessException,
-			InvocationTargetException, CannotFindMethod, ParamException {
+			InvocationTargetException, CannotFindMethodException, ParamException {
 
 		// 接收请求
 		MyRequest request = new MyRequest(socket);

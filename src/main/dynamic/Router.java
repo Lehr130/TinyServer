@@ -13,6 +13,7 @@ import message.RequestType;
  * @author Lehr
  * @date 2019年12月11日
  */
+@SuppressWarnings("rawtypes")
 public class Router {
 
 	/**
@@ -48,8 +49,8 @@ public class Router {
 				System.out.println("注册方法："+method.getName()+",uri:" + lm.pathUri() + "，请求类型：" + lm.requestType());
 				
 				
-				@SuppressWarnings("rawtypes")
-				HashMap<String,Class> paraMap = new HashMap<>();
+				//用于记录参数名和参数类型的表
+				HashMap<String,Class> paraMap = new HashMap<>(16);
 				
 				//记录参数
 				for(Parameter p : method.getParameters())

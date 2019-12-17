@@ -12,7 +12,7 @@ import bean.MyMethod;
 import bean.MyRequest;
 import bean.MyResponse;
 import bean.ParsedResult;
-import exceptions.CannotFindMethod;
+import exceptions.CannotFindMethodException;
 import exceptions.ParamException;
 import main.dynamic.Router;
 import message.Code;
@@ -40,13 +40,13 @@ public class ServeUtils {
 	 * @param result
 	 * @param socket
 	 * @param router
-	 * @throws CannotFindMethod
+	 * @throws CannotFindMethodException
 	 * @throws ParamException
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
 	public static void serverDynamic(MyRequest request, ParsedResult result, Socket socket, Router router)
-			throws CannotFindMethod, ParamException, IllegalAccessException, InvocationTargetException {
+			throws CannotFindMethodException, ParamException, IllegalAccessException, InvocationTargetException {
 
 		// 获取用户输入的参数列表
 		HashMap<String, String> inputParamMap = result.getParams();
@@ -55,7 +55,7 @@ public class ServeUtils {
 		MyMethod myMethod = router.getMethod(result.getParseUri(), request.getRequestType());
 
 		if (myMethod == null) {
-			throw new CannotFindMethod("Cannot Find Method By Your Uri or Request Type");
+			throw new CannotFindMethodException("Cannot Find Method By Your Uri or Request Type");
 		}
 
 		// 获取可执行的这个方法本体
@@ -64,6 +64,15 @@ public class ServeUtils {
 		// 检查参数----个数检查
 		Integer paraCount = method.getParameterCount();
 
+		/*
+		 * 来我翻译一下这段辣鸡代码：
+		 * 如果入参为0但是标准参数表中不是0个   
+		 * 或者     
+		 * 入参个数和标准参数表里的不一样    
+		 * 就抛错
+		 * 
+		 *  这里我感觉用null确实不太好，到时候炸NTE了.....
+		 */
 		if ((inputParamMap == null && paraCount != 0) || (inputParamMap != null && paraCount != inputParamMap.size())) {
 			throw new ParamException("The Number of Input Parameters Is Wrong!");
 		}

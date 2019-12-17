@@ -7,6 +7,12 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * 
+ * @author Lehr
+ * @date 2019年12月17日
+ * 
+ */
 @Documented
 @Retention(RUNTIME)
 @Target(ElementType.PARAMETER)

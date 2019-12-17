@@ -2,6 +2,12 @@ package bean;
 
 import java.util.HashMap;
 
+/**
+ * 
+ * @author Lehr
+ * @date 2019年12月17日
+ * 
+ */
 public class ParsedResult {
 
 	private String parseUri;

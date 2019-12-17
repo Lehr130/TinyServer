@@ -97,7 +97,7 @@ public class UrlUtils {
 		
 		String paramStr = uri.substring(uri.lastIndexOf("?") + 1);
 
-		HashMap<String, String> paramsMap = new HashMap<String, String>();
+		HashMap<String, String> paramsMap = new HashMap<String, String>(16);
 
 		String[] params = paramStr.split("&");
 

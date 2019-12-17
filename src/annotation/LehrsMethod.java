@@ -9,6 +9,12 @@ import java.lang.annotation.Target;
 
 import message.RequestType;
 
+/**
+ * 
+ * @author Lehr
+ * @date 2019年12月17日
+ * 
+ */
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)
