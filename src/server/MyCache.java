@@ -12,6 +12,7 @@ import message.Message;
 import utils.FileUtils;
 
 /**
+ * 一个垃圾的缓存池设计
  * @author Lehr
  * @date 2019年12月10日
  */
@@ -47,20 +48,27 @@ public class MyCache {
 	 */
 	private static MyCache cache;
 
+	/**
+	 * 构造的时候预先放入错误页面.....
+	 * @throws SystemFileException
+	 */
 	private MyCache() throws SystemFileException  {
-		// 预先放入错误页面
-
-		
+			
 		errorCodeMap.put(Code.NOTFOUND, Message.ROOT_PATH+Message.SLASH+Code.NOTFOUND+Message.HTML_SUFFIX);
 		errorCodeMap.put(Code.METHODNOTSUPPORT, Message.ROOT_PATH+Message.SLASH+Code.METHODNOTSUPPORT+Message.HTML_SUFFIX);
 		errorCodeMap.put(Code.INTERNALSERVERERROR,Message.ROOT_PATH+Message.SLASH+Code.INTERNALSERVERERROR+Message.HTML_SUFFIX);
-		
+
 		loadSysFile(errorCodeMap.get(Code.NOTFOUND));
 		loadSysFile(errorCodeMap.get(Code.METHODNOTSUPPORT));
 		loadSysFile(errorCodeMap.get(Code.INTERNALSERVERERROR));
 
 	}
 
+	/**
+	 * 加载系统文件
+	 * @param filename
+	 * @throws SystemFileException
+	 */
 	private void loadSysFile(String filename) throws SystemFileException {
 
 		
@@ -96,6 +104,7 @@ public class MyCache {
 
 	/**
 	 * 存入缓存，哈希线程不安全，所以我就先放着这样粗粒度的解决这个问题
+	 * 以后心情好了再ReentrantLock
 	 * 
 	 * @param uri
 	 * @param response

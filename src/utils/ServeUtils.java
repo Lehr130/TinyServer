@@ -34,6 +34,17 @@ public class ServeUtils {
 		throw new IllegalStateException("Utility class");
 	}
 
+	/**
+	 * 响应动态方法,通过传入的请求和解析请求uri的结果（获取参数）,来进行动态方法调用
+	 * @param request
+	 * @param result
+	 * @param socket
+	 * @param router
+	 * @throws CannotFindMethod
+	 * @throws ParamException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	public static void serverDynamic(MyRequest request, ParsedResult result, Socket socket, Router router)
 			throws CannotFindMethod, ParamException, IllegalAccessException, InvocationTargetException {
 
@@ -69,10 +80,19 @@ public class ServeUtils {
 			bytes = String.valueOf(ret).getBytes();
 		}
 
+		//获取动态方法的响应结果并封装返回
 		sendResponse(socket, request.getVersion(), "text/html", bytes, Code.OK);
 
 	}
 
+	/**
+	 * 响应静态资源请求，默认只能是GET方法的，且有缓存机制
+	 * @param filename
+	 * @param socket
+	 * @param version
+	 * @param cache
+	 * @throws IOException
+	 */
 	public static void serverStatic(String filename, Socket socket, String version, MyCache cache) throws IOException {
 
 		// out方法不一定会及时输出，err更方便debug，可以及时输出，常见场景：循环出错
@@ -81,34 +101,56 @@ public class ServeUtils {
 		// 获取文件类型
 		String fileType = UrlUtils.getFileType(filename);
 
+		//尝试获取到缓存的内容
 		byte[] fileContent = cache.checkCache(filename);
-		// 如果有就调用缓存的
+		
+		// 如果缓存里没有就再去目录里解析文件
 		if (fileContent == null) {
 
+			//去找
 			fileContent = FileUtils.fileToByte(filename);
-			// 如果上面有错就不会执行这里了
+			
+			//解析成功后放入缓存
 			cache.putIntoCache(filename, fileContent);
 
 		}
 
+		//发送响应结果
 		sendResponse(socket, version, fileType, fileContent, Code.OK);
 
 	}
 
+	/**
+	 * 当发送异常的时候返回错误提示页面（以后可以扩展这里）
+	 * @param socket
+	 * @param version
+	 * @param code
+	 * @param cache
+	 */
 	public static void clientError(Socket socket, String version, String code, MyCache cache){
 
 		// 向服务器记录报错信息
-		System.err.println("bad gate!");
+		System.err.println("fuck that!");
 
-		// 错误页面直接缓存在内存里面的！
+		// 获取报错页面并去响应
 		sendResponse(socket, version, "text/html", cache.getErrorCache(code), code);
 
 	}
 
+	/**
+	 * 发送响应
+	 * @param socket
+	 * @param version
+	 * @param fileType
+	 * @param fileContent
+	 * @param code
+	 */
 	public static void sendResponse(Socket socket, String version, String fileType, byte[] fileContent, String code) {
 
+		//把所有的数据聚合成一个响应
 		MyResponse res = new MyResponse(version, code, fileType, fileContent);
 
+		//并发送响应
 		res.sendResponse(socket);
 
 	}
@@ -130,7 +172,7 @@ public class ServeUtils {
 			return new Object[0];
 		}
 
-		// 准备：最终参数数组
+		// 准备：最终会传入的参数数组
 		Object[] paramArray = new Object[paraCount];
 
 		// 导入标准的参数名称和类
@@ -149,7 +191,7 @@ public class ServeUtils {
 				throw new ParamException("Unknow Parameter has been Input!");
 			}
 
-			// 只提供几种常见的转型先？
+			// 只提供几种常见的转型先？这里以后还要分出来写
 			if (type == Integer.class) {
 				paramArray[i++] = Integer.parseInt(paramResult);
 			} else if (type == Double.class) {
@@ -162,6 +204,7 @@ public class ServeUtils {
 
 		}
 
+		//返回调整后的参数列表
 		return paramArray;
 	}
 }

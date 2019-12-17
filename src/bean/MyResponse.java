@@ -12,11 +12,28 @@ import java.util.Date;
  */
 public class MyResponse {
 
+	/**
+	 * HTTP版本号，例如"HTTP/1.1"
+	 */
 	private String version;
+	
+	/**
+	 * 状态码
+	 */
 	private String code;
+	
 	private String data;
+	
+	/**
+	 * 文件类型
+	 */
 	private String fileType;
+	
+	/**
+	 * 响应体
+	 */
 	private byte[] resBody;
+	
 	public String getVersion() {
 		return version;
 	}
@@ -56,6 +73,10 @@ public class MyResponse {
 		this.resBody = resBody;
 	}
 	
+	/**
+	 * 发送请求并关闭socket
+	 * @param socket
+	 */
 	public void sendResponse(Socket socket)
 	{
 		//记录时间

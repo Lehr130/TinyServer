@@ -34,17 +34,20 @@ public class TinyServer {
 	private MyCache cache;
 
 	/**
-	 * Router动态方法表
+	 * 动态方法路由记录的表
 	 */
 	private Router router;
 
 	/**
-	 * 采用阻塞队列，暂时保证了线程安全
+	 * 采用阻塞队列，线程安全
 	 */
-	private Queue<Socket> socketBuffer = new ArrayBlockingQueue<Socket>(1000);
+	private Queue<Socket> socketBuffer = new ArrayBlockingQueue<>(1000);
 
 	/**
 	 * 启动整个服务器并响应服务，大概步骤都在这个方法里面
+	 * 1.加载配置文件
+	 * 2.主线程接收请求并放入队列
+	 * 3.工作线程开始从请求队列里取出请求并开始响应
 	 * 
 	 * @throws Exception
 	 */
@@ -59,20 +62,27 @@ public class TinyServer {
 			e.getMessage();
 		}
 
-		// 线程池不允许使用Executors去创建，而是通过ThreadPoolExecutor的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。
+		/*
+		 * 创建线程池
+		 *  线程池不允许使用Executors去创建
+		 *  而是通过ThreadPoolExecutor的方式
+		 *  这样的处理方式让写的同学更加明确线程池的运行规则
+		 *  规避资源耗尽的风险
+		 */
 		ExecutorService e = Executors.newFixedThreadPool(3500);
 
+		//开始监听端口，并用try-resources自动关闭资源
 		try (ServerSocket server = new ServerSocket(1234)) {
 
-			/*
-			 * 开始接受请求 我发现之前没有写.close()的时候，就会出现NPE的情况 所以对于浏览器来说，结束到底是收到响应之后还是关闭套接字之后呢？
-			 * 那个半关闭的问题？我还没有细细处理过关哪个流的问题 而且try-resources还不能用在这里，自己思考一下跨线程的问题
-			 * 拿到一个socket之后线程池里的一群就会去抢,放到队列里，线程安全
-			 */
 
 			while (true) {
+				
+				//请求放入队列里
 				socketBuffer.add(server.accept());
+				
+				//工作线程取出请求并工作
 				e.execute(() -> doIt(socketBuffer.remove()));
+				
 			}
 		}
 
@@ -90,9 +100,8 @@ public class TinyServer {
 		//如果输入？ab=c&d这种不完整的也会炸
 		
 		try {
-
+			//处理请求
 			serveIt(socket);
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			e.getMessage();
@@ -118,7 +127,7 @@ public class TinyServer {
 	}
 
 	/**
-	 * 具体的某个线程的服务执行阶段：解析请求-->进行处理-->返回结果
+	 * 具体的服务执行阶段：解析请求-->进行处理-->返回结果
 	 * 
 	 * @param server
 	 * @throws IOException
@@ -138,7 +147,7 @@ public class TinyServer {
 		// 分析请求类型：静态还是动态请求
 		ParsedResult result = UrlUtils.parseUri(request.getUri());
 
-		// 分析结果
+		// 分析结果并分别响应
 		if (result.isStatic()) {
 
 			// 如果是静态，则只能是GET方法
