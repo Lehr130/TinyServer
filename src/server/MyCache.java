@@ -1,10 +1,12 @@
 package server;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import bean.HitRate;
+import config.ServerConfig;
 import exceptions.CannotFindException;
 import exceptions.SystemFileException;
 import message.Code;
@@ -20,14 +22,9 @@ import utils.FileUtils;
 public class MyCache {
 
 	/**
-	 * fileCacheMap的最大容量
-	 */
-	private static final Integer CACHE_SIZE = 15;
-
-	/**
 	 * 通过uri找到对应的缓存内容
 	 */
-	private Map<String, byte[]> fileCacheMap = new HashMap<>(CACHE_SIZE);
+	private Map<String, byte[]> fileCacheMap = new HashMap<>(ServerConfig.CACHE_SIZE);
 
 	/**
 	 * Least Frequently Used算法需要的数据:uri和命中频率表
@@ -58,7 +55,7 @@ public class MyCache {
 
 		for (Code c : Code.values()) {
 			if (!c.getCode().equals("200")) {
-				errorCodeMap.put(c.getCode(), Message.ROOT_PATH + Message.SLASH+"system/" + c.getCode() + Message.HTML_SUFFIX);
+				errorCodeMap.put(c.getCode(), Message.ROOT_PATH + File.separator+"systemFile"+File.separator + c.getCode() + Message.HTML_SUFFIX);
 				loadSysFile(errorCodeMap.get(c.getCode()));
 			}
 		}
@@ -123,7 +120,7 @@ public class MyCache {
 	 * 缓存替换算法，目前写的很简陋
 	 */
 	public void cacheReplace() {
-		if (fileCacheMap.size() > CACHE_SIZE) {
+		if (fileCacheMap.size() > ServerConfig.CACHE_SIZE) {
 
 			// 把在一段时间内使用最少的替换了
 			HitRate min = Collections.min(lfuMap.values());

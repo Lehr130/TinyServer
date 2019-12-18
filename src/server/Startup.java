@@ -7,7 +7,7 @@ package server;
 public class Startup {
 
 	/**
-	 * 入口： 在你机子1234端口开启一个服务（以后单独剥个配置文件出来）
+	 * 入口： 在你机子1234端口开启一个服务
 	 * 
 	 * @param args
 	 * @throws Exception

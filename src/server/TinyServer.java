@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import bean.MyRequest;
 import bean.ParsedResult;
+import config.ServerConfig;
 import exceptions.BadRequestMethodException;
 import exceptions.CannotFindException;
 import exceptions.IllegalParamInputException;
@@ -39,9 +40,9 @@ public class TinyServer {
 	private Router router;
 
 	/**
-	 * 采用阻塞队列，线程安全
+	 * 采用阻塞队列，线程安全，及时把请求从accept队列里拿上来，底层accpet队列的长度可由backlog参数修改
 	 */
-	private Queue<Socket> socketBuffer = new ArrayBlockingQueue<>(1000);
+	private Queue<Socket> socketBuffer = new ArrayBlockingQueue<>(ServerConfig.SOCKET_BUFFER_LEN);
 
 	/**
 	 * 启动整个服务器并响应服务，大概步骤都在这个方法里面 1.加载配置文件 2.主线程接收请求并放入队列 3.工作线程开始从请求队列里取出请求并开始响应
@@ -63,10 +64,10 @@ public class TinyServer {
 		 * 创建线程池 线程池不允许使用Executors去创建 而是通过ThreadPoolExecutor的方式 这样的处理方式让写的同学更加明确线程池的运行规则
 		 * 规避资源耗尽的风险
 		 */
-		ExecutorService e = Executors.newFixedThreadPool(3500);
+		ExecutorService e = Executors.newFixedThreadPool(ServerConfig.THREAD_POOL_SIZE);
 
 		// 开始监听端口，并用try-resources自动关闭资源
-		try (ServerSocket server = new ServerSocket(1234)) {
+		try (ServerSocket server = new ServerSocket(ServerConfig.LISTEN_PORT)) {
 
 			while (true) {
 
@@ -90,35 +91,24 @@ public class TinyServer {
 	 */
 	public void doIt(Socket socket) {
 
-		// 如果输入？ab=c&d这种不完整的也会炸
-
 		try {
 			// 处理请求
 			serveIt(socket);
-		} catch (IOException e) {
-			//SocketIO报错
-			e.printStackTrace();
-			e.getMessage();
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
-
-		} catch (InvocationTargetException e) {
-			//反射报错
+		} catch (InvocationTargetException | IllegalAccessException |IOException e) {
+			//SocketIO报错 or 反射报错
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (IllegalParamInputException e) {
 			//入参非法（类型不对）
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
-		} catch (IllegalAccessException e) {
-			//反射报错
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
+			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMILLEGAL, cache);
 		} catch (BadRequestMethodException e) {
 			//请求方式不对
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
+			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.BADREQUEST, cache);
 		} catch (ParamException e) {
 			//参数错误（名字or个数）
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
+			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMWRONG, cache);
 		} catch (CannotFindException e) {
 			//找不到方法or资源
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
+			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
 		}
 
 	}

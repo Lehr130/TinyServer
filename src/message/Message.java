@@ -1,5 +1,6 @@
 package message;
 
+import java.io.File;
 
 /**
  * @author Lehr
@@ -9,7 +10,8 @@ public interface Message {
 	
 	String DYNAMIC = "dynamic";
 
-	String ROOT_PATH = "D://LehrsJavaEE/TinyServer/src/main" ;
+	//使用webroot直接获取目录
+	String ROOT_PATH = System.getProperty("user.dir")+File.separator+"webroot";
 	
 	String DEFAULT_SUFFIX = "index.html";
 	
