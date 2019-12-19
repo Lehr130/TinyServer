@@ -37,7 +37,7 @@ public class Router {
 	/**
 	 * 路由记录表本体：一个uri对应一个方法
 	 */
-	private HashMap<String, MyMethod> map = new HashMap<>(16);
+	private HashMap<String, MyMethod> methodMap = new HashMap<>(16);
 
 	/**
 	 * 构造方法，注册所有的方法
@@ -53,8 +53,7 @@ public class Router {
 
 	}
 
-	private void loadApps()
-			throws ClassNotFoundException, ConflictMethodException, MalformedURLException, IOException {
+	private void loadApps() throws ClassNotFoundException, ConflictMethodException, MalformedURLException, IOException {
 
 		// 遍历webapps文件夹下所有jar
 		File appsFile = new File(Message.LOAD_PATH);
@@ -79,50 +78,50 @@ public class Router {
 
 		String JarsPath = Message.LOAD_PATH + File.separator + jarsName;
 
-		//建立一个set来放入加载到的对象
-		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
+		// 建立一个set来放入加载到的对象
+		Set<Class<?>> classes = new LinkedHashSet<>();
 
-		//找到jar文件
-		JarFile jarFile = new JarFile(JarsPath);
+		try (
 
-		//定义一个类加载器，去这个目录的这个文件里加载这个文件
-		ClassLoader loader = new URLClassLoader(new URL[] { new URL("file:" + JarsPath) });
+				// 找到jar文件
+				JarFile jarFile = new JarFile(JarsPath);
 
-		//迭代器
-		Enumeration<JarEntry> es = jarFile.entries();
+				// 定义一个类加载器，去这个目录的这个文件里加载这个文件
+				URLClassLoader loader = new URLClassLoader(new URL[] { new URL("file:" + JarsPath) });) {
 
-		//开始对载入的内容逐个检查
-		while (es.hasMoreElements()) {
+			// 迭代器
+			Enumeration<JarEntry> es = jarFile.entries();
 
-			//下一个元素
-			JarEntry jarEntry = es.nextElement();
+			// 开始对载入的内容逐个检查
+			while (es.hasMoreElements()) {
 
-			//获取文件名
-			String name = jarEntry.getName();
+				// 下一个元素
+				JarEntry jarEntry = es.nextElement();
 
-			
-			//只解析class文件	（以后要扩展一下迭代解析jar文件）
-			if (name != null && name.endsWith(".class")) {
+				// 获取文件名
+				String name = jarEntry.getName();
 
-				// 加载到JVM里去 （这里是转换成包名）	
-				Class<?> c = loader.loadClass(name.replace("/", ".").substring(0, name.length() - 6));
+				// 只解析class文件 （以后要扩展一下迭代解析jar文件）
+				if (name != null && name.endsWith(".class")) {
 
-				// 如果确实是这个类加载器新加载进来的原来没有的（主要是我计划让用户导入一个jar，怕又载入了我的标签）
-				if (c.getClassLoader().equals(loader)) {
-					
-					//同时对路径前后的/自动修正
-					
-					if(c.getAnnotation(ThisGonnaBeADynamicMethod.class)!=null)
-					{
-						// 以后这里再加一个检测这个类是否要被作为动态方法的标签
-						// 获取到一个新的用户的类：放入集合
-						classes.add(c);						
+					// 加载到JVM里去 （这里是转换成包名）
+					Class<?> c = loader.loadClass(name.replace("/", ".").substring(0, name.length() - 6));
+
+					// 如果确实是这个类加载器新加载进来的原来没有的（主要是我计划让用户导入一个jar，怕又载入了我的标签）
+					if (c.getClassLoader().equals(loader)) {
+
+						// 同时对路径前后的/自动修正
+
+						if (c.getAnnotation(ThisGonnaBeADynamicMethod.class) != null) {
+							// 以后这里再加一个检测这个类是否要被作为动态方法的标签
+							// 获取到一个新的用户的类：放入集合
+							classes.add(c);
+						}
 					}
 				}
 			}
 		}
-		
-		//返回加载到的东西
+		// 返回加载到的东西
 		return classes;
 	}
 
@@ -135,12 +134,12 @@ public class Router {
 				// 获取注解
 				LehrsMethod lm = method.getAnnotation(LehrsMethod.class);
 				// 注册
-				String requestPathUri = fixUri(clazz,method);
-				
+				String requestPathUri = fixUri(clazz, method);
+
 				System.out.println("注册方法：" + method.getName() + ",uri:" + requestPathUri + "，请求类型：" + lm.requestType());
 
 				// 检测冲突 这里我先规定的是不准同请求方式同uri的方法重载....具体我有点想不起SpringMVC的是怎么处理的了
-				MyMethod existMethod = map.get(lm.pathUri());
+				MyMethod existMethod = methodMap.get(lm.pathUri());
 				if (existMethod != null && existMethod.getRequestType().equals(lm.requestType())) {
 					throw new ConflictMethodException("方法重复了！");
 				}
@@ -156,42 +155,37 @@ public class Router {
 				}
 
 				// 存入
-				map.put(requestPathUri, new MyMethod(lm.requestType(), method, clazz, paraMap));
+				methodMap.put(requestPathUri, new MyMethod(lm.requestType(), method, clazz, paraMap));
 
 			}
 		}
 
 	}
 
-	public String fixUri(Class clazz, Method method)
-	{
+	public String fixUri(Class clazz, Method method) {
 		LehrsMethod lm = method.getAnnotation(LehrsMethod.class);
-		
-		//我也不知道为什么非要强转
+
+		// 我也不知道为什么非要强转
+		@SuppressWarnings("unchecked")
 		ThisGonnaBeADynamicMethod tg = (ThisGonnaBeADynamicMethod) clazz.getAnnotation(ThisGonnaBeADynamicMethod.class);
-		
-		String fixed = tg.pathUri()+"/"+lm.pathUri();
-		
-		if(fixed.charAt(0)!='/')
-		{
+
+		String fixed = tg.pathUri() + "/" + lm.pathUri();
+
+		if (fixed.charAt(0) != '/') {
 			fixed = "/" + fixed;
-			
+
 		}
-		
+
 		fixed = fixed.replaceAll("[/]+", "/");
-		
-		if(fixed.charAt(fixed.length()-1)=='/')
-		{
-			fixed = fixed.substring(0, fixed.length()-1);
+
+		if (fixed.charAt(fixed.length() - 1) == '/') {
+			fixed = fixed.substring(0, fixed.length() - 1);
 		}
 
 		return fixed;
-		
-		
-		
-		
+
 	}
-	
+
 	/**
 	 * 单例模式获取对象
 	 * 
@@ -221,7 +215,7 @@ public class Router {
 	 * @return
 	 */
 	public <T> MyMethod getMethod(String uri, RequestType requestType) {
-		MyMethod m = map.get(uri);
+		MyMethod m = methodMap.get(uri);
 
 		if (m == null) {
 			return null;
@@ -230,6 +224,7 @@ public class Router {
 		if (requestType != m.getRequestType()) {
 			return null;
 		}
+		
 
 		return m;
 
