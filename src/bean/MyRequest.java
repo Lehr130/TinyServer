@@ -88,6 +88,9 @@ public class MyRequest {
 
 		packUp(request);
 
+		
+		System.out.println(request);
+		
 		// 收完报文后半关闭
 		socket.shutdownInput();
 
@@ -105,7 +108,7 @@ public class MyRequest {
 
 		// 处理请求行 "POST /path/uri HTTP/1.1"
 		packLine(requestLine[0]);
-
+		
 		Integer count;
 
 		this.heads = new HashMap<>(16);

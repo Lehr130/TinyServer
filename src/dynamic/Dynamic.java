@@ -2,6 +2,7 @@ package dynamic;
 
 import annotation.LehrsMethod;
 import annotation.ParamName;
+import annotation.ThisGonnaBeADynamicMethod;
 import message.RequestType;
 
 /**
@@ -11,6 +12,7 @@ import message.RequestType;
  * @date 2019年12月16日
  *
  */
+@ThisGonnaBeADynamicMethod(pathUri = "Lehrs/")
 public class Dynamic {
 
 	@LehrsMethod(pathUri = "/users/sayHey", requestType = RequestType.GET)

@@ -13,6 +13,8 @@ public interface Message {
 	//使用webroot直接获取目录
 	String ROOT_PATH = System.getProperty("user.dir")+File.separator+"webroot";
 	
+	String LOAD_PATH = Message.ROOT_PATH + File.separator + "webapps";
+	
 	String DEFAULT_SUFFIX = "index.html";
 	
 	String SLASH = "/";
