@@ -13,3 +13,4 @@
 <li>HTTP/1.1长连接似乎没有生效......</li>
 <li>搞懂迭代器和URLClassLoader</li>
 <li>目前已经完成导入任意Jar包，按照规定书写即可响应，但是代码很烂</li>
+<li>迭代解析Jar中Jar</li>
