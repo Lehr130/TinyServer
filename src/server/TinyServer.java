@@ -27,7 +27,7 @@ import utils.UrlUtils;
  * @author Lehr
  * @date 2019年12月10日
  */
-public class TinyServer {
+public class TinyServer implements ITiny {
 
 	/**
 	 * TinyServer服务器内置缓存
@@ -49,6 +49,7 @@ public class TinyServer {
 	 * 
 	 * @throws Exception
 	 */
+	@Override
 	public void startUp() throws Exception {
 
 		// 加载配置文件
@@ -89,6 +90,7 @@ public class TinyServer {
 	 * 
 	 * @param socket
 	 */
+	@Override
 	public void doIt(Socket socket) {
 
 		try {
@@ -126,6 +128,7 @@ public class TinyServer {
 	 * @throws IllegalParamInputException
 	 * @throws Exception
 	 */
+	@Override
 	public void serveIt(Socket socket) throws IOException, BadRequestMethodException, IllegalAccessException,
 			InvocationTargetException, CannotFindException, ParamException, IllegalParamInputException {
 
