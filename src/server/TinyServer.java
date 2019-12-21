@@ -2,8 +2,11 @@ package server;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -20,19 +23,19 @@ import exceptions.SystemFileException;
 import message.Code;
 import message.Message;
 import message.RequestType;
-import utils.ServeUtils;
+import message.ServerType;
 import utils.UrlUtils;
 
 /**
  * @author Lehr
  * @date 2019年12月10日
  */
-public class TinyServer implements ITiny {
+public class TinyServer {
 
 	/**
 	 * TinyServer服务器内置缓存
 	 */
-	private MyCache cache;
+	private Cache cache;
 
 	/**
 	 * 动态方法路由记录的表
@@ -49,12 +52,12 @@ public class TinyServer implements ITiny {
 	 * 
 	 * @throws Exception
 	 */
-	@Override
+
 	public void startUp() throws Exception {
 
 		// 加载配置文件
 		try {
-			cache = MyCache.getInstance();
+			cache = Cache.getInstance();
 			router = Router.getInstance();
 		} catch (SystemFileException e) {
 			e.printStackTrace();
@@ -66,6 +69,11 @@ public class TinyServer implements ITiny {
 		 * 规避资源耗尽的风险
 		 */
 		ExecutorService e = Executors.newFixedThreadPool(ServerConfig.THREAD_POOL_SIZE);
+
+//		ServerSocketChannel server = ServerSocketChannel.open();
+//		server.bind(new InetSocketAddress(ServerConfig.LISTEN_PORT));
+//		SocketChannel socket = server.accept();
+//		
 
 		// 开始监听端口，并用try-resources自动关闭资源
 		try (ServerSocket server = new ServerSocket(ServerConfig.LISTEN_PORT)) {
@@ -90,26 +98,26 @@ public class TinyServer implements ITiny {
 	 * 
 	 * @param socket
 	 */
-	@Override
+
 	public void doIt(Socket socket) {
 
 		try {
 			// 处理请求
 			serveIt(socket);
-		} catch (InvocationTargetException | IllegalAccessException |IOException e) {
-			//SocketIO报错 or 反射报错
+		} catch (InvocationTargetException | IllegalAccessException | IOException e) {
+			// SocketIO报错 or 反射报错
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (IllegalParamInputException e) {
-			//入参非法（类型不对）
+			// 入参非法（类型不对）
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMILLEGAL, cache);
 		} catch (BadRequestMethodException e) {
-			//请求方式不对
+			// 请求方式不对
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.BADREQUEST, cache);
 		} catch (ParamException e) {
-			//参数错误（名字or个数）
+			// 参数错误（名字or个数）
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMWRONG, cache);
 		} catch (CannotFindException e) {
-			//找不到方法or资源
+			// 找不到方法or资源
 			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
 		}
 
@@ -128,7 +136,7 @@ public class TinyServer implements ITiny {
 	 * @throws IllegalParamInputException
 	 * @throws Exception
 	 */
-	@Override
+
 	public void serveIt(Socket socket) throws IOException, BadRequestMethodException, IllegalAccessException,
 			InvocationTargetException, CannotFindException, ParamException, IllegalParamInputException {
 
@@ -139,7 +147,9 @@ public class TinyServer implements ITiny {
 		ParsedResult result = UrlUtils.parseUri(request.getUri());
 
 		// 分析结果并分别响应
-		if (result.isStatic()) {
+		ServerType serverType = result.getType();
+
+		if (ServerType.STATIC_RESOURCES.equals(serverType)) {
 
 			// 如果是静态，则只能是GET方法
 			if (!RequestType.GET.equals(request.getRequestType())) {
@@ -152,11 +162,15 @@ public class TinyServer implements ITiny {
 			// 静态文件处理
 			ServeUtils.serverStatic(result.getParseUri(), socket, Message.DEFAULT_HTTP_VERSION, cache);
 
-		} else {
+		}
+		if (ServerType.DYNAMIC_JAVA.equals(serverType)) {
 
-			// 动态程序处理
+			// 动态JavaSE程序处理
 			ServeUtils.serverDynamic(request, result, socket, router);
 
+		}
+		if (ServerType.PROXY.equals(serverType)) {
+			ServeUtils.serverProxy(result, socket);
 		}
 
 	}

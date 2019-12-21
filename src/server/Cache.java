@@ -19,7 +19,7 @@ import utils.FileUtils;
  * @author Lehr
  * @date 2019年12月10日
  */
-public class MyCache {
+public class Cache {
 
 	/**
 	 * 通过uri找到对应的缓存内容
@@ -44,14 +44,14 @@ public class MyCache {
 	/**
 	 * 单例对象
 	 */
-	private static MyCache cache;
+	private static Cache cache;
 
 	/**
 	 * 构造的时候预先放入错误页面.....
 	 * 
 	 * @throws SystemFileException
 	 */
-	private MyCache() throws SystemFileException {
+	private Cache() throws SystemFileException {
 
 		for (Code c : Code.values()) {
 			if (!c.getCode().equals("200")) {
@@ -92,9 +92,9 @@ public class MyCache {
 	 * @throws SystemFileException
 	 * @throws Exception
 	 */
-	public static MyCache getInstance() throws SystemFileException {
+	public static Cache getInstance() throws SystemFileException {
 		if (cache == null) {
-			cache = new MyCache();
+			cache = new Cache();
 		}
 		return cache;
 

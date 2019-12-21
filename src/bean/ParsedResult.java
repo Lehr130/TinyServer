@@ -2,6 +2,8 @@ package bean;
 
 import java.util.HashMap;
 
+import message.ServerType;
+
 /**
  * 
  * @author Lehr
@@ -12,7 +14,7 @@ public class ParsedResult {
 
 	private String parseUri;
 
-	private boolean isStatic;
+	private ServerType type;
 
 	private HashMap<String,String> params;
 
@@ -20,10 +22,10 @@ public class ParsedResult {
 		return parseUri;
 	}
 
-	public ParsedResult(String parseUri, boolean isStatic, HashMap<String,String> params) {
+	public ParsedResult(String parseUri, ServerType type, HashMap<String,String> params) {
 		super();
 		this.parseUri = parseUri;
-		this.isStatic = isStatic;
+		this.type = type;
 		this.params = params;
 	}
 
@@ -31,8 +33,8 @@ public class ParsedResult {
 		this.parseUri = parseUri;
 	}
 
-	public boolean isStatic() {
-		return isStatic;
+	public ServerType getType() {
+		return type;
 	}
 
 	public HashMap<String,String> getParams() {
@@ -43,7 +45,7 @@ public class ParsedResult {
 		this.params = params;
 	}
 
-	public void setIsStatic(boolean isStatic) {
-		this.isStatic = isStatic;
+	public void setType(ServerType type) {
+		this.type = type;
 	}
 }

@@ -1,9 +1,13 @@
-package utils;
+package server;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,9 +19,10 @@ import bean.ParsedResult;
 import exceptions.CannotFindException;
 import exceptions.ParamException;
 import message.Code;
+import message.Message;
 import message.RequestType;
-import server.MyCache;
-import server.Router;
+import utils.FileUtils;
+import utils.UrlUtils;
 
 /**
  * 
@@ -110,7 +115,7 @@ public class ServeUtils {
 	 * @param cache
 	 * @throws IOException
 	 */
-	public static void serverStatic(String filename, Socket socket, String version, MyCache cache) throws CannotFindException {
+	public static void serverStatic(String filename, Socket socket, String version, Cache cache) throws CannotFindException {
 
 		// out方法不一定会及时输出，err更方便debug，可以及时输出，常见场景：循环出错
 		System.err.println(filename);
@@ -145,7 +150,7 @@ public class ServeUtils {
 	 * @param code
 	 * @param cache
 	 */
-	public static void clientError(Socket socket, String version, Code code, MyCache cache) {
+	public static void clientError(Socket socket, String version, Code code, Cache cache) {
 
 		// 向服务器记录报错信息
 		System.err.println("fuck that!");
@@ -258,6 +263,29 @@ public class ServeUtils {
 		
 		return type.cast(paramResult);
 
+	}
+
+	public static void serverProxy(ParsedResult result, Socket socket) throws UnknownHostException, IOException {
+		
+		System.out.println("Hey Lehr!!!");
+		
+		//我也不知道为什么，对于这个，就不像socket连接一样不能用available,而且这个很稳？？？
+		URLConnection urlConnection = new URL(result.getParseUri()).openConnection();
+		try(InputStream is = urlConnection.getInputStream())
+		{
+			// 访问获取连接
+			urlConnection.connect();
+			// 获得一个输入流
+			byte[] buffer = new byte[is.available()];
+			is.read(buffer);
+			String a = new String(buffer);
+
+			sendResponse(socket, Message.DEFAULT_HTTP_VERSION, "text/html", buffer, Code.OK);
+		}
+		
+		
+		
+		
 	}
 
 }
