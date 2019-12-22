@@ -106,19 +106,19 @@ public class TinyServer {
 			serveIt(socket);
 		} catch (InvocationTargetException | IllegalAccessException | IOException e) {
 			// SocketIO报错 or 反射报错
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
+			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
 		} catch (IllegalParamInputException e) {
 			// 入参非法（类型不对）
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMILLEGAL, cache);
+			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMILLEGAL, cache);
 		} catch (BadRequestMethodException e) {
 			// 请求方式不对
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.BADREQUEST, cache);
+			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.BADREQUEST, cache);
 		} catch (ParamException e) {
 			// 参数错误（名字or个数）
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMWRONG, cache);
+			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMWRONG, cache);
 		} catch (CannotFindException e) {
 			// 找不到方法or资源
-			ServeUtils.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
+			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
 		}
 
 	}
@@ -160,17 +160,17 @@ public class TinyServer {
 			}
 
 			// 静态文件处理
-			ServeUtils.serverStatic(result.getParseUri(), socket, Message.DEFAULT_HTTP_VERSION, cache);
+			Server.serverStatic(result.getParseUri(), socket, Message.DEFAULT_HTTP_VERSION, cache);
 
 		}
 		if (ServerType.DYNAMIC_JAVA.equals(serverType)) {
 
 			// 动态JavaSE程序处理
-			ServeUtils.serverDynamic(request, result, socket, router);
+			Server.serverDynamic(request, result, socket, router);
 
 		}
 		if (ServerType.PROXY.equals(serverType)) {
-			ServeUtils.serverProxy(result, socket);
+			Server.serverProxy(result, socket);
 		}
 
 	}

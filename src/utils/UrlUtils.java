@@ -1,5 +1,7 @@
 package utils;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 
 import bean.ParsedResult;
@@ -55,13 +57,15 @@ public class UrlUtils {
 	 * @param uri
 	 * @return
 	 * @throws IllegalParamInputException
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	public static ParsedResult parseUri(String uri) throws IllegalParamInputException {
+	public static ParsedResult parseUri(String uri) throws IllegalParamInputException, FileNotFoundException, IOException {
 
+		
 		// 先做代理判断
-
-		if (ProxyConfig.isProxy(uri)) {
-			String proxyUri = ProxyConfig.getProxyPath(uri);
+		String proxyUri = ProxyConfig.getInstance().getProxy(uri);
+		if (proxyUri!=null) {
 
 			return new ParsedResult(proxyUri, ServerType.PROXY, null);
 		}
@@ -145,6 +149,12 @@ public class UrlUtils {
 		}
 	}
 
+	/**
+	 * 解析Url参数的
+	 * @param paramStr
+	 * @return
+	 * @throws IllegalParamInputException
+	 */
 	public static HashMap<String, String> getParamMap(String paramStr) throws IllegalParamInputException {
 
 		HashMap<String, String> paramsMap = new HashMap<>(16);

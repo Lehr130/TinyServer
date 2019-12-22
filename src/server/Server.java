@@ -9,8 +9,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import bean.MyMethod;
 import bean.MyRequest;
@@ -21,6 +19,7 @@ import exceptions.ParamException;
 import message.Code;
 import message.Message;
 import message.RequestType;
+import utils.AlgorithmUtils;
 import utils.FileUtils;
 import utils.UrlUtils;
 
@@ -31,12 +30,12 @@ import utils.UrlUtils;
  * 
  */
 @SuppressWarnings("rawtypes")
-public class ServeUtils {
+public class Server {
 
 	/**
 	 * 反正根据那个什么含蓄类原则，这种全是static的工具类要不能暴露new方法......
 	 */
-	private ServeUtils() {
+	private Server() {
 		throw new IllegalStateException("Utility class");
 	}
 
@@ -90,7 +89,7 @@ public class ServeUtils {
 		}
 
 		// 调整入参位置和转型
-		Object[] paramArray = setParam(inputParamMap, myMethod, paraCount);
+		Object[] paramArray = AlgorithmUtils.setParam(inputParamMap, myMethod, paraCount);
 
 		// 规定了必须是静态方法所以我这里第一个参数就是null了
 		Object ret = method.invoke(null, paramArray);
@@ -105,6 +104,31 @@ public class ServeUtils {
 		sendResponse(socket, request.getVersion(), "text/html", bytes, Code.OK);
 
 	}
+	
+	/**
+	 * 响应转发请求的
+	 * @param result
+	 * @param socket
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
+	public static void serverProxy(ParsedResult result, Socket socket) throws UnknownHostException, IOException {
+
+		//目前不支持https
+		URLConnection urlConnection = new URL(result.getParseUri()).openConnection();
+		try (InputStream is = urlConnection.getInputStream()) {
+			// 访问获取连接
+			urlConnection.connect();
+			// 获得一个输入流
+			byte[] buffer = new byte[is.available()];
+			is.read(buffer);
+			String a = new String(buffer);
+
+			sendResponse(socket, Message.DEFAULT_HTTP_VERSION, "text/html", buffer, Code.OK);
+		}
+
+	}
+
 
 	/**
 	 * 响应静态资源请求，默认只能是GET方法的，且有缓存机制
@@ -115,7 +139,8 @@ public class ServeUtils {
 	 * @param cache
 	 * @throws IOException
 	 */
-	public static void serverStatic(String filename, Socket socket, String version, Cache cache) throws CannotFindException {
+	public static void serverStatic(String filename, Socket socket, String version, Cache cache)
+			throws CannotFindException {
 
 		// out方法不一定会及时输出，err更方便debug，可以及时输出，常见场景：循环出错
 		System.err.println(filename);
@@ -179,113 +204,5 @@ public class ServeUtils {
 
 	}
 
-	/**
-	 * 通过输入的参数数组，和已知的标准参数列表进行对比并赋值，若不成功就爆错
-	 * 
-	 * @param inputParamMap
-	 * @param myMethod
-	 * @param paraCount
-	 * @return
-	 * @throws ParamException
-	 */
-	public static Object[] setParam(Map<String, String> inputParamMap, MyMethod myMethod, Integer paraCount)
-			throws ParamException {
-
-		// 如果没有参数需求，就无需校正了
-		if (inputParamMap == null) {
-			return new Object[0];
-		}
-
-		// 准备：最终会传入的参数数组
-		Object[] paramArray = new Object[paraCount];
-
-		// 导入标准的参数名称和类
-		HashMap<String, Class> standardParamMap = myMethod.getParaMap();
-
-		// 参数数组计数器
-		Integer i = 0;
-
-		// 检擦是否每一个参数都被传递到了，类是否正确
-		for (Entry<String, Class> entry : standardParamMap.entrySet()) {
-
-			Class type = entry.getValue();
-
-			String paramResult = inputParamMap.get(entry.getKey());
-
-			if (paramResult == null) {
-				throw new ParamException("Unknow Parameter has been Input!");
-			}
-
-			// 只提供几种常见的转型先？这里以后还要分出来写
-			// 自动转型的垃圾代码......
-			paramArray[i++] = tranType(paramResult,type);
-
-		}
-
-		// 返回调整后的参数列表
-		return paramArray;
-	}
-
-	/**
-	 * 专门用来处理参数转型的类，配了一个超级垃圾的正则表达式
-	 * @param paramResult
-	 * @param type
-	 * @return
-	 * @throws ParamException
-	 */
-	public static Object tranType(String paramResult, Class type) throws ParamException {
-
-		if (type == Integer.class) {
-
-			if (!paramResult.matches("[0-9]+")) {
-				throw new ParamException("Parameter Type is Incorrect!!!");
-			}
-
-			return Integer.parseInt(paramResult);
-		}
-		if (type == Double.class) {
-
-			if (paramResult.matches("[0-9]*[.]?[0-9]+?")) {
-				throw new ParamException("Parameter Type is Incorrect!!");
-			}
-
-			return Double.parseDouble(paramResult);
-		}
-		if (type == Float.class) {
-
-			if (paramResult.matches("[0-9]*[.]?[0-9]+?")) {
-				throw new ParamException("Parameter Type is Incorrect!");
-			}
-
-			return Float.parseFloat(paramResult);
-		}
-
-		
-		return type.cast(paramResult);
-
-	}
-
-	public static void serverProxy(ParsedResult result, Socket socket) throws UnknownHostException, IOException {
-		
-		System.out.println("Hey Lehr!!!");
-		
-		//我也不知道为什么，对于这个，就不像socket连接一样不能用available,而且这个很稳？？？
-		URLConnection urlConnection = new URL(result.getParseUri()).openConnection();
-		try(InputStream is = urlConnection.getInputStream())
-		{
-			// 访问获取连接
-			urlConnection.connect();
-			// 获得一个输入流
-			byte[] buffer = new byte[is.available()];
-			is.read(buffer);
-			String a = new String(buffer);
-
-			sendResponse(socket, Message.DEFAULT_HTTP_VERSION, "text/html", buffer, Code.OK);
-		}
-		
-		
-		
-		
-	}
 
 }

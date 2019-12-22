@@ -46,27 +46,18 @@ public class ServerConfig {
 	private static void loadConfigIntoMap() throws IOException {
 		try (BufferedReader br = new BufferedReader( new FileReader(Message.ROOT_PATH+File.separator+"systemFile"+File.separator+"ServerConfig.properties"))) 
 		{
-			
-
 			String line = br.readLine();
-
 			while (line != null) {
 				line = line.trim();
 				if (line.length() < 1 || line.charAt(0) == '#') {
 					line = br.readLine();
 					continue;
 				}
-
 				String[] parts = line.split("=");
-
 				configMap.put(parts[0].trim(), parts[1].trim());
-
 				line = br.readLine();
-
 			}
-
 		}
-
 	}
 
 	private static Integer importIntegerParam(String name) {
