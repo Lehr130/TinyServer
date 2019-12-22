@@ -12,30 +12,15 @@ import message.Message;
 
 public class ProxyConfig {
 
-	
-	private static ProxyConfig proxyConfig;
-	
-	/**
-	 * 前者是正则式，后者是要匹配后的目标
-	 */
 	private Map<String,String> proxyMap; 
 	
-	
-	private ProxyConfig() throws FileNotFoundException, IOException
+	protected ProxyConfig() throws FileNotFoundException, IOException
 	{
 		proxyMap = new HashMap<>(16);
-		//加载配置
-		loadingProxyPath();
+		//加载代理配置
+		loadingProxyPath();		
 	}
 	
-	public static ProxyConfig getInstance() throws FileNotFoundException, IOException
-	{
-		if(proxyConfig==null)
-		{
-			proxyConfig = new ProxyConfig();
-		}
-		return proxyConfig;
-	}
 	
 	private void loadingProxyPath() throws FileNotFoundException, IOException
 	{
@@ -55,7 +40,7 @@ public class ProxyConfig {
 		}
 	}
 	
-	public String getProxy(String uri)
+	protected String getProxy(String uri)
 	{
 		
 		for(String regex : proxyMap.keySet())

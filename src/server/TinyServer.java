@@ -1,12 +1,8 @@
 package server;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -14,16 +10,10 @@ import java.util.concurrent.Executors;
 
 import bean.MyRequest;
 import bean.ParsedResult;
-import config.ServerConfig;
-import exceptions.BadRequestMethodException;
-import exceptions.CannotFindException;
-import exceptions.IllegalParamInputException;
-import exceptions.ParamException;
-import exceptions.SystemFileException;
-import message.Code;
-import message.Message;
-import message.RequestType;
-import message.ServerType;
+import cache.CacheFacade;
+import config.ConfigFacade;
+import processor.Processor;
+import processor.ProcessorFactory;
 import utils.UrlUtils;
 
 /**
@@ -32,34 +22,29 @@ import utils.UrlUtils;
  */
 public class TinyServer {
 
-	/**
-	 * TinyServer服务器内置缓存
-	 */
-	private Cache cache;
+	private ConfigFacade config = ConfigFacade.getInstance();
 
-	/**
-	 * 动态方法路由记录的表
-	 */
-	private Router router;
+	private CacheFacade cache;
 
 	/**
 	 * 采用阻塞队列，线程安全，及时把请求从accept队列里拿上来，底层accpet队列的长度可由backlog参数修改
 	 */
-	private Queue<Socket> socketBuffer = new ArrayBlockingQueue<>(ServerConfig.SOCKET_BUFFER_LEN);
+	private Queue<Socket> socketBuffer = new ArrayBlockingQueue<>(config.getAttributeInteger("SOCKET_BUFFER_LEN"));
 
 	/**
 	 * 启动整个服务器并响应服务，大概步骤都在这个方法里面 1.加载配置文件 2.主线程接收请求并放入队列 3.工作线程开始从请求队列里取出请求并开始响应
 	 * 
+	 * @throws IOException
+	 * 
 	 * @throws Exception
 	 */
 
-	public void startUp() throws Exception {
+	public void startUp() throws IOException {
 
 		// 加载配置文件
 		try {
-			cache = Cache.getInstance();
-			router = Router.getInstance();
-		} catch (SystemFileException e) {
+			cache = CacheFacade.getInstance();
+		} catch (Exception e) {
 			e.printStackTrace();
 			e.getMessage();
 		}
@@ -68,24 +53,17 @@ public class TinyServer {
 		 * 创建线程池 线程池不允许使用Executors去创建 而是通过ThreadPoolExecutor的方式 这样的处理方式让写的同学更加明确线程池的运行规则
 		 * 规避资源耗尽的风险
 		 */
-		ExecutorService e = Executors.newFixedThreadPool(ServerConfig.THREAD_POOL_SIZE);
-
-//		ServerSocketChannel server = ServerSocketChannel.open();
-//		server.bind(new InetSocketAddress(ServerConfig.LISTEN_PORT));
-//		SocketChannel socket = server.accept();
-//		
+		ExecutorService e = Executors.newFixedThreadPool(config.getAttributeInteger("THREAD_POOL_SIZE"));
 
 		// 开始监听端口，并用try-resources自动关闭资源
-		try (ServerSocket server = new ServerSocket(ServerConfig.LISTEN_PORT)) {
+		try (ServerSocket server = new ServerSocket(config.getAttributeInteger("LISTEN_PORT"))) {
 
 			while (true) {
-
 				// 请求放入队列里
 				socketBuffer.add(server.accept());
-
+				
 				// 工作线程取出请求并工作
 				e.execute(() -> doIt(socketBuffer.remove()));
-
 			}
 		}
 
@@ -93,86 +71,26 @@ public class TinyServer {
 
 	}
 
-	/**
-	 * 我自己抽出来的一层，用于报错处理
-	 * 
-	 * @param socket
-	 */
-
 	public void doIt(Socket socket) {
 
 		try {
-			// 处理请求
-			serveIt(socket);
-		} catch (InvocationTargetException | IllegalAccessException | IOException e) {
-			// SocketIO报错 or 反射报错
-			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.INTERNALSERVERERROR, cache);
-		} catch (IllegalParamInputException e) {
-			// 入参非法（类型不对）
-			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMILLEGAL, cache);
-		} catch (BadRequestMethodException e) {
-			// 请求方式不对
-			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.BADREQUEST, cache);
-		} catch (ParamException e) {
-			// 参数错误（名字or个数）
-			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.PARAMWRONG, cache);
-		} catch (CannotFindException e) {
-			// 找不到方法or资源
-			Server.clientError(socket, Message.DEFAULT_HTTP_VERSION, Code.NOTFOUND, cache);
+			
+			// 接收请求
+			MyRequest request = new MyRequest(socket);
+
+			// 分析请求类型：静态还是动态请求
+			ParsedResult result;
+			result = UrlUtils.parseUri(request.getUri());
+			// 获取请求类型对应的处理器，但我不知道这样每次new一个出来好不好
+			Processor processor = ProcessorFactory.createProcessor(result.getType());
+
+			// 执行处理任务
+			processor.processRequest(socket, request, result);
+
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-	}
-
-	/**
-	 * 具体的服务执行阶段：解析请求-->进行处理-->返回结果
-	 * 
-	 * @param server
-	 * @throws IOException
-	 * @throws BadRequestMethodException
-	 * @throws ParamException
-	 * @throws CannotFindException
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws IllegalParamInputException
-	 * @throws Exception
-	 */
-
-	public void serveIt(Socket socket) throws IOException, BadRequestMethodException, IllegalAccessException,
-			InvocationTargetException, CannotFindException, ParamException, IllegalParamInputException {
-
-		// 接收请求
-		MyRequest request = new MyRequest(socket);
-
-		// 分析请求类型：静态还是动态请求
-		ParsedResult result = UrlUtils.parseUri(request.getUri());
-
-		// 分析结果并分别响应
-		ServerType serverType = result.getType();
-
-		if (ServerType.STATIC_RESOURCES.equals(serverType)) {
-
-			// 如果是静态，则只能是GET方法
-			if (!RequestType.GET.equals(request.getRequestType())) {
-
-				// 抛出错误：不支持的请求方法
-				throw new BadRequestMethodException();
-
-			}
-
-			// 静态文件处理
-			Server.serverStatic(result.getParseUri(), socket, Message.DEFAULT_HTTP_VERSION, cache);
-
-		}
-		if (ServerType.DYNAMIC_JAVA.equals(serverType)) {
-
-			// 动态JavaSE程序处理
-			Server.serverDynamic(request, result, socket, router);
-
-		}
-		if (ServerType.PROXY.equals(serverType)) {
-			Server.serverProxy(result, socket);
-		}
-
 	}
 
 }

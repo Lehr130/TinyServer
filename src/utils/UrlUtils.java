@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import bean.ParsedResult;
-import config.ProxyConfig;
+import config.ConfigFacade;
 import exceptions.IllegalParamInputException;
 import message.Message;
 import message.ServerType;
@@ -64,7 +64,7 @@ public class UrlUtils {
 
 		
 		// 先做代理判断
-		String proxyUri = ProxyConfig.getInstance().getProxy(uri);
+		String proxyUri = ConfigFacade.getInstance().getProxy(uri);
 		if (proxyUri!=null) {
 
 			return new ParsedResult(proxyUri, ServerType.PROXY, null);

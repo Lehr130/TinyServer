@@ -16,9 +16,6 @@ public class FileUtils {
 	
 	public static byte[] fileToByte(String filename) throws CannotFindException{
 		
-		
-		
-		
 		File file = new File(filename);
 		Long len = file.length();
 		byte[] fileContent = new byte[len.intValue()];

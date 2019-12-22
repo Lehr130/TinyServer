@@ -16,34 +16,26 @@ import message.Message;
  * @date 2019年12月18日
  * 
  */
-public class ServerConfig {
+public class AttributeConfig {
 
-	
-	
-	public static Integer SOCKET_BUFFER_LEN;
-	public static Integer THREAD_POOL_SIZE;
-	public static Integer LISTEN_PORT;
-	public static Integer CACHE_SIZE;
 
-	private static Map<String, String> configMap = new HashMap<>(16);
+	private Map<String, String> configMap;
 
-	static {
-
-		try {
-			loadConfigIntoMap();
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-
-		SOCKET_BUFFER_LEN = importIntegerParam("SOCKET_BUFFER_LEN");
-		THREAD_POOL_SIZE = importIntegerParam("THREAD_POOL_SIZE");
-		LISTEN_PORT = importIntegerParam("LISTEN_PORT");
-		CACHE_SIZE = importIntegerParam("CACHE_SIZE");
+	/**
+	 * 只准在本报内调用
+	 * @throws IOException
+	 */
+	protected AttributeConfig() throws IOException
+	{
 		
+		configMap = new HashMap<>(16);
+		//加载元数据配置
+		loadConfigIntoMap();
+				
 	}
 
-	private static void loadConfigIntoMap() throws IOException {
+	
+	private void loadConfigIntoMap() throws IOException {
 		try (BufferedReader br = new BufferedReader( new FileReader(Message.ROOT_PATH+File.separator+"systemFile"+File.separator+"ServerConfig.properties"))) 
 		{
 			String line = br.readLine();
@@ -60,10 +52,12 @@ public class ServerConfig {
 		}
 	}
 
-	private static Integer importIntegerParam(String name) {
 
-		return Integer.parseInt(configMap.get(name));
-
+	protected Integer getAttributeInteger(String attributeName)
+	{
+		return Integer.parseInt(configMap.get(attributeName));
 	}
 
+
+	
 }
