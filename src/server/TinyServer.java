@@ -10,7 +10,6 @@ import java.util.concurrent.Executors;
 
 import bean.MyRequest;
 import bean.ParsedResult;
-import cache.CacheFacade;
 import config.ConfigFacade;
 import processor.Processor;
 import processor.ProcessorFactory;
@@ -24,7 +23,6 @@ public class TinyServer {
 
 	private ConfigFacade config = ConfigFacade.getInstance();
 
-	private CacheFacade cache;
 
 	/**
 	 * 采用阻塞队列，线程安全，及时把请求从accept队列里拿上来，底层accpet队列的长度可由backlog参数修改
@@ -41,13 +39,11 @@ public class TinyServer {
 
 	public void startUp() throws IOException {
 
+		
+		//这里其实就相当于Tomcat的连接器Connector  但是我不知道他为什么要给每一个请求都创一个连接器，可能是处理多个端口？？？不确定
+		//那然后他把我后面相当于doIt的部分又单独做成了HttpProcessor 我也不知道为什么这样new一个来单独执行.....
+		
 		// 加载配置文件
-		try {
-			cache = CacheFacade.getInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-			e.getMessage();
-		}
 
 		/*
 		 * 创建线程池 线程池不允许使用Executors去创建 而是通过ThreadPoolExecutor的方式 这样的处理方式让写的同学更加明确线程池的运行规则
@@ -71,6 +67,10 @@ public class TinyServer {
 
 	}
 
+	/**
+	 * 单个线程处理请求，还需要设计异常链
+	 * @param socket
+	 */
 	public void doIt(Socket socket) {
 
 		try {

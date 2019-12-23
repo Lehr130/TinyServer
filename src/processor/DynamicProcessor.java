@@ -10,11 +10,11 @@ import bean.MyMethod;
 import bean.MyRequest;
 import bean.ParsedResult;
 import bean.ProcessedData;
+import container.ContainerFacade;
 import exceptions.CannotFindException;
 import exceptions.ParamException;
 import message.Code;
 import message.RequestType;
-import server.Router;
 
 
 /**
@@ -29,7 +29,7 @@ public class DynamicProcessor extends Processor {
 	@Override
 	protected ProcessedData prepareData(Socket socket, MyRequest request, ParsedResult parsedResult) throws Exception {
 
-		Router router = Router.getInstance();
+		ContainerFacade container = ContainerFacade.getInstance();
 
 		HashMap<String, String> inputParamMap;
 
@@ -44,7 +44,7 @@ public class DynamicProcessor extends Processor {
 		// 获取用户输入的参数列表
 
 		// 获取方法相关的信息，按照uri和请求方法去找，若找不到就报错返回
-		MyMethod myMethod = router.getMethod(parsedResult.getParseUri(), request.getRequestType());
+		MyMethod myMethod = container.getMethod(parsedResult.getParseUri(), request.getRequestType());
 
 		if (myMethod == null) {
 			throw new CannotFindException("Cannot Find Method By Your Uri or Request Type");

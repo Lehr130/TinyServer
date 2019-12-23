@@ -20,7 +20,7 @@ public abstract class Processor {
 	
 	protected abstract ProcessedData prepareData(Socket socket, MyRequest request, ParsedResult parsedResult) throws Exception;
 	
-	public void processRequest(Socket socket, MyRequest request, ParsedResult parsedResult) throws Exception
+	public final void processRequest(Socket socket, MyRequest request, ParsedResult parsedResult) throws Exception
 	{
 		//先处理数据
 		ProcessedData data = prepareData(socket,request,parsedResult);
