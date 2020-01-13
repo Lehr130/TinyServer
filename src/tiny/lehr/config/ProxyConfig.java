@@ -15,9 +15,13 @@ public class ProxyConfig {
 		//加载代理配置
 		ConfigLoader.loadPorxyConfig(proxyMap);
 	}
-	
 
-	
+
+	/**
+	 * 这里还需要修改
+	 * @param uri
+	 * @return
+	 */
 	protected String getProxy(String uri)
 	{
 		

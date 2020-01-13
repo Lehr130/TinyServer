@@ -1,21 +1,29 @@
 package tiny.lehr.bean;
 
-import java.util.HashMap;
-
 import tiny.lehr.enums.ServerType;
 
+import java.util.HashMap;
+
 /**
- * 
  * @author Lehr
- * @date 2019年12月17日
- * 
+ * @create 2020-01-14
+ * 用来代表被处理过的请求的类型结果，内部封装了请求的内容来交给后面的处理器处理
  */
 public class ParsedResult {
 
+	/**
+	 * 处理后的uri，比如有些是默认添加了index.html的，有的是被转化成代理路径的
+	 */
 	private String parseUri;
 
+	/**
+	 * 对应的是哪一种处理器来处理：静态?代理？DynamicJava？
+	 */
 	private ServerType type;
 
+	/**
+	 * 通过GET后面URL的参数
+	 */
 	private HashMap<String,String> params;
 
 	public String getParseUri() {

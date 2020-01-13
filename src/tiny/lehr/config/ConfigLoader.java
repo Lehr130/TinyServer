@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Lehr
  * @create 2020-01-13
  *
- * 配置文件的读法都在这个里面
+ * 配置文件的读取方法都在这个里面
  */
 public class ConfigLoader {
 

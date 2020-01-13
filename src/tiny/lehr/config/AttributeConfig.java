@@ -17,7 +17,7 @@ public class AttributeConfig {
 	private Map<String, String> configMap;
 
 	/**
-	 * 只准在本报内调用
+	 * 只准在本包内调用
 	 * @throws IOException
 	 */
 	protected AttributeConfig() throws IOException
@@ -29,8 +29,12 @@ public class AttributeConfig {
 				
 	}
 
-
-
+	/**
+	 * 获取数值属性
+	 * 这里可以写个StrKit
+	 * @param attributeName
+	 * @return
+	 */
 	protected Integer getAttributeInteger(String attributeName)
 	{
 		return Integer.parseInt(configMap.get(attributeName));

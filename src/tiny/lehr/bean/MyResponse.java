@@ -8,7 +8,8 @@ import java.util.Date;
 
 /**
  * @author Lehr
- * @date 2019年12月11日
+ * @create 2020-01-14
+ * 响应封装类，自带封装和发送方法
  */
 public class MyResponse {
 
@@ -22,6 +23,9 @@ public class MyResponse {
 	 */
 	private String code;
 
+	/**
+	 * 内容数据，但是目前好像没用
+	 */
 	private String data;
 
 	/**

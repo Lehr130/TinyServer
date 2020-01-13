@@ -1,24 +1,33 @@
 package tiny.lehr.bean;
 
+import tiny.lehr.enums.RequestType;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import tiny.lehr.enums.RequestType;
-
 /**
- * 
- * 每个方法注册将会被包装成这样一个对象
- * 
  * @author Lehr
- * @date 2019年12月16日
- *
+ * @create 2020-01-14
+ * 每个我自定义的DynamicJava方法会被以这样的形式放入内存中
  */
 @SuppressWarnings("rawtypes")
 public class MyMethod {
 
+	/**
+	 * 这个方法被请求所需要的请求类型
+	 */
 	private RequestType requestType;
+	/**
+	 * 方法元数据
+	 */
 	private Method method;
+	/**
+	 * 来自哪个类（暂时没用，想着做扩展用）
+	 */
 	private Class fromClazz;
+	/**
+	 * 方法的参数表，分别是名字和参数类型
+	 */
 	private HashMap<String, Class> paraMap;
 
 	public Class getFromClazz() {

@@ -7,6 +7,7 @@ import java.security.cert.X509Certificate;
 /**
  * @author Lehr
  * @create 2020-01-13
+ * 用来跳过SSL认证
  */
 public class MyX509TrustManager implements X509TrustManager {
 
