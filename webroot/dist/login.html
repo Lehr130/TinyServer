@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+	
+<head>
+<meta charset="UTF-8">
+<title>登录页面</title>
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="./bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="./css/login.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./js/jquery-3.4.1.js"></script>
+<script src="./js/jquery.cookie.js" type="text/javascript"></script>
+<script src="./js/login.js" type="text/javascript"></script>
+</head>
+
+<body>
+		
+	<div class="container">			
+			
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">	
+					<div class="input-group">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"> 账号</span></span>	
+						<input class="form-control" type="text" name="username" placeholder="用户名"/>
+					</div>
+				</div>	
+			</div>	
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">	
+					<div class="input-group">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"> 密码</span></span>	
+						<input class="form-control" type="password" name="password" placeholder="密码"/>
+					</div>
+				</div>	
+			</div>
+
+			<div class="row">
+				<div class="col-md-1 col-md-offset-3">	
+					<div class="input-group">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-globe" aria-hidden="true"> 自动登录？</span></span>	
+						<div class="input-group-addon">
+							<input type="checkbox" id="saveCookie" checked="checked"/>
+						</div>
+						
+					</div>
+				</div>
+				<div class="col-md-7 col-md-offset-1">
+					<div class="btn-group" role="group" aria-label="...">
+						<button class="btn btn-default btn-md" id="login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> 登录</button>
+						<a href="register.html" class="btn btn-default btn-md" id="register"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span> 注册账户</a>
+						<a href="adminLogin.html" class="btn btn-default btn-md"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 管理员入口</a>
+					</div>	
+				</div>			
+			</div>
+
+			<div class="row">
+
+				
+				<div class="col-md-6 col-md-offset-3">
+					<div id="message"></div>
+	
+				</div>
+				
+			</div>			
+
+
+				
+	</div>	
+</body>
+</html>

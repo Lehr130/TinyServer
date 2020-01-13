@@ -1,0 +1,17 @@
+#userInfo .row{
+	margin:20px;
+}
+.label-default{
+	font-size: 14px;
+}
+body {
+        background: url(../images/background/fruit.jpg);
+        background-color:#F4F4F4; 
+        background-size:cover;
+        width: 100%;
+        background-attachment: fixed;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        background-repeat: no-repeat;
+}

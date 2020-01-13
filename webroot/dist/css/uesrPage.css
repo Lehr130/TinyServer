@@ -1,0 +1,25 @@
+#userInfo .row{
+	margin:20px;
+}
+.label-default{
+	font-size: 14px;
+}
+body {
+        background: url(../images/background/uestc.jpeg);
+        background-size:cover;
+        background-attachment: fixed;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        background-repeat: no-repeat;
+        
+}
+#titleFont:hover{
+	color:grey;
+	font-size:30px;
+}
+.col-md-2{
+	padding:0px;
+}

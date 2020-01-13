@@ -1,0 +1,114 @@
+<html>
+
+<head>
+<title>修改头像</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="./bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+
+<script src="./js/jquery-3.4.1.js"></script>
+<script src="./js/jquery.cookie.js" type="text/javascript"></script>
+<script src="./js/jquery.session.js" type="text/javascript"></script>
+<script src="./js/jquery.form.min.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+	function checkLogin()
+	{
+		if($.cookie("userId")==null || $.cookie("userId").toString().length==0)
+		{
+			window.location.href = "login.html";	
+		}
+	}
+
+
+    function validateImg(file) {
+        var reg = /\.(jpg|png|jpeg|gif)$/ig;
+
+        //判断非空
+        if(file==null){
+			  alert("请选择文件");
+			  return false;
+		}
+		
+        // 验证文件是否是图片
+        if (!reg.test(file.name)) {
+            alert('请选择jpg,png,jpeg,gif文件上传');
+            return false;
+        }
+        
+        // 验证图片大小是否超过2M
+        if (file.size / (1024 * 1024) > 2) {
+            alert('请选择2M以下的图片');
+            return false;
+        }
+        
+        return true;
+    }
+	
+	function update()
+	{
+		//获取文件		
+		var file = $("#userImg").prop("files")[0];
+		
+		if(!validateImg(file))
+			return false;
+		else
+		{
+			//开始传输文件了
+			var formData = new FormData($("#form1")[0]);  
+			
+			 $.ajax({  
+			        type : "POST",  
+			        url : "https://api.imlehr.com/LehrsBlog/users/images/"+$.cookie("userId"),  
+			        data : formData,
+			        dataType : 'json',
+			        async: false,  
+			        cache: false,  
+			        contentType: false,  
+			        processData: false,
+			        success : function(data) {  
+			        	alert(data.message);
+						window.location.href = "userPage.html";
+			        }  
+			});  
+
+		}
+		
+		
+	}
+	
+	
+	
+</script>
+<body onload="checkLogin()">
+		<div class="well">
+
+		
+		    <table>
+		        <tr>
+		            <td>图片：</td>
+		            <td>
+		            <form id="form1">
+		                <input id="userImg" type="file" id="uploadImage" name="pictureFile"
+		                       accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"/>
+		 			</form>
+		                <span>提示：图片大小不超过2MB，建议图片宽高为300px*300px</span>
+		                <span id="message"></span>
+		            </td>
+		        </tr>
+		        <tr>
+		            <td>
+		            
+		                <button id="submit" onclick="update()">提交</button>
+		            
+		            </td>
+		        </tr>
+
+		
+
+		</div>
+</body>
+
+</html>
