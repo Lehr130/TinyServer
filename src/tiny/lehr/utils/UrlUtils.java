@@ -1,14 +1,14 @@
 package tiny.lehr.utils;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
-
 import tiny.lehr.bean.ParsedResult;
 import tiny.lehr.config.ConfigFacade;
 import tiny.lehr.enums.Message;
 import tiny.lehr.enums.ServerType;
 import tiny.lehr.exceptions.IllegalParamInputException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @author Lehr
@@ -26,6 +26,8 @@ public class UrlUtils {
 	/**
 	 * <hr>
 	 * 匹配静态文件or动态方法请求， 如果是动态方法，同时记录uri参数
+	 * <br>
+	 *  现在增加一种处理Servlet的方法，要去必须是前面带有/servlet/
 	 * <hr>
 	 * 以下是几种合法的匹配例子：
 	 * 
@@ -67,6 +69,13 @@ public class UrlUtils {
 		if (proxyUri!=null) {
 
 			return new ParsedResult(proxyUri, ServerType.PROXY, null);
+		}
+
+		//Servlet请求判断	暂时不接受传入参数
+		if(uri.startsWith("/servlet/"))
+		{
+			uri = uri.substring(9);
+			return new ParsedResult(uri, ServerType.SERVLET, null);
 		}
 
 		// 处理默认目录

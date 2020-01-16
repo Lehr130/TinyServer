@@ -1,7 +1,5 @@
 package tiny.lehr.processor;
 
-import java.net.Socket;
-
 import tiny.lehr.bean.MyRequest;
 import tiny.lehr.bean.MyResponse;
 import tiny.lehr.bean.ParsedResult;
@@ -9,6 +7,8 @@ import tiny.lehr.bean.ProcessedData;
 import tiny.lehr.cache.CacheFacade;
 import tiny.lehr.enums.Code;
 import tiny.lehr.enums.Message;
+
+import java.net.Socket;
 
 /**
  * 这是处理模式的抽象类，用于使用模板方法这个设计模式，后期可以加上工厂模式
@@ -20,7 +20,7 @@ import tiny.lehr.enums.Message;
 public abstract class Processor {
 
 	/**
-	 * 统一处理数据，并处理异常，获得文件类型和错误码
+	 * 统一处理数据，并在自己内部处理异常，获得文件类型和错误码
 	 * 
 	 * @param socket
 	 * @param request

@@ -11,6 +11,7 @@ public enum ServerType {
 	
 	STATIC_RESOURCES,
 	DYNAMIC_JAVA,
-	PROXY;	
+	PROXY,
+	SERVLET;
 	
 }

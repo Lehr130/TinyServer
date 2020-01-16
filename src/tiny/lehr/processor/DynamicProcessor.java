@@ -11,7 +11,7 @@ import tiny.lehr.bean.MyMethod;
 import tiny.lehr.bean.MyRequest;
 import tiny.lehr.bean.ParsedResult;
 import tiny.lehr.bean.ProcessedData;
-import tiny.lehr.container.ContainerFacade;
+import tiny.lehr.router.RouterFacade;
 import tiny.lehr.enums.Code;
 import tiny.lehr.enums.RequestType;
 import tiny.lehr.exceptions.ParamException;
@@ -28,7 +28,7 @@ public class DynamicProcessor extends Processor {
 	@Override
 	protected ProcessedData prepareData(Socket socket, MyRequest request, ParsedResult parsedResult) {
 
-		ContainerFacade container = ContainerFacade.getInstance();
+		RouterFacade container = RouterFacade.getInstance();
 
 		HashMap<String, String> inputParamMap;
 

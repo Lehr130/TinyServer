@@ -1,7 +1,5 @@
 package tiny.lehr.processor;
 
-import java.net.Socket;
-
 import tiny.lehr.bean.MyRequest;
 import tiny.lehr.bean.ParsedResult;
 import tiny.lehr.bean.ProcessedData;
@@ -11,6 +9,8 @@ import tiny.lehr.enums.RequestType;
 import tiny.lehr.exceptions.CannotFindException;
 import tiny.lehr.utils.FileUtils;
 import tiny.lehr.utils.UrlUtils;
+
+import java.net.Socket;
 
 public class StaticProcessor extends Processor {
 

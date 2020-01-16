@@ -31,6 +31,10 @@ public class ProcessorFactory {
 		if (ServerType.PROXY.equals(type)) {
 			return new ProxyProcessor();
 		}
+		if(ServerType.SERVLET.equals(type))
+		{
+			return new ServletProcessor();
+		}
 
 		return null;
 
