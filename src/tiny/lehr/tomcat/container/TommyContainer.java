@@ -1,6 +1,6 @@
 package tiny.lehr.tomcat.container;
 
-import tiny.lehr.tomcat.TommyLoader;
+import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 import tiny.lehr.tomcat.TommyPipeline;
 import tiny.lehr.tomcat.valve.TommyValve;
 
@@ -21,13 +21,13 @@ public abstract class TommyContainer {
 
     private TommyPipeline pipeline = new TommyPipeline();
 
-    private TommyLoader loader;
+    private TommyWebAppLoader loader;
 
-    public TommyLoader getLoader() {
+    public TommyWebAppLoader getLoader() {
         return loader;
     }
 
-    public void setLoader(TommyLoader loader) {
+    public void setLoader(TommyWebAppLoader loader) {
         this.loader = loader;
     }
 

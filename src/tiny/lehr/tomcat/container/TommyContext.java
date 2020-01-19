@@ -22,13 +22,13 @@ public class TommyContext extends TommyContainer {
         //loading a war package
         public void loadWarPackage()
         {
-
+                //TODO : 写出读取war包的方法
         }
 
         //after getting the infos from web.xml in the war package, mapping them down here
         public void initMapper()
         {
-
+                //TODO: 写出init war方法
         }
 
 
@@ -46,9 +46,7 @@ public class TommyContext extends TommyContainer {
                 //invoke it
                 try {
                         wrapper.invoke(req, res);
-                } catch (ServletException e) {
-                        e.printStackTrace();
-                } catch (IOException e) {
+                } catch (Exception e) {
                         e.printStackTrace();
                 }
 

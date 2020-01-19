@@ -2,10 +2,6 @@ package tiny.lehr.tomcat.booter;
 
 import tiny.lehr.tomcat.TommyRequest;
 import tiny.lehr.tomcat.TommyResponse;
-import tiny.lehr.tomcat.TommyLoader;
-import tiny.lehr.tomcat.container.TommyWrapper;
-import tiny.lehr.tomcat.valve.SayHeyValve;
-import tiny.lehr.tomcat.valve.TommyValve;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -16,7 +12,7 @@ import java.io.IOException;
  */
 public class WrapperTest {
 
-
+    //TODO : 写完一个完整的war包测试代码
     public static void main(String[] args) throws ServletException, IOException {
 
         TommyRequest req = null;

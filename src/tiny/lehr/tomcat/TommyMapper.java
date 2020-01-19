@@ -1,9 +1,9 @@
 package tiny.lehr.tomcat;
 
 import tiny.lehr.tomcat.container.TommyWrapper;
+import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 
 import javax.servlet.ServletRequest;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +27,9 @@ public class TommyMapper {
 
 
 
-    public TommyWrapper getWrapper(ServletRequest req, TommyLoader loader) {
+    public TommyWrapper getWrapper(ServletRequest req, TommyWebAppLoader loader) {
 
-        //TODO : Find a way to get url from ServletRequest
+        //TODO : 实现通过url来找到Servlet类名的接口
 
         //the biggest question is how to get url from the servlet Request
 

@@ -1,9 +1,6 @@
 package tiny.lehr.tomcat.container;
 
-import tiny.lehr.tomcat.TommyLoader;
-import tiny.lehr.tomcat.TommyPipeline;
-import tiny.lehr.tomcat.container.TommyContainer;
-import tiny.lehr.tomcat.valve.TommyValve;
+import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -26,7 +23,7 @@ public class TommyWrapper extends TommyContainer {
     }
 
 
-    public TommyWrapper(String servletClass, TommyLoader loader) {
+    public TommyWrapper(String servletClass, TommyWebAppLoader loader) {
         this.servletClass = servletClass;
         setLoader(loader);
     }
@@ -38,7 +35,8 @@ public class TommyWrapper extends TommyContainer {
     @Override
     void beforeInvoke() {
 
-        //dealing with servlet: if it's uninitialized then init it
+        //TODO : 如何保证servlet的唯一性
+
         allocate();
 
     }
@@ -50,8 +48,6 @@ public class TommyWrapper extends TommyContainer {
 
                 myServlet = (Servlet) getLoader().loadClass(servletClass).getDeclaredConstructor().newInstance();
 
-                //but I'm not sure how to init this servlet in global range only once
-                //TODO : How to make this Servlet init only once ?!
                 myServlet.init(null);
 
             } catch (Exception e) {
