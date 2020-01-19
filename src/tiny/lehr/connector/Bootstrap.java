@@ -10,7 +10,7 @@ import tiny.lehr.router.RouterFacade;
  */
 public class Bootstrap {
 
-	
+
 	public static void main(String[] args) throws Exception {
 
 		//先加载所有的配置文件
@@ -19,25 +19,25 @@ public class Bootstrap {
 		RouterFacade.getInstance();
 
 		Long startTime = System.currentTimeMillis();
-				
+
 		HttpConnector tinyServer= new HttpConnector();
-		
+
 		tinyServer.startUp();
-		
+
 		//定时是无效的，因为一直阻塞在上一个线程
-		
+
 		Long endTime = System.currentTimeMillis();
-		
+
 		while(endTime-startTime<100)
 		{
 			System.err.println(endTime-startTime);
 			endTime = System.currentTimeMillis();
 		}
-		
+
 		tinyServer.shutDown();
-		
-		
-		
+
+
+
 	}
 
 }
