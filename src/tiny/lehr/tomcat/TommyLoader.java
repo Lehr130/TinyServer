@@ -1,11 +1,5 @@
-package tiny.lehr.container;
+package tiny.lehr.tomcat;
 
-import tiny.lehr.container.valve.SayHeyValve;
-import tiny.lehr.enums.Message;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
@@ -20,19 +14,16 @@ public class TommyLoader {
      * 先这样，到时候再来划分加载关系
      */
     ClassLoader classLoader = this.getClass().getClassLoader();
+
+
     String rootPath;
-
-
-
-
-
 
 
     public Class<?> loadClass(String servletClass) throws ClassNotFoundException {
         System.out.println(servletClass);
         //这就是在一个写死了的项目下加载一个servlet的过程
         System.out.println(classLoader);
-        return classLoader.loadClass("tiny.lehr.container.booter.SayHeyServlet");
+        return classLoader.loadClass("tiny.lehr.tomcat.booter.SayHeyServlet");
 
     }
 

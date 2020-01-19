@@ -1,4 +1,4 @@
-package tiny.lehr.bean;
+package tiny.lehr.tomcat;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
