@@ -6,9 +6,10 @@ import java.net.URLClassLoader;
  * @author Lehr
  * @create: 2020-01-17
  * 一个封装好了的类加载器，用于加载Servlet到Wrapper里
+ * Every Context will have an singleton entity to load all of the classes into its own path
  *
  */
-public class TommyLoader {
+public class TommyLoader extends ClassLoader{
 
     /**
      * 先这样，到时候再来划分加载关系
@@ -17,6 +18,8 @@ public class TommyLoader {
 
 
     String rootPath;
+
+
 
 
     public Class<?> loadClass(String servletClass) throws ClassNotFoundException {
