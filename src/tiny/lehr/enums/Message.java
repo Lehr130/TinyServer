@@ -14,7 +14,9 @@ public interface Message {
 	String ROOT_PATH = System.getProperty("user.dir")+File.separator+"webroot";
 	
 	String LOAD_PATH = Message.ROOT_PATH + File.separator + "webapps";
-	
+
+	String SERVLET_PATH = Message.ROOT_PATH + File.separator + "ServletWars";
+
 	String DEFAULT_SUFFIX = "index.html";
 	
 	String SLASH = "/";

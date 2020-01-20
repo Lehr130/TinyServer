@@ -21,13 +21,25 @@ public class TommyPipeline {
      */
     List<TommyValve> valveList = new ArrayList<>();
 
+    /**
+     * 基础阀任务，就是这个容器的核心任务
+     */
     TommyValve basicValve;
 
+    /**
+     * 向管道里添加一个阀
+     * @param valve
+     */
     public void addValve(TommyValve valve)
     {
         valveList.add(valve);
     }
 
+    /**
+     * 启动管道任务：先启动每个普通阀，再启动基础阀
+     * @param req
+     * @param res
+     */
     public void invoke(ServletRequest req, ServletResponse res)
     {
         //逐个invoke
@@ -36,6 +48,10 @@ public class TommyPipeline {
         basicValve.invoke(req,res);
     }
 
+    /**
+     * 设置基础阀
+     * @param basic
+     */
     public void setBasicValve(TommyValve basic)
     {
         this.basicValve = basic;

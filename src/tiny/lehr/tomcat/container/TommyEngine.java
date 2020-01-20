@@ -11,13 +11,9 @@ import javax.servlet.ServletResponse;
  */
 public class TommyEngine extends TommyContainer {
 
-    @Override
-    public void beforeInvoke() {
-
-    }
 
     @Override
-    public void basicValveInvoke(ServletRequest req, ServletResponse res) {
+    protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
 
     }
 }

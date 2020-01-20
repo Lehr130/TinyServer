@@ -14,13 +14,9 @@ import java.util.Map;
 public class TommyHost extends TommyContainer {
 
 
-    @Override
-    void beforeInvoke() {
-
-    }
 
     @Override
-    void basicValveInvoke(ServletRequest req, ServletResponse res) {
+    protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
 
     }
 }

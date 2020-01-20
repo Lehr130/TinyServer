@@ -1,5 +1,7 @@
 package tiny.lehr.tomcat.loader;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -10,19 +12,76 @@ import java.net.URLClassLoader;
  * @author Lehr
  * @create: 2020-01-17
  * 一个封装好了的类加载器，用于加载Servlet到Wrapper里
- * Every Context will have an singleton entity to load all of the classes into its own path
+ * 现在就是不知道能不能解析Jar包里的东西了
  *
  */
-public class TommyWebAppLoader extends URLClassLoader{
+public class TommyWebAppLoader extends ClassLoader{
 
-    //TODO : 类加载器实现唯一性
+    String path;
 
-    public TommyWebAppLoader(URL[] urls) {
-        super(urls);
+    //去ext上面加载基本类  但是我发现如果直接去ext的话就不能加载到servlet包了 所以还是只能选择appClassloader 但是这样又变成双亲委派了
+    ClassLoader ext;
+
+
+    public TommyWebAppLoader(String path){
+        this.path = path;
+        ext = getSystemClassLoader();
+    };
+
+    /**
+     * 去自己定义的目录下加载类
+     * @param name
+     * @return
+     * @throws ClassNotFoundException
+     */
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+
+        Class c = findLoadedClass(name);
+
+        if(c==null)
+        {
+            name = name.replace('.','/');
+            String fileName = path + File.separator + "WEB-INF/classes/" + name + ".class";
+            /*
+
+             *   对于InputStream is = getClass().getResourceAsStream("/"+fileName)
+             *
+             *  我去看了一下他底层的代码，如果fileName前面没/就意味着从当前classpath下然后再接上后面的作为相对路径
+             *  我多加一个这个直接让他作为绝度路径试试，从而实现自由加载
+             *  然而我发现他这个方法好像是本地去调用另外一个类加载器，然后还是本地方法，什么什么之类的，反正还是会错
+             *  所以我就选择不用这个接口了，直接用文件操作把文件以二进制方式读入
+             *
+             */
+
+            try(InputStream is = new FileInputStream(fileName))
+            {
+
+
+                byte[] data = new byte[is.available()];
+
+                is.read(data);
+                //然后又要把名字变回来.....
+                name = name.replace('/','.');
+                c = defineClass(name,data,0,data.length);
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+
+        return c;
+
+
+
     }
 
     /**
-     * 重写一个自定义的类加载器，用来打破双亲委派模型，但是同时要确保能够调用到ext加载器来加载java.lang的内容
+     * 重写一个自定义的类加载器，用来打破双亲委派模型
+     * 但是同时要确保能够调用到ext加载器来加载java.lang的内容
      *
      * @param name
      * @return
@@ -31,9 +90,27 @@ public class TommyWebAppLoader extends URLClassLoader{
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
 
-        name = name.replace("/", ".").substring(0, name.length() - 6);
+        Class c = null;
 
-        return super.loadClass(name);
+
+        try{
+
+            c = ext.loadClass(name);
+        }
+        catch (ClassNotFoundException e)
+        {
+
+        }
+
+        if(c==null)
+        {
+            //利用自己重写的findClass方法来加载目标文件夹下的类
+            c = findClass(name);
+
+        }
+
+        return c;
+
     }
 
 }

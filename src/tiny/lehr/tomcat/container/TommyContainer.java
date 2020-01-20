@@ -20,17 +20,6 @@ public abstract class TommyContainer {
 
 
     private TommyPipeline pipeline = new TommyPipeline();
-
-    private TommyWebAppLoader loader;
-
-    public TommyWebAppLoader getLoader() {
-        return loader;
-    }
-
-    public void setLoader(TommyWebAppLoader loader) {
-        this.loader = loader;
-    }
-
     /**
      * make this container work
      * @param req
@@ -38,15 +27,10 @@ public abstract class TommyContainer {
      */
     public void invoke(ServletRequest req, ServletResponse res)
     {
-        beforeInvoke();
         addBasicValve();
         pipeline.invoke(req, res);
     }
 
-    /**
-     * mainly about what still need to do before invoke, it's more about how to init the undone things than what gonna do
-     */
-    abstract void beforeInvoke();
 
 
     /**
@@ -65,7 +49,7 @@ public abstract class TommyContainer {
     /**
      * mainly about how to select the child container and get all of the jobs into the basic valve
      */
-    abstract void basicValveInvoke(ServletRequest req, ServletResponse res);
+    protected abstract void basicValveInvoke(ServletRequest req, ServletResponse res);
 
     /**
      * send this inner class into the pipline as the basic valve

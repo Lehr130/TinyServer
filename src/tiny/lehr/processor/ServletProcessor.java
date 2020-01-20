@@ -2,8 +2,8 @@ package tiny.lehr.processor;
 
 import tiny.lehr.bean.*;
 import tiny.lehr.enums.Code;
-import tiny.lehr.tomcat.TommyRequest;
-import tiny.lehr.tomcat.TommyResponse;
+import tiny.lehr.tomcat.bean.TommyRequest;
+import tiny.lehr.tomcat.bean.TommyResponse;
 
 import javax.servlet.Servlet;
 import java.io.InputStream;
