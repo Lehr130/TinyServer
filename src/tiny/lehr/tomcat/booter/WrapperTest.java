@@ -4,8 +4,6 @@ import tiny.lehr.enums.Message;
 import tiny.lehr.tomcat.bean.TommyHttpRequest;
 import tiny.lehr.tomcat.bean.TommyHttpResponse;
 import tiny.lehr.tomcat.container.TommyContext;
-import tiny.lehr.tomcat.valve.SayHeyValve;
-import tiny.lehr.tomcat.valve.TommyValve;
 
 import java.io.File;
 
@@ -26,9 +24,6 @@ public class WrapperTest {
 
         TommyContext context = new TommyContext(Message.SERVLET_PATH + File.separator + webappName);
 
-        TommyValve valve1 = new SayHeyValve();
-
-        context.addValve(valve1);
 
 
         //javax.servlet.ServletException: non-HTTP request or response
@@ -40,34 +35,12 @@ public class WrapperTest {
 
         req.setMethod("GET");
 
-        req.setN("/SayHeyServlet");
-
-        context.invoke(req, res);
 
         req.setN("/SayByeServlet");
 
         context.invoke(req, res);
 
-        req.setN("/SayHeyServlet");
 
-        context.invoke(req, res);
-
-        //加入两个阀门试试
-
-//        TommyWrapper wrapper = new TommyWrapper();
-//        wrapper.setServletClass("SayHeyServlet");
-//        TommyLoader loader = new TommyLoader();
-//        TommyValve valve1 = new SayHeyValve();
-
-//        wrapper.setLoader(loader);
-//        wrapper.addValve(valve1);
-//
-//        wrapper.invoke(req,res);
-
-        //((Pipeline) wrapper).addValve(valve1);
-        //((Pipeline) wrapper).addValve(valve2);
-
-        //connector.setContainer(wrapper);
 
 
     }

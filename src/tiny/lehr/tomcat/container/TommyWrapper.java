@@ -1,5 +1,6 @@
 package tiny.lehr.tomcat.container;
 
+import tiny.lehr.tomcat.bean.TommyFilterFactory;
 import tiny.lehr.tomcat.bean.TommyServletConfig;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 
@@ -14,6 +15,9 @@ import java.io.IOException;
  */
 public class TommyWrapper extends TommyContainer {
 
+
+    private TommyFilterFactory filterFactory;
+
     /**
      * 维持的servlet的类名
      */
@@ -25,6 +29,8 @@ public class TommyWrapper extends TommyContainer {
     private Servlet myServlet;
 
 
+    private String servletUrl;
+
     /**
      * 构造方法:
      * 获取类名和加载器
@@ -33,21 +39,28 @@ public class TommyWrapper extends TommyContainer {
      * @param servletConfig
      * @param loader
      */
-    public TommyWrapper(TommyServletConfig servletConfig, TommyWebAppLoader loader) {
+    public TommyWrapper(TommyServletConfig servletConfig, TommyWebAppLoader loader, TommyFilterFactory filterFactory) {
 
         this.servletConfig = servletConfig;
 
+        this.filterFactory = filterFactory;
+
         allocate(loader);
+    }
+
+    public Servlet getMyServlet() {
+        return myServlet;
     }
 
     /**
      * 利用类加载器实例化一个servlet
      * 并调用init方法
      * 全局有且只有一次
-     *
+     * <p>
      * 我看原版tomcat写这个allocate和load方法的目的是因为他把wrapperValve写成外部类了
      * 他用allocat来获取对应的servlet
      * 而我写成内部类就没必要了
+     *
      * @param loader
      */
     private void allocate(TommyWebAppLoader loader) {
@@ -79,7 +92,12 @@ public class TommyWrapper extends TommyContainer {
     @Override
     protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
         try {
-            myServlet.service(req, res);
+
+            //其实这里都是直接从缓存里去取了，我因为设计的原因没有把那个写好...
+            FilterChain chain = filterFactory.getFilterChain(this);
+
+            chain.doFilter(req, res);
+
         } catch (ServletException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -2,6 +2,7 @@ package tiny.lehr.tomcat.container;
 
 import tiny.lehr.tomcat.TommyMapper;
 import tiny.lehr.tomcat.TommyXmlParser;
+import tiny.lehr.tomcat.bean.TommyFilterFactory;
 import tiny.lehr.tomcat.bean.TommyHttpRequest;
 import tiny.lehr.tomcat.bean.TommyServletConfig;
 import tiny.lehr.tomcat.bean.TommyServletContext;
@@ -55,7 +56,18 @@ public class TommyContext extends TommyContainer {
 
     private TommyServletContext servletContext;
 
+    /**
+     * 这个其实更类似一个上下文Context
+     * 但是servlet-mapping多个的情况还是处理不了
+     */
     private TommyXmlParser parser;
+
+    private TommyFilterFactory filterFactory;
+
+    /**
+     * 原版是有个FilterDef和FilterMap的类来分开解析两个标签的
+     * 我懒，我写到一起了，都叫FilterConfig
+     */
 
     /**
      * 构造的过程：
@@ -81,6 +93,9 @@ public class TommyContext extends TommyContainer {
 
         //找到web.xml文件并交给mapper来处理
         mapper = new TommyMapper(parser,servletContext);
+
+        filterFactory = new TommyFilterFactory(parser.getFilterConfigMap(),loader,servletContext);
+
 
     }
 
@@ -124,7 +139,9 @@ public class TommyContext extends TommyContainer {
         TommyServletConfig servletConfig = mapper.getServletClass(servletUrl);
 
         //通过类名，借助类加载器来实例化一个管理本Servlet的Wrapper
-        TommyWrapper wrapper = new TommyWrapper(servletConfig, loader);
+        TommyWrapper wrapper = new TommyWrapper(servletConfig, loader,filterFactory);
+
+        filterFactory.createFilterChain(servletUrl,wrapper);
 
         //加入到wrappers池里去
         wrappers.put(servletUrl, wrapper);

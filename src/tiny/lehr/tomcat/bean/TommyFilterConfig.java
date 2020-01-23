@@ -1,5 +1,7 @@
 package tiny.lehr.tomcat.bean;
 
+import tiny.lehr.utils.EnumerationUtils;
+
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import java.util.Enumeration;
@@ -8,6 +10,7 @@ import java.util.Map;
 /**
  * @author Lehr
  * @create: 2020-01-23
+ * 有点类似于原版里的ApplicatFilterConfig
  */
 public class TommyFilterConfig implements FilterConfig {
 
@@ -17,6 +20,7 @@ public class TommyFilterConfig implements FilterConfig {
     private String filterUrl;
     private Map<String,String> initParameters;
     private ServletContext servletContext;
+
 
     public TommyFilterConfig(String filterName, String filterClass, Map<String, String> parameters) {
         this.filterName = filterName;
@@ -67,21 +71,21 @@ public class TommyFilterConfig implements FilterConfig {
 
     @Override
     public String getFilterName() {
-        return null;
+        return filterName;
     }
 
     @Override
     public ServletContext getServletContext() {
-        return null;
+        return servletContext;
     }
 
     @Override
     public String getInitParameter(String s) {
-        return null;
+        return initParameters.get(s);
     }
 
     @Override
     public Enumeration<String> getInitParameterNames() {
-        return null;
+        return EnumerationUtils.getEnumerationStringByMap(initParameters);
     }
 }
