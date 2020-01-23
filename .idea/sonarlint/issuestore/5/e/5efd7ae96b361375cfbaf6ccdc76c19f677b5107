@@ -1,0 +1,4 @@
+
+€squid:S1450"]Remove the "servletContext" field and declare it as a local variable in the relevant methods.(³÷ ´ùÿÿÿÿ8Ü®üŒı-
+Qsquid:S1068".Remove this unused "filterName" private field.(›¿“Èıÿÿÿÿ8ïÉúŒı-
+Usquid:S1068"2Remove this unused "servletContext" private field.(³÷ ´ùÿÿÿÿ8ïÉúŒı-

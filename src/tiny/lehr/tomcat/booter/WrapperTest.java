@@ -3,15 +3,11 @@ package tiny.lehr.tomcat.booter;
 import tiny.lehr.enums.Message;
 import tiny.lehr.tomcat.bean.TommyHttpRequest;
 import tiny.lehr.tomcat.bean.TommyHttpResponse;
-import tiny.lehr.tomcat.bean.TommyRequest;
-import tiny.lehr.tomcat.bean.TommyResponse;
 import tiny.lehr.tomcat.container.TommyContext;
 import tiny.lehr.tomcat.valve.SayHeyValve;
 import tiny.lehr.tomcat.valve.TommyValve;
 
-import javax.servlet.ServletException;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author Lehr
@@ -19,7 +15,7 @@ import java.io.IOException;
  */
 public class WrapperTest {
 
-    public static void main(String[] args) throws ServletException, IOException {
+    public static void main(String[] args) throws Exception {
 
 
         String webappName = "TommyTest";

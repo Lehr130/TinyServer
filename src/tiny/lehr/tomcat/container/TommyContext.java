@@ -1,7 +1,10 @@
 package tiny.lehr.tomcat.container;
 
 import tiny.lehr.tomcat.TommyMapper;
+import tiny.lehr.tomcat.TommyXmlParser;
 import tiny.lehr.tomcat.bean.TommyHttpRequest;
+import tiny.lehr.tomcat.bean.TommyServletConfig;
+import tiny.lehr.tomcat.bean.TommyServletContext;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 
 import javax.servlet.ServletRequest;
@@ -50,13 +53,17 @@ public class TommyContext extends TommyContainer {
     private Map<String, TommyWrapper> wrappers;
 
 
+    private TommyServletContext servletContext;
+
+    private TommyXmlParser parser;
+
     /**
      * 构造的过程：
      * 获得容器路径--->建立好存放子容器的哈希表--->通过路径准备好类加载器--->通过路径准备好映射器
      *
      * @param appPath
      */
-    public TommyContext(String appPath) {
+    public TommyContext(String appPath) throws Exception {
 
         //获取路径
         this.appPath = appPath;
@@ -65,10 +72,15 @@ public class TommyContext extends TommyContainer {
         wrappers = new HashMap<>();
 
         //通过路径准备好类加载器
-        this.loader = new TommyWebAppLoader(appPath);
+        loader = new TommyWebAppLoader(appPath);
+
+
+        parser = new TommyXmlParser(appPath);
+
+        servletContext = new TommyServletContext(parser.getContextInitParameters(), appPath);
 
         //找到web.xml文件并交给mapper来处理
-        mapper = new TommyMapper(appPath);
+        mapper = new TommyMapper(parser,servletContext);
 
     }
 
@@ -109,10 +121,10 @@ public class TommyContext extends TommyContainer {
      */
     private void addWrapper(String servletUrl) {
         //通过url获取类名
-        String servletClass = mapper.getServletClass(servletUrl);
+        TommyServletConfig servletConfig = mapper.getServletClass(servletUrl);
 
         //通过类名，借助类加载器来实例化一个管理本Servlet的Wrapper
-        TommyWrapper wrapper = new TommyWrapper(servletClass, loader);
+        TommyWrapper wrapper = new TommyWrapper(servletConfig, loader);
 
         //加入到wrappers池里去
         wrappers.put(servletUrl, wrapper);

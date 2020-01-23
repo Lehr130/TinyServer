@@ -1,11 +1,9 @@
 package tiny.lehr.tomcat.container;
 
+import tiny.lehr.tomcat.bean.TommyServletConfig;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import java.io.IOException;
 
 /**
@@ -19,7 +17,7 @@ public class TommyWrapper extends TommyContainer {
     /**
      * 维持的servlet的类名
      */
-    private String servletClass;
+    private TommyServletConfig servletConfig;
 
     /**
      * 自己内部维持的servlet实例
@@ -32,11 +30,13 @@ public class TommyWrapper extends TommyContainer {
      * 获取类名和加载器
      * 通过加载器来加载好一个servlet
      *
-     * @param servletClass
+     * @param servletConfig
      * @param loader
      */
-    public TommyWrapper(String servletClass, TommyWebAppLoader loader) {
-        this.servletClass = servletClass;
+    public TommyWrapper(TommyServletConfig servletConfig, TommyWebAppLoader loader) {
+
+        this.servletConfig = servletConfig;
+
         allocate(loader);
     }
 
@@ -45,6 +45,9 @@ public class TommyWrapper extends TommyContainer {
      * 并调用init方法
      * 全局有且只有一次
      *
+     * 我看原版tomcat写这个allocate和load方法的目的是因为他把wrapperValve写成外部类了
+     * 他用allocat来获取对应的servlet
+     * 而我写成内部类就没必要了
      * @param loader
      */
     private void allocate(TommyWebAppLoader loader) {
@@ -52,9 +55,13 @@ public class TommyWrapper extends TommyContainer {
         if (myServlet == null) {
             try {
 
-                myServlet = (Servlet) loader.loadClass(servletClass).getDeclaredConstructor().newInstance();
+                myServlet = (Servlet) loader.loadClass(servletConfig.getServletClassName()).getDeclaredConstructor().newInstance();
 
-                myServlet.init(null);
+                ServletConfig config = servletConfig;
+
+                //关于init---->在GenericServlet里，init(servletConfig)和init()是这个关系：
+                //前者里的动作分为两步：1.servletConfig赋值；2. 执行init()
+                myServlet.init(config);
 
             } catch (Exception e) {
                 e.printStackTrace();

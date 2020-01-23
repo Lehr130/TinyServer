@@ -1,6 +1,5 @@
 package tiny.lehr.tomcat.container;
 
-import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 import tiny.lehr.tomcat.TommyPipeline;
 import tiny.lehr.tomcat.valve.TommyValve;
 
@@ -46,8 +45,11 @@ public abstract class TommyContainer {
         pipeline.setBasicValve(new BasicValve());
     }
 
+
     /**
-     * mainly about how to select the child container and get all of the jobs into the basic valve
+     * 定义了基础阀的工作过程
+     * @param req
+     * @param res
      */
     protected abstract void basicValveInvoke(ServletRequest req, ServletResponse res);
 
