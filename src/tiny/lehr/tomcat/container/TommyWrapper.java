@@ -1,5 +1,6 @@
 package tiny.lehr.tomcat.container;
 
+import tiny.lehr.tomcat.bean.TommyFilterChain;
 import tiny.lehr.tomcat.bean.TommyFilterFactory;
 import tiny.lehr.tomcat.bean.TommyServletConfig;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
@@ -16,7 +17,7 @@ import java.io.IOException;
 public class TommyWrapper extends TommyContainer {
 
 
-    private TommyFilterFactory filterFactory;
+    private TommyFilterChain filterChain;
 
     /**
      * 维持的servlet的类名
@@ -29,7 +30,9 @@ public class TommyWrapper extends TommyContainer {
     private Servlet myServlet;
 
 
-    private String servletUrl;
+    public TommyServletConfig getServletConfig() {
+        return servletConfig;
+    }
 
     /**
      * 构造方法:
@@ -43,14 +46,18 @@ public class TommyWrapper extends TommyContainer {
 
         this.servletConfig = servletConfig;
 
-        this.filterFactory = filterFactory;
-
         allocate(loader);
+
+        this.filterChain = filterFactory.createFilterChain(this);
+
     }
 
     public Servlet getMyServlet() {
         return myServlet;
     }
+
+
+
 
     /**
      * 利用类加载器实例化一个servlet
@@ -93,10 +100,7 @@ public class TommyWrapper extends TommyContainer {
     protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
         try {
 
-            //其实这里都是直接从缓存里去取了，我因为设计的原因没有把那个写好...
-            FilterChain chain = filterFactory.getFilterChain(this);
-
-            chain.doFilter(req, res);
+            filterChain.doFilter(req, res);
 
         } catch (ServletException e) {
             e.printStackTrace();

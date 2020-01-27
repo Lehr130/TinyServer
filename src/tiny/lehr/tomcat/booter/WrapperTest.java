@@ -3,9 +3,7 @@ package tiny.lehr.tomcat.booter;
 import tiny.lehr.enums.Message;
 import tiny.lehr.tomcat.bean.TommyHttpRequest;
 import tiny.lehr.tomcat.bean.TommyHttpResponse;
-import tiny.lehr.tomcat.container.TommyContext;
-
-import java.io.File;
+import tiny.lehr.tomcat.container.TommyEngine;
 
 /**
  * @author Lehr
@@ -16,18 +14,10 @@ public class WrapperTest {
     public static void main(String[] args) throws Exception {
 
 
-        String webappName = "TommyTest";
-
-        //创建一个context
-
-        //让这个context对应一个war（目前是文件形式的）
-
-        TommyContext context = new TommyContext(Message.SERVLET_PATH + File.separator + webappName);
 
 
-
-        //javax.servlet.ServletException: non-HTTP request or response
-        //在servlet.service这个方法调用的时候好像会自动检查非空的情况，还有请求类型匹配否，这里实验用的是httpServlet所以必须是httpServletRequest之类的实例才可以
+        TommyEngine engine = new TommyEngine();
+        engine.addHost("localhost",Message.SERVLET_PATH);
 
         TommyHttpRequest req = new TommyHttpRequest();
 
@@ -35,10 +25,13 @@ public class WrapperTest {
 
         req.setMethod("GET");
 
+        req.setE("localhost");
 
         req.setN("/SayByeServlet");
 
-        context.invoke(req, res);
+        req.setC("TommyTest");
+
+        engine.invoke(req, res);
 
 
 

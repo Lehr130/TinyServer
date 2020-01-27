@@ -25,7 +25,6 @@ public class TommyContext extends TommyContainer {
     /**
      * 这个是容器自带的载入器，用来加载对应的这个应用的目录文件夹下的类
      * <p>
-     * TODO: 目前双亲委派的问题还没有解决
      */
     private TommyWebAppLoader loader;
 
@@ -53,7 +52,10 @@ public class TommyContext extends TommyContainer {
      */
     private Map<String, TommyWrapper> wrappers;
 
-
+    /**
+     * 一个域对象
+     * 用来表示这个webapp的各种配置情况
+     */
     private TommyServletContext servletContext;
 
     /**
@@ -86,15 +88,17 @@ public class TommyContext extends TommyContainer {
         //通过路径准备好类加载器
         loader = new TommyWebAppLoader(appPath);
 
-
+        //解析web.xml内容
         parser = new TommyXmlParser(appPath);
 
+        //获取域对象
         servletContext = new TommyServletContext(parser.getContextInitParameters(), appPath);
 
-        //找到web.xml文件并交给mapper来处理
-        mapper = new TommyMapper(parser,servletContext);
+        //处理servlet的映射关系
+        mapper = new TommyMapper(parser, servletContext);
 
-        filterFactory = new TommyFilterFactory(parser.getFilterConfigMap(),loader,servletContext);
+        //用于构造并记录所有的过滤器链
+        filterFactory = new TommyFilterFactory(parser.getFilterConfigMap(), loader, servletContext);
 
 
     }
@@ -139,9 +143,7 @@ public class TommyContext extends TommyContainer {
         TommyServletConfig servletConfig = mapper.getServletClass(servletUrl);
 
         //通过类名，借助类加载器来实例化一个管理本Servlet的Wrapper
-        TommyWrapper wrapper = new TommyWrapper(servletConfig, loader,filterFactory);
-
-        filterFactory.createFilterChain(servletUrl,wrapper);
+        TommyWrapper wrapper = new TommyWrapper(servletConfig, loader, filterFactory);
 
         //加入到wrappers池里去
         wrappers.put(servletUrl, wrapper);
@@ -161,7 +163,7 @@ public class TommyContext extends TommyContainer {
         //找到正确的wrapper
         TommyWrapper wrapper = getWrapper(req);
 
-        // 启动wrapper
+        //启动wrapper
         try {
             wrapper.invoke(req, res);
         } catch (Exception e) {

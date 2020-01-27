@@ -5,7 +5,7 @@ import tiny.lehr.tomcat.container.TommyWrapper;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 
 import javax.servlet.Filter;
-import javax.servlet.FilterChain;
+import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +19,6 @@ import java.util.Map;
 public class TommyFilterFactory {
 
     Map<TommyFilterConfig,Filter> filterPool = new HashMap<>();
-
-    Map<TommyWrapper,TommyFilterChain> filterChainCache = new HashMap<>();
 
     public TommyFilterFactory(Map<String, TommyFilterConfig> filterConfigMap, TommyWebAppLoader loader, ServletContext servletContext) {
 
@@ -43,18 +41,14 @@ public class TommyFilterFactory {
 
 
 
-    public FilterChain getFilterChain(TommyWrapper wrapper)
+
+    public TommyFilterChain createFilterChain(TommyWrapper wrapper)
     {
-
-        return  filterChainCache.get(wrapper);
-
-    }
-
-    public void createFilterChain(String url, TommyWrapper wrapper)
-    {
+        Servlet servlet = wrapper.getMyServlet();
+        String url = wrapper.getServletConfig().getServletUrl();
 
         TommyFilterChain chain = new TommyFilterChain();
-        chain.setServlet(wrapper.getMyServlet());
+        chain.setServlet(servlet);
 
         filterPool.forEach((config,filter)->
         {
@@ -62,7 +56,7 @@ public class TommyFilterFactory {
             Boolean flag = url.equals(config.getFilterUrl());
             if(flag)
             {
-                System.out.println(config.getFilterName());
+
                 chain.addFilter(filter);
             }
 
@@ -75,7 +69,6 @@ public class TommyFilterFactory {
 
         });
 
-        filterChainCache.put(wrapper,chain);
-
+        return chain;
     }
 }

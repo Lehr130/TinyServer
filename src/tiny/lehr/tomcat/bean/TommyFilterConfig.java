@@ -11,14 +11,34 @@ import java.util.Map;
  * @author Lehr
  * @create: 2020-01-23
  * 有点类似于原版里的ApplicatFilterConfig
+ * 代表了一个Filter的各项配置情况
  */
 public class TommyFilterConfig implements FilterConfig {
 
-    private Integer initNumber;
+    /**名字
+     *
+     */
     private String filterName;
+
+    /**
+     * 类名
+     */
     private String filterClassName;
+
+    /**
+     * 要过滤的url
+     * 以后应该要换成数组之类的
+     */
     private String filterUrl;
+
+    /**
+     * 各项初始参数
+     */
     private Map<String,String> initParameters;
+
+    /**
+     * 代表webapp的上下文内容
+     */
     private ServletContext servletContext;
 
 
@@ -29,25 +49,12 @@ public class TommyFilterConfig implements FilterConfig {
     }
 
 
-    public Integer getInitNumber() {
-        return initNumber;
-    }
 
-    public void setInitNumber(Integer initNumber) {
-        this.initNumber = initNumber;
-    }
-
-    public void setFilterName(String filterName) {
-        this.filterName = filterName;
-    }
 
     public String getFilterClassName() {
         return filterClassName;
     }
 
-    public void setFilterClassName(String filterClassName) {
-        this.filterClassName = filterClassName;
-    }
 
     public String getFilterUrl() {
         return filterUrl;
@@ -57,33 +64,42 @@ public class TommyFilterConfig implements FilterConfig {
         this.filterUrl = filterUrl;
     }
 
-    public Map<String, String> getInitParameters() {
-        return initParameters;
-    }
-
-    public void setInitParameters(Map<String, String> initParameters) {
-        this.initParameters = initParameters;
-    }
-
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
 
+    /**
+     * 获取配置时候的过滤器的名字
+     * @return
+     */
     @Override
     public String getFilterName() {
         return filterName;
     }
 
+    /**
+     * 获取上下文配置
+     * @return
+     */
     @Override
     public ServletContext getServletContext() {
         return servletContext;
     }
 
+    /**
+     * 通过名字获取某个参数
+     * @param s
+     * @return
+     */
     @Override
     public String getInitParameter(String s) {
         return initParameters.get(s);
     }
 
+    /**
+     * 获取参数名字的集合
+     * @return
+     */
     @Override
     public Enumeration<String> getInitParameterNames() {
         return EnumerationUtils.getEnumerationStringByMap(initParameters);

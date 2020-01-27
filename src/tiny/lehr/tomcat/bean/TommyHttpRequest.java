@@ -24,6 +24,26 @@ public class TommyHttpRequest implements HttpServletRequest {
 
     private String n;
 
+    private String c;
+
+    private String e;
+
+    public String getE() {
+        return e;
+    }
+
+    public void setE(String e) {
+        this.e = e;
+    }
+
+    public String getC() {
+        return c;
+    }
+
+    public void setC(String c) {
+        this.c = c;
+    }
+
     public void setN(String n) {
         this.n = n;
     }
