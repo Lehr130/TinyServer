@@ -1,12 +1,17 @@
 package tiny.lehr.tomcat.container;
 
 import tiny.lehr.tomcat.bean.TommyFilterChain;
-import tiny.lehr.tomcat.bean.TommyFilterFactory;
-import tiny.lehr.tomcat.bean.TommyServletConfig;
+import tiny.lehr.tomcat.bean.TommyFilterConfig;
+import tiny.lehr.tomcat.bean.TommyHttpRequest;
+import tiny.lehr.tomcat.bean.TommyServletDef;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
+import tiny.lehr.utils.EnumerationUtils;
+import tiny.lehr.utils.UrlUtils;
 
 import javax.servlet.*;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
 
 /**
  * @author Lehr
@@ -14,74 +19,72 @@ import java.io.IOException;
  * Wrapper级容器的实现，代表了一个Servlet小程序
  * 里面包含了一个Servlet，且只被初始化一次
  */
-public class TommyWrapper extends TommyContainer {
+public class TommyWrapper extends TommyContainer implements ServletConfig {
 
+    private TommyContainer parent;
 
-    private TommyFilterChain filterChain;
+    private String servletName;
 
-    /**
-     * 维持的servlet的类名
-     */
-    private TommyServletConfig servletConfig;
+    private String servletClassName;
 
-    /**
-     * 自己内部维持的servlet实例
-     */
+    private Map<String, String> initParameters;
+
+    private ServletContext servletContext;
+
     private Servlet myServlet;
 
-
-    public TommyServletConfig getServletConfig() {
-        return servletConfig;
+    @Override
+    public String getServletName() {
+        return servletName;
     }
 
-    /**
-     * 构造方法:
-     * 获取类名和加载器
-     * 通过加载器来加载好一个servlet
-     *
-     * @param servletConfig
-     * @param loader
-     */
-    public TommyWrapper(TommyServletConfig servletConfig, TommyWebAppLoader loader, TommyFilterFactory filterFactory) {
+    @Override
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
 
-        this.servletConfig = servletConfig;
+    @Override
+    public String getInitParameter(String s) {
+        return initParameters.get(s);
+    }
 
-        allocate(loader);
+    @Override
+    public Enumeration<String> getInitParameterNames() {
 
-        this.filterChain = filterFactory.createFilterChain(this);
+        return EnumerationUtils.getEnumerationStringByMap(initParameters);
 
     }
 
-    public Servlet getMyServlet() {
-        return myServlet;
+    public void setParent(TommyContainer parent) {
+
+        if ((parent != null) && !(parent instanceof TommyContext)) {
+            System.out.println("出错了");
+        }
+        this.parent = parent;
     }
 
 
+    public TommyWrapper(TommyContext parent, TommyServletDef config) {
+
+        setParent(parent);
+
+        servletName = config.getServletName();
+        servletClassName = config.getServletClassName();
+        initParameters = config.getInitParameters();
+        servletContext = ((TommyContext) parent).getServletContext();
+
+    }
 
 
-    /**
-     * 利用类加载器实例化一个servlet
-     * 并调用init方法
-     * 全局有且只有一次
-     * <p>
-     * 我看原版tomcat写这个allocate和load方法的目的是因为他把wrapperValve写成外部类了
-     * 他用allocat来获取对应的servlet
-     * 而我写成内部类就没必要了
-     *
-     * @param loader
-     */
     private void allocate(TommyWebAppLoader loader) {
         //加载Servlet，前提是只加载一次
         if (myServlet == null) {
             try {
 
-                myServlet = (Servlet) loader.loadClass(servletConfig.getServletClassName()).getDeclaredConstructor().newInstance();
+                myServlet = (Servlet) loader.loadClass(servletClassName).getDeclaredConstructor().newInstance();
 
-                ServletConfig config = servletConfig;
-
-                //关于init---->在GenericServlet里，init(servletConfig)和init()是这个关系：
-                //前者里的动作分为两步：1.servletConfig赋值；2. 执行init()
-                myServlet.init(config);
+                //TODO 到时候记得用Facade处理一下
+                myServlet.init(this);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -90,23 +93,52 @@ public class TommyWrapper extends TommyContainer {
 
     }
 
-    /**
-     * 基础阀方法：调用servlet的service方法
-     *
-     * @param req
-     * @param res
-     */
     @Override
     protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
         try {
 
+            allocate(((TommyContext) parent).getLoader());
+            TommyFilterChain filterChain = createFilterChain(parent, req);
+
             filterChain.doFilter(req, res);
+
+            filterChain.release();
 
         } catch (ServletException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+
         }
+    }
+
+    public TommyFilterChain createFilterChain(TommyContainer parent, ServletRequest req) {
+
+        Map<String, TommyFilterConfig> filterPool = ((TommyContext) parent).getFilterPool();
+        String servletUrl = ((TommyHttpRequest) req).getServletUrl();
+
+
+        TommyFilterChain chain = new TommyFilterChain();
+        chain.setServlet(myServlet);
+
+
+        filterPool.forEach((name, filterConfig) ->
+        {
+            //TODO 如果url满足要求就加入chain 以后写个判定算法
+            Boolean flag = UrlUtils.isMatch(servletUrl, filterConfig.getFilterUrl());
+            if (flag) {
+
+                chain.addFilter(filterConfig.getFilter());
+            }
+
+            //TODO 如果servlet-name满足要求也加入（虽然现在还没实现这个）
+            if (false) {
+                chain.addFilter(filterConfig.getFilter());
+            }
+
+        });
+
+        return chain;
     }
 
 }

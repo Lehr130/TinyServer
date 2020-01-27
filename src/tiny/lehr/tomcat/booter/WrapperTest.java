@@ -13,24 +13,20 @@ public class WrapperTest {
 
     public static void main(String[] args) throws Exception {
 
-
-
-
-        TommyEngine engine = new TommyEngine();
-        engine.addHost("localhost",Message.SERVLET_PATH);
-
         TommyHttpRequest req = new TommyHttpRequest();
 
         TommyHttpResponse res = new TommyHttpResponse();
 
         req.setMethod("GET");
 
-        req.setE("localhost");
+        req.setHostUrl("localhost");
 
-        req.setN("/SayByeServlet");
+        req.setServletUrl("/SayByeServlet");
 
-        req.setC("TommyTest");
+        req.setContextUrl("TommyTest");
 
+        TommyEngine engine = new TommyEngine();
+        engine.addHost("localhost", Message.SERVLET_PATH);
         engine.invoke(req, res);
 
 

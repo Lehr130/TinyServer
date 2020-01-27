@@ -16,6 +16,9 @@ import java.util.HashMap;
  */
 public class UrlUtils {
 
+
+
+
 	/**
 	 * 反正根据那个什么含蓄类原则，这种全是static的工具类要不能暴露new方法......
 	 */
@@ -122,6 +125,13 @@ public class UrlUtils {
 		}
 
 	}
+
+	public static boolean isMatch(String reqUrl,String containerUrl)
+	{
+		//TODO ： 把这里写完善
+		return reqUrl.equals(containerUrl);
+	}
+
 
 	/**
 	 * 判断文件类型

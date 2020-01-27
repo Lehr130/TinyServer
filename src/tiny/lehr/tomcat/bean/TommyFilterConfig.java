@@ -2,6 +2,7 @@ package tiny.lehr.tomcat.bean;
 
 import tiny.lehr.utils.EnumerationUtils;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import java.util.Enumeration;
@@ -15,8 +16,10 @@ import java.util.Map;
  */
 public class TommyFilterConfig implements FilterConfig {
 
-    /**名字
-     *
+    private Filter filter;
+
+    /**
+     * 名字
      */
     private String filterName;
 
@@ -34,7 +37,7 @@ public class TommyFilterConfig implements FilterConfig {
     /**
      * 各项初始参数
      */
-    private Map<String,String> initParameters;
+    private Map<String, String> initParameters;
 
     /**
      * 代表webapp的上下文内容
@@ -47,8 +50,6 @@ public class TommyFilterConfig implements FilterConfig {
         this.filterClassName = filterClass;
         this.initParameters = parameters;
     }
-
-
 
 
     public String getFilterClassName() {
@@ -70,6 +71,7 @@ public class TommyFilterConfig implements FilterConfig {
 
     /**
      * 获取配置时候的过滤器的名字
+     *
      * @return
      */
     @Override
@@ -79,6 +81,7 @@ public class TommyFilterConfig implements FilterConfig {
 
     /**
      * 获取上下文配置
+     *
      * @return
      */
     @Override
@@ -88,6 +91,7 @@ public class TommyFilterConfig implements FilterConfig {
 
     /**
      * 通过名字获取某个参数
+     *
      * @param s
      * @return
      */
@@ -98,10 +102,19 @@ public class TommyFilterConfig implements FilterConfig {
 
     /**
      * 获取参数名字的集合
+     *
      * @return
      */
     @Override
     public Enumeration<String> getInitParameterNames() {
         return EnumerationUtils.getEnumerationStringByMap(initParameters);
+    }
+
+    public void setFilter(Filter myFilter) {
+        filter = myFilter;
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 }

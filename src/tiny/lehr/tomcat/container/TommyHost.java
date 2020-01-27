@@ -46,7 +46,7 @@ public class TommyHost extends TommyContainer {
 
     private TommyContext getContext(ServletRequest req) {
 
-        String url = ((TommyHttpRequest)req).getC();
+        String url = ((TommyHttpRequest)req).getContextUrl();
 
         TommyContext context= contextMap.get(url);
 

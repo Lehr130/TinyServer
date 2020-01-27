@@ -47,6 +47,14 @@ public class TommyFilterChain implements FilterChain {
     }
 
 
+    public void release()
+    {
+        filterList.forEach(i->i=null);
+
+        counter = 0;
+
+        servlet = null;
+    }
     /**
      * 递归依次实现过滤链里的每个方法
      * @param req
@@ -73,4 +81,7 @@ public class TommyFilterChain implements FilterChain {
             }
 
     }
+
+
+
 }

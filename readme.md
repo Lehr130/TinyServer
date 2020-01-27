@@ -1,7 +1,12 @@
 # Lehr的Tiny Server Java应用服务器
 
-## 开发计划
+# 开发计划
 
+## Servlet容器部分
+- 完成热部署和热加载
+- 完成session控制功能
+- 完成MyRequest到ServletRequest的转换
+## 连接器部分
 - Java输入输出流NIO管道加速
 - 改进那个很简陋的LFU算法的缓存
 - 修改架构

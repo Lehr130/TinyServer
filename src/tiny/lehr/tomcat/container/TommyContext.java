@@ -1,13 +1,14 @@
 package tiny.lehr.tomcat.container;
 
-import tiny.lehr.tomcat.TommyMapper;
-import tiny.lehr.tomcat.TommyXmlParser;
-import tiny.lehr.tomcat.bean.TommyFilterFactory;
+import tiny.lehr.tomcat.TommyContextConfig;
+import tiny.lehr.tomcat.bean.TommyFilterConfig;
 import tiny.lehr.tomcat.bean.TommyHttpRequest;
-import tiny.lehr.tomcat.bean.TommyServletConfig;
 import tiny.lehr.tomcat.bean.TommyServletContext;
+import tiny.lehr.tomcat.bean.TommyServletDef;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
+import tiny.lehr.utils.UrlUtils;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.util.HashMap;
@@ -21,62 +22,22 @@ import java.util.Map;
  */
 public class TommyContext extends TommyContainer {
 
+    private String appName;
 
-    /**
-     * 这个是容器自带的载入器，用来加载对应的这个应用的目录文件夹下的类
-     * <p>
-     */
     private TommyWebAppLoader loader;
 
-
-    /**
-     * 这个是本应用对应的一个servlet路径映射管理器
-     * 通过解析web.xml来获得映射关系
-     * 并提供通过请求url来查询对应的servlet的类名的功能
-     */
-    private TommyMapper mapper;
-
-
-    /**
-     * 这个是本应用对应的路径，即，从主目录上加上自己的项目名
-     */
     private String appPath;
 
-
-    /**
-     * 这个是所有的子容器Wrapper的一个存放池
-     * 按需加载
-     * 第二次之后直接查找存在的
-     * 给入servlet对应的url，返回对应的wrapper
-     * 从而保证了每个servlet只会被初始化一次
-     */
     private Map<String, TommyWrapper> wrappers;
 
-    /**
-     * 一个域对象
-     * 用来表示这个webapp的各种配置情况
-     */
     private TommyServletContext servletContext;
 
-    /**
-     * 这个其实更类似一个上下文Context
-     * 但是servlet-mapping多个的情况还是处理不了
-     */
-    private TommyXmlParser parser;
+    private Boolean avaliavle = false;
 
-    private TommyFilterFactory filterFactory;
+    private TommyContextConfig context;
 
-    /**
-     * 原版是有个FilterDef和FilterMap的类来分开解析两个标签的
-     * 我懒，我写到一起了，都叫FilterConfig
-     */
+    private Map<String, TommyFilterConfig> filterPool;
 
-    /**
-     * 构造的过程：
-     * 获得容器路径--->建立好存放子容器的哈希表--->通过路径准备好类加载器--->通过路径准备好映射器
-     *
-     * @param appPath
-     */
     public TommyContext(String appPath) throws Exception {
 
         //获取路径
@@ -89,20 +50,49 @@ public class TommyContext extends TommyContainer {
         loader = new TommyWebAppLoader(appPath);
 
         //解析web.xml内容
-        parser = new TommyXmlParser(appPath);
+        try {
+            context = new TommyContextConfig(appPath);
+            avaliavle = true;
+        } catch (Exception e) {
+            System.out.println("炸了！");
+        }
+
+        if (avaliavle == false) {
+            System.exit(1);
+        }
+
 
         //获取域对象
-        servletContext = new TommyServletContext(parser.getContextInitParameters(), appPath);
+        servletContext = new TommyServletContext(context.getContextInitParameters(), appPath);
 
-        //处理servlet的映射关系
-        mapper = new TommyMapper(parser, servletContext);
-
-        //用于构造并记录所有的过滤器链
-        filterFactory = new TommyFilterFactory(parser.getFilterConfigMap(), loader, servletContext);
-
+        initAllFilter(context.getFilterConfigMap());
 
     }
 
+    private void initAllFilter(Map<String, TommyFilterConfig> filterConfigMap) {
+
+        filterPool = new HashMap<>();
+
+        filterConfigMap.forEach((filterName, filterConfig) -> {
+            try {
+
+                filterConfig.setServletContext(servletContext);
+
+                Filter myFilter = (Filter) loader.loadClass(filterConfig.getFilterClassName()).getDeclaredConstructor().newInstance();
+
+                myFilter.init(filterConfig);
+
+                filterConfig.setFilter(myFilter);
+
+                filterPool.put(filterName, filterConfig);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        });
+    }
 
     /**
      * 通过servlet请求获取子容器
@@ -113,8 +103,7 @@ public class TommyContext extends TommyContainer {
      */
     private TommyWrapper getWrapper(ServletRequest req) {
 
-        //TODO : 实现通过ServletReq获得url 这里先还是mock
-        String servletUrl = ((TommyHttpRequest) req).getN();
+        String servletUrl = ((TommyHttpRequest) req).getServletUrl();
 
         //检查之前实例化过这个wrapper没有
         Boolean alreadyHave = wrappers.containsKey(servletUrl);
@@ -132,6 +121,14 @@ public class TommyContext extends TommyContainer {
     }
 
 
+    public Map<String, TommyFilterConfig> getFilterPool() {
+        return filterPool;
+    }
+
+    public TommyServletContext getServletContext() {
+        return servletContext;
+    }
+
     /**
      * 把一个没有实例化过的servlet通过类加载器实例化
      * 并放入到wrappers里去
@@ -139,16 +136,35 @@ public class TommyContext extends TommyContainer {
      * @param servletUrl
      */
     private void addWrapper(String servletUrl) {
-        //通过url获取类名
-        TommyServletConfig servletConfig = mapper.getServletClass(servletUrl);
 
+        TommyServletDef servletDef = null;
         //通过类名，借助类加载器来实例化一个管理本Servlet的Wrapper
-        TommyWrapper wrapper = new TommyWrapper(servletConfig, loader, filterFactory);
+        Map<String, TommyServletDef> servletDefMap = context.getServletDefMap();
+
+        for(Map.Entry<String,TommyServletDef> e: servletDefMap.entrySet())
+        {
+            if(UrlUtils.isMatch(servletUrl,e.getValue().getServletUrl()))
+            {
+                servletDef = e.getValue();
+                break;
+            }
+        }
+
+        //这说明用户乱输入没有的了
+        if(servletDef==null)
+        {
+            System.out.println("出大问题了！！！！！");
+        }
+
+        TommyWrapper wrapper = new TommyWrapper(this,servletDef);
 
         //加入到wrappers池里去
         wrappers.put(servletUrl, wrapper);
     }
 
+    public TommyWebAppLoader getLoader() {
+        return loader;
+    }
 
     /**
      * 一个小知识点：重写的时候权限范围不能比父类更小

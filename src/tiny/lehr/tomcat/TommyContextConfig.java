@@ -4,7 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import tiny.lehr.tomcat.bean.TommyFilterConfig;
-import tiny.lehr.tomcat.bean.TommyServletConfig;
+import tiny.lehr.tomcat.bean.TommyServletDef;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,14 +17,14 @@ import java.util.Map;
  * @create: 2020-01-22
  * 这个类专门用来对每个Webapp的web.xml进行解析
  */
-public class TommyXmlParser {
+public class TommyContextConfig {
 
     private Document xmlDoc;
 
     /**
      * 以url为Key
      */
-    private Map<String, TommyServletConfig> servletConfigMap;
+    private Map<String, TommyServletDef> servletDefMap;
 
     private Map<String, String> contextInitParameters;
 
@@ -34,13 +34,13 @@ public class TommyXmlParser {
 
 
 
-    public TommyXmlParser(String path) throws Exception {
+    public TommyContextConfig(String path) throws Exception {
         //把web.xml解析为一棵dom树
         File xmlFile = new File(path + File.separator + "WEB-INF" + File.separator + "web.xml");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         xmlDoc = builder.parse(xmlFile);
-        servletConfigMap = new HashMap<>();
+        servletDefMap = new HashMap<>();
         filterConfigMap = new HashMap<>();
         contextInitParameters = new HashMap<>();
 
@@ -51,8 +51,8 @@ public class TommyXmlParser {
 
     }
 
-    public Map<String, TommyServletConfig> getServletConfigMap() {
-        return servletConfigMap;
+    public Map<String, TommyServletDef> getServletDefMap() {
+        return servletDefMap;
     }
 
     public Map<String, String> getContextInitParameters() {
@@ -77,7 +77,7 @@ public class TommyXmlParser {
             String servletClass = getByTag(node, "servlet-class");
 
             //加入map
-            servletConfigMap.put(servletName, new TommyServletConfig(servletName, servletClass, getInitParamsMap(node)));
+            servletDefMap.put(servletName, new TommyServletDef(servletName, servletClass, getInitParamsMap(node)));
         }
 
         //解析Servlet-mapping标签
@@ -86,7 +86,7 @@ public class TommyXmlParser {
             Element node = (Element) mappingNodeList.item(i);
 
             //从集合里搜索出名字一样的servletConfig
-            TommyServletConfig config = servletConfigMap.get(getByTag(node, "servlet-name"));
+            TommyServletDef config = servletDefMap.get(getByTag(node, "servlet-name"));
 
             //放入url
             config.setServletUrl(getByTag(node, "url-pattern"));

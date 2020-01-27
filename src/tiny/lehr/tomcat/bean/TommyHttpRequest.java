@@ -22,35 +22,35 @@ public class TommyHttpRequest implements HttpServletRequest {
 
     private String method;
 
-    private String n;
+    private String servletUrl;
 
-    private String c;
+    private String contextUrl;
 
-    private String e;
+    private String hostUrl;
 
-    public String getE() {
-        return e;
+    public String getHostUrl() {
+        return hostUrl;
     }
 
-    public void setE(String e) {
-        this.e = e;
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
     }
 
-    public String getC() {
-        return c;
+    public String getContextUrl() {
+        return contextUrl;
     }
 
-    public void setC(String c) {
-        this.c = c;
+    public void setContextUrl(String contextUrl) {
+        this.contextUrl = contextUrl;
     }
 
-    public void setN(String n) {
-        this.n = n;
+    public void setServletUrl(String servletUrl) {
+        this.servletUrl = servletUrl;
     }
 
-    public String getN()
+    public String getServletUrl()
     {
-        return n;
+        return servletUrl;
     }
 
     public void setMethod(String method) {

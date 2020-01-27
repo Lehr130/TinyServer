@@ -25,13 +25,7 @@ public class TommyEngine extends TommyContainer {
 
 
     public TommyHost getHost(ServletRequest req) {
-        String url = ((TommyHttpRequest) req).getE();
-
-        //检查之前实例化过这个wrapper没有
-        Boolean alreadyHave = hostMap.containsKey(url);
-
-        //如果没有就加载，不然直接返回
-
+        String url = ((TommyHttpRequest) req).getHostUrl();
 
         //获取
         TommyHost host = hostMap.get(url);
