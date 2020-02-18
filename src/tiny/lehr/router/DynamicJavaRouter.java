@@ -4,7 +4,6 @@ import tiny.lehr.annotation.LehrsMethod;
 import tiny.lehr.annotation.ParamName;
 import tiny.lehr.annotation.ThisGonnaBeADynamicMethod;
 import tiny.lehr.bean.MyMethod;
-import tiny.lehr.enums.RequestType;
 import tiny.lehr.exceptions.ConflictMethodException;
 
 import java.lang.reflect.Method;
@@ -91,14 +90,14 @@ public class DynamicJavaRouter {
 	 * @param requestType
 	 * @return
 	 */
-	protected <T> MyMethod getMethod(String uri, RequestType requestType) {
+	protected <T> MyMethod getMethod(String uri, String requestType) {
 		MyMethod m = methodMap.get(uri);
 
 		if (m == null) {
 			return null;
 		}
 
-		if (requestType != m.getRequestType()) {
+		if (!requestType.equalsIgnoreCase(m.getRequestType().toString())) {
 			return null;
 		}
 

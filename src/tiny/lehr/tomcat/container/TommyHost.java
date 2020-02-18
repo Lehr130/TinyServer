@@ -1,12 +1,12 @@
 package tiny.lehr.tomcat.container;
 
-import tiny.lehr.tomcat.bean.TommyHttpRequest;
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * @author Lehr
@@ -38,15 +38,16 @@ public class TommyHost extends TommyContainer {
         {
             String name = f.getName();
             TommyContext context = new TommyContext(webPath+File.separator+name);
-            contextMap.put(name,context);
+            //IMPROVE: 关于context映射的一个不好的设计
+            contextMap.put("/"+name,context);
         }
 
 
     }
 
-    private TommyContext getContext(ServletRequest req) {
+    private TommyContext getContext(MyRequest req) {
 
-        String url = ((TommyHttpRequest)req).getContextUrl();
+        String url = req.getContextPath();
 
         TommyContext context= contextMap.get(url);
 
@@ -54,7 +55,7 @@ public class TommyHost extends TommyContainer {
     }
 
     @Override
-    protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
+    protected void basicValveInvoke(MyRequest req, MyResponse res) {
 
         TommyContext context = getContext(req);
 

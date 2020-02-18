@@ -1,5 +1,12 @@
 
-?squid:S1148V"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-?squid:S1148T"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-?squid:S1148C"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-[squid:S2147U"DCombine this catch with the one at line 83, which has the same body.(ï­£Ä
+Qsquid:S1135‡"2Complete the task associated to this TODO comment.(Îà×8ğ¼¯ş-
+\squid:S2147n"ECombine this catch with the one at line 108, which has the same body.(ï­£Ä
+?squid:S1148m"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+Qsquid:S1135€"2Complete the task associated to this TODO comment.(òÕ¿Ş8ğ¼¯ş-
+[
+squid:S106>"9Replace this use of System.out or System.err by a logger.(¬®İ—úÿÿÿÿ8™â®¯ş-
+?squid:S1148o"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+Nsquid:S5411‚"*Use the primitive boolean expression here.(ıü‡Ìûÿÿÿÿ8ğ¼¯ş-
+?squid:S1148["#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+Rsquid:S1905K"/Remove this unnecessary cast to "TommyContext".(»ßƒşÿÿÿÿ8ô™….
+Usquid:S1135W"2Complete the task associated to this TODO comment.(§Óò¡ùÿÿÿÿ8±³¯ş-

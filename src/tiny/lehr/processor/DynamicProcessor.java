@@ -1,20 +1,18 @@
 package tiny.lehr.processor;
 
+import tiny.lehr.bean.MyMethod;
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
+import tiny.lehr.enums.Code;
+import tiny.lehr.exceptions.CannotFindException;
+import tiny.lehr.exceptions.ParamException;
+import tiny.lehr.router.RouterFacade;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import tiny.lehr.bean.MyMethod;
-import tiny.lehr.bean.MyRequest;
-import tiny.lehr.bean.ParsedResult;
-import tiny.lehr.bean.ProcessedData;
-import tiny.lehr.router.RouterFacade;
-import tiny.lehr.enums.Code;
-import tiny.lehr.enums.RequestType;
-import tiny.lehr.exceptions.ParamException;
 
 /**
  * 
@@ -26,28 +24,24 @@ import tiny.lehr.exceptions.ParamException;
 public class DynamicProcessor extends Processor {
 
 	@Override
-	protected ProcessedData prepareData(Socket socket, MyRequest request, ParsedResult parsedResult) {
+	protected void prepareData (MyRequest req, MyResponse res) throws Exception{
 
+		//准备路由
 		RouterFacade container = RouterFacade.getInstance();
 
-		HashMap<String, String> inputParamMap;
+		//获取参数
+		Map<String, String[]> inputParamMap = req.getParams();
 
-		// 如果不是GET方法，那么参数就是从请求体里来的
-		if (request.getRequestType() != RequestType.GET) {
-			inputParamMap = request.getBodyList();
-		} else {
-			// 不然的话（GET请求）就去查GET后面Uri参数
-			inputParamMap = parsedResult.getParams();
-		}
+		//准备好uri 即去除前面的/dynamic
+		String uri = req.getRequestURI().substring(8);
 
-		// 获取用户输入的参数列表
 
 		// 获取方法相关的信息，按照uri和请求方法去找，若找不到就报错返回
-		MyMethod myMethod = container.getMethod(parsedResult.getParseUri(), request.getRequestType());
+		MyMethod myMethod = container.getMethod(uri, req.getMethod());
 
 		if (myMethod == null) {
 			// 返回：找不到该方法
-			return new ProcessedData("text/html", null, Code.NOTFOUND);
+			throw new CannotFindException("找不到方法");
 		}
 
 		// 获取可执行的这个方法本体
@@ -61,7 +55,7 @@ public class DynamicProcessor extends Processor {
 		 */
 		if ((inputParamMap == null && paraCount != 0) || (inputParamMap != null && paraCount != inputParamMap.size())) {
 			// 参数个数出错
-			return new ProcessedData("text/html", null, Code.PARAMWRONG);
+			throw new ParamException("参数错误");
 		}
 
 		Object[] paramArray = null;
@@ -74,11 +68,11 @@ public class DynamicProcessor extends Processor {
 			ret = method.invoke(null, paramArray);
 		} catch (ParamException e1) {
 			// 入参类型不对
-			return new ProcessedData("text/html", null, Code.PARAMILLEGAL);
+			throw new ParamException("参数类型不对");
 		} catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e2)
 		{
 			//执行反射的时候出错了
-			return new ProcessedData("text/html", null, Code.INTERNALSERVERERROR);
+			throw e2;
 		}
 		
 		byte[] bytes = null;
@@ -88,7 +82,9 @@ public class DynamicProcessor extends Processor {
 		}
 
 		// 这个fileType要改，然后就是响应码要随着请求类型而改变
-		return new ProcessedData("text/html", bytes, Code.OK);
+		res.setResBody(bytes);
+		res.setCode(Code.OK.getCode());
+		res.setFileType("text/html");
 	}
 
 	/**
@@ -100,7 +96,7 @@ public class DynamicProcessor extends Processor {
 	 * @return
 	 * @throws ParamException
 	 */
-	private Object[] setParam(Map<String, String> inputParamMap, MyMethod myMethod, Integer paraCount)
+	private Object[] setParam(Map<String, String[]> inputParamMap, MyMethod myMethod, Integer paraCount)
 			throws ParamException {
 
 		// 如果没有参数需求，就无需校正了
@@ -122,7 +118,8 @@ public class DynamicProcessor extends Processor {
 
 			Class type = entry.getValue();
 
-			String paramResult = inputParamMap.get(entry.getKey());
+			//FIXME: 这里先只弄第一个参数
+			String paramResult = inputParamMap.get(entry.getKey())[0];
 
 			if (paramResult == null) {
 				throw new ParamException("Unknow Parameter has been Input!");

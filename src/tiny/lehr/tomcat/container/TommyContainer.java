@@ -1,10 +1,10 @@
 package tiny.lehr.tomcat.container;
 
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 import tiny.lehr.tomcat.TommyPipeline;
 import tiny.lehr.tomcat.valve.TommyValve;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 /**
  * @author Lehr
@@ -24,7 +24,7 @@ public abstract class TommyContainer {
      * @param req
      * @param res
      */
-    public void invoke(ServletRequest req, ServletResponse res)
+    public void invoke(MyRequest req, MyResponse res)
     {
         addBasicValve();
         pipeline.invoke(req, res);
@@ -51,7 +51,7 @@ public abstract class TommyContainer {
      * @param req
      * @param res
      */
-    protected abstract void basicValveInvoke(ServletRequest req, ServletResponse res);
+    protected abstract void basicValveInvoke(MyRequest req, MyResponse res);
 
     /**
      * send this inner class into the pipline as the basic valve
@@ -59,7 +59,7 @@ public abstract class TommyContainer {
     class BasicValve implements TommyValve{
 
         @Override
-        public void invoke(ServletRequest req, ServletResponse res) {
+        public void invoke(MyRequest req, MyResponse res) {
             basicValveInvoke(req, res);
         }
     }

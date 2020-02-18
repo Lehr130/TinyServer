@@ -1,0 +1,5 @@
+
+V
+squid:S106Y"9Replace this use of System.out or System.err by a logger.(Ýçïé8æ¼âÃ„.
+psquid:S00116"SRename this field "SHUTDOWN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬Êî¦ýÿÿÿÿ
+Fsquid:S5411B"*Use the primitive boolean expression here.(ˆõÃýûÿÿÿÿ

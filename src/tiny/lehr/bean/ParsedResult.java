@@ -24,13 +24,13 @@ public class ParsedResult {
 	/**
 	 * 通过GET后面URL的参数
 	 */
-	private HashMap<String,String> params;
+	private HashMap<String,String[]> params;
 
 	public String getParseUri() {
 		return parseUri;
 	}
 
-	public ParsedResult(String parseUri, ServerType type, HashMap<String,String> params) {
+	public ParsedResult(String parseUri, ServerType type, HashMap<String,String[]> params) {
 		super();
 		this.parseUri = parseUri;
 		this.type = type;
@@ -45,11 +45,11 @@ public class ParsedResult {
 		return type;
 	}
 
-	public HashMap<String,String> getParams() {
+	public HashMap<String,String[]> getParams() {
 		return params;
 	}
 
-	public void setParams(HashMap<String,String> params) {
+	public void setParams(HashMap<String,String[]> params) {
 		this.params = params;
 	}
 

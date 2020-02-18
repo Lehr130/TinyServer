@@ -1,9 +1,16 @@
 
-vsquid:S1488m"_Immediately return this expression instead of assigning it to the temporary variable "wrapper".(•äÇÙ
-?squid:S1125h")Remove the literal "false" boolean value.(ñäÿO
-@squid:S5411h"*Use the primitive boolean expression here.(ñäÿO
-Isquid:S1135a"2Complete the task associated to this TODO comment.(×…Ã
-esquid:S00112B"FDefine and throw a dedicated exception instead of using a generic one.(€£8“µáı-
-@squid:S1148—"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-Isquid:S1135"2Complete the task associated to this TODO comment.(ÿ°Š‹
-Bsquid:S1068+"+Remove this unused "appPath" private field.(•¢è
+Fsquid:S1148a"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
+Gsquid:S1148È"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
+W
+squid:S106£"9Replace this use of System.out or System.err by a logger.(¸ÅÛ8Ç¥´·ş-
+}squid:S1488|"_Immediately return this expression instead of assigning it to the temporary variable "wrapper".(•äÇÙ8İÉÇ¶ş-
+V
+squid:S106@"9Replace this use of System.out or System.err by a logger.(Ãé…Œ8İÉÇ¶ş-
+Gsquid:S1125C")Remove the literal "false" boolean value.(¦‚Î8İÉÇ¶ş-
+Isquid:S1068"+Remove this unused "appPath" private field.(•¢è8İÉÇ¶ş-
+esquid:S00112-"FDefine and throw a dedicated exception instead of using a generic one.(€£8İÉÇ¶ş-
+Gsquid:S5411w"*Use the primitive boolean expression here.(ñäÿO8İÉÇ¶ş-
+Hsquid:S5411C"*Use the primitive boolean expression here.(¦‚Î8İÉÇ¶ş-
+hsquid:S1134¾"DTake the required action to fix the issue indicated by this comment.(ªæ¿úÿÿÿÿ8‹ı×œ….
+Fsquid:S1125w")Remove the literal "false" boolean value.(ñäÿO8İÉÇ¶ş-
+Nsquid:S1068"+Remove this unused "appName" private field.(Ç»Ÿ¿şÿÿÿÿ8İÉÇ¶ş-

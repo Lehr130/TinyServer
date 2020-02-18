@@ -1,14 +1,20 @@
 package tiny.lehr.tomcat.container;
 
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 import tiny.lehr.tomcat.bean.TommyFilterChain;
 import tiny.lehr.tomcat.bean.TommyFilterConfig;
-import tiny.lehr.tomcat.bean.TommyHttpRequest;
 import tiny.lehr.tomcat.bean.TommyServletDef;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 import tiny.lehr.utils.EnumerationUtils;
 import tiny.lehr.utils.UrlUtils;
 
-import javax.servlet.*;
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -94,7 +100,8 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
     }
 
     @Override
-    protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
+    protected void basicValveInvoke(MyRequest req, MyResponse res) {
+
         try {
 
             allocate(((TommyContext) parent).getLoader());
@@ -110,12 +117,28 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
             e.printStackTrace();
 
         }
+
+        //一个不优雅的设计：如果是首次有session的话就要放到res里
+        //JSESSIONID=ED3BB12BCEBB7F0467ED901C82FF5833; Path=/TommyTest_war_exploded; HttpOnly
+        //后面那些是啥我就不知道了？？？
+        //TODO: URL 重写？？？
+        //这时候就需要返回sessionId了
+        HttpSession session = req.getSession(false);
+        if(session!=null)
+        {
+            if(session.isNew())
+            {
+                res.addCookie(new Cookie("JSESSIONID",session.getId()));
+            }
+        }
+
+
     }
 
-    public TommyFilterChain createFilterChain(TommyContainer parent, ServletRequest req) {
+    public TommyFilterChain createFilterChain(TommyContainer parent, MyRequest req) {
 
         Map<String, TommyFilterConfig> filterPool = ((TommyContext) parent).getFilterPool();
-        String servletUrl = ((TommyHttpRequest) req).getServletUrl();
+        String servletUrl = req.getServletPath();
 
 
         TommyFilterChain chain = new TommyFilterChain();

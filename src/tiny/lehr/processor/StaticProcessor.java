@@ -1,37 +1,35 @@
 package tiny.lehr.processor;
 
 import tiny.lehr.bean.MyRequest;
-import tiny.lehr.bean.ParsedResult;
-import tiny.lehr.bean.ProcessedData;
+import tiny.lehr.bean.MyResponse;
 import tiny.lehr.cache.CacheFacade;
 import tiny.lehr.enums.Code;
-import tiny.lehr.enums.RequestType;
+import tiny.lehr.enums.Message;
+import tiny.lehr.exceptions.BadRequestMethodException;
 import tiny.lehr.exceptions.CannotFindException;
 import tiny.lehr.utils.FileUtils;
 import tiny.lehr.utils.UrlUtils;
 
-import java.net.Socket;
-
 public class StaticProcessor extends Processor {
 
 	@Override
-	protected ProcessedData prepareData(Socket socket, MyRequest request, ParsedResult parsedResult) {
+	protected void prepareData(MyRequest req, MyResponse res) throws Exception{
 
-		
 		// 如果是静态，则只能是GET方法
-		if (!RequestType.GET.equals(request.getRequestType())) {
+		if (!"GET".equals(req.getMethod())) {
 
 			// 抛出错误：不支持的请求方法
-			return new ProcessedData("text/html", null, Code.BADREQUEST);
-			
+			//这个在nginx里对应的是405 Not Allowed的情况
+			throw new BadRequestMethodException();
+
 		}
 
-		
-		String filename = parsedResult.getParseUri();
-		
+		//首先获取文件的路径
+		String filename = Message.ROOT_PATH + req.getRequestURI();
+
 		//关于这个缓存我感觉这种获得方式不太好
 		CacheFacade cache = CacheFacade.getInstance();
-		
+
 		// out方法不一定会及时输出，err更方便debug，可以及时输出，常见场景：循环出错
 		System.err.println(filename);
 
@@ -48,7 +46,7 @@ public class StaticProcessor extends Processor {
 			try {
 				fileContent = FileUtils.fileToByte(filename);
 			} catch (CannotFindException e) {
-				return new ProcessedData("text/html",null,Code.NOTFOUND);
+				throw new CannotFindException("找不到！");
 			}
 
 			// 解析成功后放入缓存
@@ -56,9 +54,14 @@ public class StaticProcessor extends Processor {
 
 		}
 
-		return new ProcessedData(fileType,fileContent,Code.OK);
+		res.setFileType(fileType);
+
+		res.setResBody(fileContent);
+
+		res.setCode(Code.OK.getCode());
+
 	}
-	
+
 	
 	
 	

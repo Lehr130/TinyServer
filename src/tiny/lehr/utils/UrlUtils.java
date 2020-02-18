@@ -106,7 +106,7 @@ public class UrlUtils {
 		else {
 
 			
-			HashMap<String, String> params = null;
+			HashMap<String, String[]> params = null;
 
 			// 如果包含了有参数就处理参数？？？不行，改一下匹配规则
 			if (uri.contains("?")) {
@@ -180,16 +180,26 @@ public class UrlUtils {
 	 * @return
 	 * @throws IllegalParamInputException
 	 */
-	public static HashMap<String, String> getParamMap(String paramStr) throws IllegalParamInputException {
+	public static HashMap<String, String[]> getParamMap(String paramStr) throws IllegalParamInputException {
 
-		HashMap<String, String> paramsMap = new HashMap<>(16);
+		HashMap<String, String[]> paramsMap = new HashMap<>(16);
 
 		try {
 			String[] params = paramStr.split("&");
 
+
 			for (String s : params) {
 				String[] p = s.split("=");
-				paramsMap.put(p[0], p[1]);
+				//解决一对多的checkBox的情况
+				if(paramsMap.get(p[0])==null)
+				{
+					paramsMap.put(p[0], new String[]{p[1]});
+				}
+				else{
+					//向数组里加入
+					paramsMap.get(p[0])[paramsMap.get(p[0]).length]=p[1];
+				}
+
 
 			}
 		} catch (ArrayIndexOutOfBoundsException | NullPointerException e) {

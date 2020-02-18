@@ -1,16 +1,16 @@
 package tiny.lehr.tomcat.container;
 
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 import tiny.lehr.tomcat.TommyContextConfig;
+import tiny.lehr.tomcat.TommySessionManager;
 import tiny.lehr.tomcat.bean.TommyFilterConfig;
-import tiny.lehr.tomcat.bean.TommyHttpRequest;
 import tiny.lehr.tomcat.bean.TommyServletContext;
 import tiny.lehr.tomcat.bean.TommyServletDef;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 import tiny.lehr.utils.UrlUtils;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +38,9 @@ public class TommyContext extends TommyContainer {
 
     private Map<String, TommyFilterConfig> filterPool;
 
+
+    private TommySessionManager sessionManager;
+
     public TommyContext(String appPath) throws Exception {
 
         //获取路径
@@ -45,6 +48,9 @@ public class TommyContext extends TommyContainer {
 
         //建立好存放子容器的哈希表
         wrappers = new HashMap<>();
+
+        //准备好session管理器
+        sessionManager = new TommySessionManager(this);
 
         //通过路径准备好类加载器
         loader = new TommyWebAppLoader(appPath);
@@ -67,6 +73,10 @@ public class TommyContext extends TommyContainer {
 
         initAllFilter(context.getFilterConfigMap());
 
+    }
+
+    public TommySessionManager getSessionManager() {
+        return sessionManager;
     }
 
     private void initAllFilter(Map<String, TommyFilterConfig> filterConfigMap) {
@@ -101,9 +111,9 @@ public class TommyContext extends TommyContainer {
      * @param req
      * @return
      */
-    private TommyWrapper getWrapper(ServletRequest req) {
+    private TommyWrapper getWrapper(MyRequest req) {
 
-        String servletUrl = ((TommyHttpRequest) req).getServletUrl();
+        String servletUrl = req.getServletPath();
 
         //检查之前实例化过这个wrapper没有
         Boolean alreadyHave = wrappers.containsKey(servletUrl);
@@ -174,7 +184,11 @@ public class TommyContext extends TommyContainer {
      * @param res
      */
     @Override
-    protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
+    protected void basicValveInvoke(MyRequest req, MyResponse res) {
+
+        //源代码基本也是这样做的，只不过他是放在wrapper的基础阀里面
+        //但，其实我觉得嘛，放这里也没啥
+        req.setContext(this);
 
         //找到正确的wrapper
         TommyWrapper wrapper = getWrapper(req);

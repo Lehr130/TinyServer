@@ -1,0 +1,24 @@
+
+¥squid:S1186¦"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‹Å£»ýÿÿÿÿ8žØ³š….
+Â%squid:RedundantThrowsDeclarationCheckÔ"ˆRemove the declaration of thrown exception 'tiny.lehr.exceptions.IllegalParamInputException', as it cannot be thrown from method's body.(¥ñúî8žØ³š….
+Qsquid:S1481è"-Remove this unused "filename" local variable.(†‹º¢ýÿÿÿÿ8žØ³š….
+jsquid:CommentedOutCodeLineÙ"<This block of commented-out lines of code should be removed.(ï”Éõ8¹ª¶….
+Qsquid:S1135Ø"2Complete the task associated to this TODO comment.(Üý‚Å8ÖÀ·….
+Qsquid:S1135÷"2Complete the task associated to this TODO comment.(ÓñàÍ8žØ³š….
+¥%squid:RedundantThrowsDeclarationCheckÔ"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(¥ñúî8žØ³š….
+±%squid:RedundantThrowsDeclarationCheckÔ"xRemove the declaration of thrown exception 'java.io.FileNotFoundException' which is a subclass of 'java.io.IOException'.(¥ñúî8žØ³š….
+Æ%squid:RedundantThrowsDeclarationCheckÂ"‡Remove the declaration of thrown exception 'tiny.lehr.exceptions.BadRequestMethodException', as it cannot be thrown from method's body.(œÁòîøÿÿÿÿ8žØ³š….
+Lsquid:S1068&".Remove this unused "remotePort" private field.(”É¹ö8¹ª¶….
+[
+squid:S106h"9Replace this use of System.out or System.err by a logger.(¶®éÓøÿÿÿÿ8žØ³š….
+¥squid:S1186¡"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(„”£êüÿÿÿÿ8žØ³š….
+esquid:S3027¸"FPut single-quotes around '/' to use the faster "indexOf(char)" method.(­î£¬8³Ÿ½›….
+Psquid:S1481ž",Remove this unused "isFirst" local variable.(ÊÓ®âùÿÿÿÿ8žØ³š….
+¥squid:S1186Ê"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÉêàŠüÿÿÿÿ8žØ³š….
+jsquid:S3027·"FPut single-quotes around '/' to use the faster "indexOf(char)" method.(ãýáÖüÿÿÿÿ8³Ÿ½›….
+¡%squid:RedundantThrowsDeclarationCheckñ"jRemove the declaration of thrown exception 'java.lang.IllegalStateException' which is a runtime exception.(º‡š¾üÿÿÿÿ
+Jsquid:S1168¬"+Return an empty collection instead of null.(¥¹ï8žØ³š….
+`squid:S1854è"<Remove this useless assignment to local variable "filename".(†‹º¢ýÿÿÿÿ8žØ³š….
+:squid:S3626ø"Remove this redundant jump.(ûÁÝ…8žØ³š….
+›%squid:RedundantThrowsDeclarationCheckö"jRemove the declaration of thrown exception 'java.lang.IllegalStateException' which is a runtime exception.(ƒ“Ñ
+Qsquid:S1135Û"2Complete the task associated to this TODO comment.(¿­ÈÎ8žØ³š….

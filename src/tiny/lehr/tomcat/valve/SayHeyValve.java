@@ -1,7 +1,7 @@
 package tiny.lehr.tomcat.valve;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 
 /**
  * @author Lehr
@@ -10,7 +10,7 @@ import javax.servlet.ServletResponse;
 public class SayHeyValve implements TommyValve {
 
     @Override
-    public void invoke(ServletRequest req, ServletResponse res) {
+    public void invoke(MyRequest req, MyResponse res) {
         System.out.println("Hey, there is Valve One");
     }
 

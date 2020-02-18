@@ -1,134 +1,274 @@
 package tiny.lehr.bean;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Lehr
  * @create 2020-01-14
  * 响应封装类，自带封装和发送方法
  */
-public class MyResponse {
+public class MyResponse implements HttpServletResponse {
 
-	/**
-	 * HTTP版本号，例如"HTTP/1.1"
-	 */
-	private String version;
+    private String code;
 
-	/**
-	 * 状态码
-	 */
-	private String code;
+    private String data;
 
-	/**
-	 * 内容数据，但是目前好像没用
-	 */
-	private String data;
+    /**
+     * 文件类型
+     */
+    private String fileType;
 
-	/**
-	 * 文件类型
-	 */
-	private String fileType;
+    private byte[] resBody;
 
-	/**
-	 * 响应体
-	 */
-	private byte[] resBody;
+    public String getProtocol() {
+        return protocol;
+    }
 
-	public String getVersion() {
-		return version;
-	}
+    private String protocol;
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    private OutputStream outStream;
 
-	public String getCode() {
-		return code;
-	}
+    private List<Cookie> cookies = new ArrayList<>();
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public OutputStream getOutStream() {
+        return outStream;
+    }
 
-	public String getData() {
-		return data;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public String getFileType() {
-		return fileType;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 
-	public byte[] getResBody() {
-		return resBody;
-	}
+    public String getFileType() {
+        return fileType;
+    }
 
-	public void setResBody(byte[] resBody) {
-		this.resBody = resBody;
-	}
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
 
-	public MyResponse(String version, String code, String fileType, byte[] resBody) {
-		super();
-		this.version = version;
-		this.code = code;
-		this.fileType = fileType;
-		this.resBody = resBody;
-	}
+    public byte[] getResBody() {
+        return resBody;
+    }
 
-	/**
-	 * 发送请求并关闭socket
-	 * 
-	 * @param socket
-	 */
-	public void sendResponse(Socket socket) {
-		// 记录时间
-		SimpleDateFormat sdf = new SimpleDateFormat();
-		sdf.applyPattern("yyyy-MM-dd HH:mm:ss a");
-		Date date = new Date();
+    public void setResBody(byte[] resBody) {
+        this.resBody = resBody;
+    }
 
-		// 获取输出流 然后执行完后自动关闭socket（高的关了低的自动关）
-		try (PrintStream output = new PrintStream(socket.getOutputStream(), true)) {
+    public MyResponse(Socket socket, MyRequest req) throws IOException {
+        this.outStream = socket.getOutputStream();
+        this.protocol = req.getProtocol();
+    }
 
-			// 响应头
-			output.print(version + " " + code + " \r\n");
-			output.print("Date:" + sdf.format(date) + "\r\n");
-			output.print("Server:Lehr's Tiny Server \r\n");
+    @Override
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
+    }
 
-			if (resBody == null) {
-				output.print("Content-length: 0\r\n\r\n");
-			} else {
-				// 所以这个最后浏览器渲染的结果还和这几个响应头的顺序有关？！？！
-				output.print("Content-length: " + resBody.length + "\r\n");
-				output.print("Content-type: " + fileType + ";charset=utf-8" + "\r\n\r\n");
-				// 响应体
-				output.write(resBody);
-				output.print("\r\n");
-			}
+    @Override
+    public boolean containsHeader(String s) {
+        return false;
+    }
 
-		} catch (IOException e) {
-			// 这个还是没能处理
-			e.printStackTrace();
-		}
+    @Override
+    public String encodeURL(String s) {
+        return null;
+    }
 
-		System.out.println(socket.isClosed() + "   " + socket);
+    public List<Cookie> getCookies()
+    {
+        return cookies;
+    }
 
-		/*
-		 * 而且我还是很好奇这里println自动刷出的问题，如果已经发送了一部分报文的话，那么那边会不会是接收到的是不完整的报文？主要是这里恰巧就...
-		 * 欸我也不知道这个了 根据实验得到的结果是：socket关闭了之后才会发送回去 不对，好像取决于是不是一个完整的http请求？》？？
-		 * 关于关闭资源的问题？？？半关闭？？？？？ http长连接是什么情况下在用一个socket发多次请求？
-		 */
+    @Override
+    public String encodeRedirectURL(String s) {
+        return null;
+    }
 
-	}
+    @Override
+    public String encodeUrl(String s) {
+        return null;
+    }
 
+    @Override
+    public String encodeRedirectUrl(String s) {
+        return null;
+    }
+
+    @Override
+    public void sendError(int i, String s) throws IOException {
+
+    }
+
+    @Override
+    public void sendError(int i) throws IOException {
+
+    }
+
+    @Override
+    public void sendRedirect(String s) throws IOException {
+
+    }
+
+    @Override
+    public void setDateHeader(String s, long l) {
+
+    }
+
+    @Override
+    public void addDateHeader(String s, long l) {
+
+    }
+
+    @Override
+    public void setHeader(String s, String s1) {
+
+    }
+
+    @Override
+    public void addHeader(String s, String s1) {
+
+    }
+
+    @Override
+    public void setIntHeader(String s, int i) {
+
+    }
+
+    @Override
+    public void addIntHeader(String s, int i) {
+
+    }
+
+    @Override
+    public void setStatus(int i) {
+
+    }
+
+    @Override
+    public void setStatus(int i, String s) {
+
+    }
+
+    @Override
+    public int getStatus() {
+        return 0;
+    }
+
+    @Override
+    public String getHeader(String s) {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getHeaders(String s) {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getHeaderNames() {
+        return null;
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+        return null;
+    }
+
+    @Override
+    public String getContentType() {
+        return null;
+    }
+
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+        return null;
+    }
+
+    @Override
+    public PrintWriter getWriter() throws IOException {
+        return new PrintWriter(outStream);
+    }
+
+
+    @Override
+    public void setCharacterEncoding(String s) {
+
+    }
+
+    @Override
+    public void setContentLength(int i) {
+
+    }
+
+    @Override
+    public void setContentLengthLong(long l) {
+
+    }
+
+    @Override
+    public void setContentType(String s) {
+
+    }
+
+    @Override
+    public void setBufferSize(int i) {
+
+    }
+
+    @Override
+    public int getBufferSize() {
+        return 0;
+    }
+
+    @Override
+    public void flushBuffer() throws IOException {
+
+    }
+
+    @Override
+    public void resetBuffer() {
+
+    }
+
+    @Override
+    public boolean isCommitted() {
+        return false;
+    }
+
+    @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public void setLocale(Locale locale) {
+
+    }
+
+    @Override
+    public Locale getLocale() {
+        return null;
+    }
 }

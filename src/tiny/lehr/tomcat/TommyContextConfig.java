@@ -22,7 +22,7 @@ public class TommyContextConfig {
     private Document xmlDoc;
 
     /**
-     * 以url为Key
+     * 以名字为Key
      */
     private Map<String, TommyServletDef> servletDefMap;
 

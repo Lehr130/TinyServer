@@ -1,7 +1,6 @@
 package tiny.lehr.router;
 
 import tiny.lehr.bean.MyMethod;
-import tiny.lehr.enums.RequestType;
 
 public class RouterFacade {
 
@@ -23,8 +22,8 @@ public class RouterFacade {
 		
 	}
 	
-	public MyMethod getMethod(String uri, RequestType requestType) {
-		return router.getMethod(uri, requestType);
+	public MyMethod getMethod(String uri, String requestMethod) {
+		return router.getMethod(uri, requestMethod);
 	}
 	
 	

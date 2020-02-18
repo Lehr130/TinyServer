@@ -1,7 +1,7 @@
 package tiny.lehr.tomcat.valve;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 
 /**
  * @author Lehr
@@ -14,6 +14,6 @@ public interface TommyValve {
      * @param req
      * @param res
      */
-    void invoke(ServletRequest req, ServletResponse res);
+    void invoke(MyRequest req, MyResponse res);
 
 }

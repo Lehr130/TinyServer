@@ -1,11 +1,13 @@
 package tiny.lehr.tomcat;
 
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 import tiny.lehr.tomcat.valve.TommyValve;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 /**
  * @author Lehr
@@ -40,7 +42,7 @@ public class TommyPipeline {
      * @param req
      * @param res
      */
-    public void invoke(ServletRequest req, ServletResponse res)
+    public void invoke(MyRequest req, MyResponse res)
     {
         //逐个invoke
         valveList.forEach(v->v.invoke(req,res));

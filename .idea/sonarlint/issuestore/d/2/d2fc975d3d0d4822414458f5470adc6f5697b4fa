@@ -1,0 +1,7 @@
+
+Hsquid:S44231",Change this code to use a stronger protocol.(ùÆÏ†şÿÿÿÿ
+fsquid:S2674B"JCheck the return value of the "read" call to see how many bytes were read.(ë¥áïøÿÿÿÿ
+fsquid:S2674N"JCheck the return value of the "read" call to see how many bytes were read.(ë¥áïøÿÿÿÿ
+Csquid:S1481@"'Remove this unused "br" local variable.(¼ŠÜµüÿÿÿÿ
+Usquid:S1135'"2Complete the task associated to this TODO comment.(îìø»şÿÿÿÿ8±ÏõÀ„.
+Rsquid:S1854@"6Remove this useless assignment to local variable "br".(¼ŠÜµüÿÿÿÿ

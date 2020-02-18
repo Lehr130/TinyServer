@@ -1,5 +1,6 @@
 package tiny.lehr.processor;
 
+import tiny.lehr.bean.MyRequest;
 import tiny.lehr.enums.ServerType;
 
 /**
@@ -17,10 +18,12 @@ public class ProcessorFactory {
 
 	/**
 	 * 根据请求类型来返回对应的处理器
-	 * @param type
+	 *
 	 * @return
 	 */
-	public static Processor createProcessor(ServerType type) {
+	public static Processor createProcessor(MyRequest req) {
+
+		ServerType type = req.getServerType();
 
 		if (ServerType.STATIC_RESOURCES.equals(type)) {
 			return new StaticProcessor();

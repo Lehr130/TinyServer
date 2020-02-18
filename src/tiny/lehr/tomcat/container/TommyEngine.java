@@ -1,11 +1,11 @@
 package tiny.lehr.tomcat.container;
 
-import tiny.lehr.tomcat.bean.TommyHttpRequest;
+import tiny.lehr.bean.MyRequest;
+import tiny.lehr.bean.MyResponse;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * @author Lehr
@@ -24,8 +24,8 @@ public class TommyEngine extends TommyContainer {
     }
 
 
-    public TommyHost getHost(ServletRequest req) {
-        String url = ((TommyHttpRequest) req).getHostUrl();
+    public TommyHost getHost(MyRequest req) {
+        String url = req.getHost();
 
         //获取
         TommyHost host = hostMap.get(url);
@@ -35,7 +35,7 @@ public class TommyEngine extends TommyContainer {
     }
 
     @Override
-    protected void basicValveInvoke(ServletRequest req, ServletResponse res) {
+    protected void basicValveInvoke(MyRequest req, MyResponse res) {
 
         TommyHost host = getHost(req);
         host.invoke(req, res);
