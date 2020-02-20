@@ -3,16 +3,18 @@
 # 开发计划
 
 ## Servlet容器部分
-- 完成热部署
-- 热加载
+- 热部署
+- 热加载的安全问题
 - 关于重定向功能？
 - 支持listener
 - JSessionId的url重写实现一下
+- RequestDispatcher???
+- 使用docBase来做容器的导向
 - Session的回收机制
 - Session的本地持久化机制
-- 再完善容器层级关系
+- Servlet的多个映射（一个servlet-mapping里有多个url-pattern）
+- Filter的多个映射（有多个Filter-mapping）
 - 实现war包的自动解压
-- 各个类的权限问题：用门面模式再修一下
 ## 连接器部分
 - Java NIO
 - 改进那个很简陋的LFU算法的缓存

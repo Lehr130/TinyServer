@@ -22,6 +22,7 @@ import java.util.*;
  * @create 2020-01-14
  * 一个实现了ServletRequest的Request
  * 用于Servlet请求
+ * FIXME 写一个RequestBase来！！！！
  */
 public class MyRequest implements HttpServletRequest {
 
@@ -111,6 +112,12 @@ public class MyRequest implements HttpServletRequest {
 
 
         packUp(request);
+
+
+        remoteAddress = socket.getInetAddress().getHostAddress();
+        //FIXME:暂时不知道有什么区别
+        remoteHost = remoteAddress;
+        remotePort = socket.getPort();
 
         // 收完报文后半关闭
         socket.shutdownInput();
@@ -559,21 +566,8 @@ public class MyRequest implements HttpServletRequest {
 
     @Override
     public Map<String, String[]> getParameterMap() {
-
-        //这里是为了安全性，所以返回的是一个只读表！！！
-        return Collections.unmodifiableMap(parameters);
-
-    }
-
-    /**
-     * 这个方法的调用只会在后面的容器里用到，所以是安全的，到时候需要facade一下
-     * @return
-     */
-    public Map<String, String[]> getParams() {
-
-        //这里是为了安全性，所以返回的是一个只读表！！！
+        //这里是为了安全性，所以在facade包装之后返回的是一个只读表！！！
         return parameters;
-
     }
 
 

@@ -1,0 +1,5 @@
+
+hsquid:CallToDeprecatedMethod¸"3Remove this use of "getRealPath"; it is deprecated.(æÕ„‡üÿÿÿÿ8€óöÅ….
+¨%squid:RedundantThrowsDeclarationCheckÕ"jRemove the declaration of thrown exception 'java.lang.IllegalStateException' which is a runtime exception.(º‡š¾üÿÿÿÿ8Ğâ’Å….
+¢%squid:RedundantThrowsDeclarationCheckÚ"jRemove the declaration of thrown exception 'java.lang.IllegalStateException' which is a runtime exception.(ƒ“Ñ8Ğâ’Å….
+`squid:S2254e"=Remove use of this unsecured "getRequestedSessionId()" method(ÎÄÈ”ùÿÿÿÿ8 ›Å….

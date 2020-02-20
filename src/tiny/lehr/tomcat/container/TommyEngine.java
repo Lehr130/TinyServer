@@ -13,11 +13,9 @@ import java.util.Map;
  */
 public class TommyEngine extends TommyContainer {
 
-    Map<String, TommyHost> hostMap;
+    Map<String, TommyHost> hostMap = new HashMap<>();
 
-    public TommyEngine() {
-        hostMap = new HashMap<>();
-    }
+    public TommyEngine() {}
 
     public void addHost(String hostname, String hostPath) throws Exception {
         hostMap.put(hostname, new TommyHost(hostname, hostPath));
@@ -39,6 +37,17 @@ public class TommyEngine extends TommyContainer {
 
         TommyHost host = getHost(req);
         host.invoke(req, res);
+
+    }
+
+
+    @Override
+    protected void doStart() {
+        hostMap.values().forEach(TommyHost::start);
+    }
+
+    @Override
+    protected void doStop() {
 
     }
 }

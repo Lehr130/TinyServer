@@ -2,9 +2,7 @@ package tiny.lehr.tomcat.container;
 
 import tiny.lehr.bean.MyRequest;
 import tiny.lehr.bean.MyResponse;
-import tiny.lehr.tomcat.bean.TommyFilterChain;
-import tiny.lehr.tomcat.bean.TommyFilterConfig;
-import tiny.lehr.tomcat.bean.TommyServletDef;
+import tiny.lehr.tomcat.bean.*;
 import tiny.lehr.tomcat.loader.TommyWebAppLoader;
 import tiny.lehr.utils.EnumerationUtils;
 import tiny.lehr.utils.UrlUtils;
@@ -27,7 +25,8 @@ import java.util.Map;
  */
 public class TommyWrapper extends TommyContainer implements ServletConfig {
 
-    private TommyContainer parent;
+    //其实我觉得这里就别用接口了诶
+    private TommyContext parent;
 
     private String servletName;
 
@@ -61,41 +60,48 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
 
     }
 
-    public void setParent(TommyContainer parent) {
-
-        if ((parent != null) && !(parent instanceof TommyContext)) {
-            System.out.println("出错了");
-        }
-        this.parent = parent;
-    }
-
 
     public TommyWrapper(TommyContext parent, TommyServletDef config) {
 
-        setParent(parent);
-
+        this.parent = parent;
+        servletContext = parent.getServletContext();
         servletName = config.getServletName();
         servletClassName = config.getServletClassName();
+        //获取servlet的初始参数 可在servletConfig里获得
         initParameters = config.getInitParameters();
-        servletContext = ((TommyContext) parent).getServletContext();
 
     }
 
 
-    private void allocate(TommyWebAppLoader loader) {
+    private void allocate() {
         //加载Servlet，前提是只加载一次
-        if (myServlet == null) {
-            try {
+        synchronized (this) {
+            if (myServlet == null) {
+                try {
 
-                myServlet = (Servlet) loader.loadClass(servletClassName).getDeclaredConstructor().newInstance();
+                    //监听器记录
 
-                //TODO 到时候记得用Facade处理一下
-                myServlet.init(this);
+                    getLifecycle().fireLifecycleEvent(BEFORE_INIT_EVENT, myServlet);
+                    loadServlet();
+                    getLifecycle().fireLifecycleEvent(AFTER_INIT_EVENT, myServlet);
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+
+    }
+
+    private void loadServlet() throws Exception {
+
+        TommyWebAppLoader loader = parent.getLoader();
+
+        myServlet = (Servlet) loader.loadClass(servletClassName).getDeclaredConstructor().newInstance();
+
+        //门面对象包一下
+        myServlet.init(new TommyServletConfigFacade(this));
+
 
     }
 
@@ -104,11 +110,25 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
 
         try {
 
-            allocate(((TommyContext) parent).getLoader());
+            //分配servlet  只有第一次才会去实例化
+            allocate();
+
             TommyFilterChain filterChain = createFilterChain(parent, req);
 
-            filterChain.doFilter(req, res);
+            //门面对象放进去！
+            filterChain.doFilter(new TommyRequestFacade(req), new TommyResponseFacade(res));
 
+            //一个不优雅的设计：如果是首次有session的话就要放到res里
+            //JSESSIONID=ED3BB12BCEBB7F0467ED901C82FF5833; Path=/TommyTest_war_exploded; HttpOnly
+            //后面那些是啥我就不知道了？？？
+            //TODO: URL 重写？？？
+            //这时候就需要返回sessionId了
+            HttpSession session = req.getSession(false);
+            if (session != null && session.isNew()) {
+                res.addCookie(new Cookie("JSESSIONID", session.getId()));
+            }
+
+            //释放filters
             filterChain.release();
 
         } catch (ServletException e) {
@@ -118,26 +138,12 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
 
         }
 
-        //一个不优雅的设计：如果是首次有session的话就要放到res里
-        //JSESSIONID=ED3BB12BCEBB7F0467ED901C82FF5833; Path=/TommyTest_war_exploded; HttpOnly
-        //后面那些是啥我就不知道了？？？
-        //TODO: URL 重写？？？
-        //这时候就需要返回sessionId了
-        HttpSession session = req.getSession(false);
-        if(session!=null)
-        {
-            if(session.isNew())
-            {
-                res.addCookie(new Cookie("JSESSIONID",session.getId()));
-            }
-        }
-
 
     }
 
-    public TommyFilterChain createFilterChain(TommyContainer parent, MyRequest req) {
+    public TommyFilterChain createFilterChain(TommyContext parent, MyRequest req) {
 
-        Map<String, TommyFilterConfig> filterPool = ((TommyContext) parent).getFilterPool();
+        Map<String, TommyFilterConfig> filterPool = parent.getFilterPool();
         String servletUrl = req.getServletPath();
 
 
@@ -163,5 +169,24 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
 
         return chain;
     }
+
+
+    @Override
+    protected void doStart() {
+        System.out.println("Wrapper is starting...");
+    }
+
+    @Override
+    protected void doStop() {
+
+        System.out.println("Wrapper is stopping...");
+
+        //销毁servlet
+        if(myServlet!=null)
+        {
+            myServlet.destroy();
+        }
+    }
+
 
 }

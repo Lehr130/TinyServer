@@ -30,7 +30,7 @@ public class DynamicProcessor extends Processor {
 		RouterFacade container = RouterFacade.getInstance();
 
 		//获取参数
-		Map<String, String[]> inputParamMap = req.getParams();
+		Map<String, String[]> inputParamMap = req.getParameterMap();
 
 		//准备好uri 即去除前面的/dynamic
 		String uri = req.getRequestURI().substring(8);

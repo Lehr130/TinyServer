@@ -2,6 +2,8 @@ package tiny.lehr.tomcat;
 
 import tiny.lehr.bean.MyRequest;
 import tiny.lehr.bean.MyResponse;
+import tiny.lehr.tomcat.lifecircle.TommyLifecycle;
+import tiny.lehr.tomcat.lifecircle.TommyLifecycleListener;
 import tiny.lehr.tomcat.valve.TommyValve;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import java.util.List;
  * @create 2020-01-16
  * 这个就是里面的管道流水线工程
  */
-public class TommyPipeline {
+public class TommyPipeline implements TommyLifecycle {
 
     /**
      * 内部维护了一组阀门
@@ -61,4 +63,36 @@ public class TommyPipeline {
 
 
 
+
+
+
+
+
+
+
+    //TODO:!!!!
+    @Override
+    public void addLifecycleListener(TommyLifecycleListener listener) {
+
+    }
+
+    @Override
+    public List<TommyLifecycleListener> findLifecycleListeners() {
+        return null;
+    }
+
+    @Override
+    public void removeLifecycleListener(TommyLifecycleListener listener) {
+
+    }
+
+    @Override
+    public void start(){
+
+    }
+
+    @Override
+    public void stop(){
+
+    }
 }

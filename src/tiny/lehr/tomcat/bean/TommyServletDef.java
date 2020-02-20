@@ -6,6 +6,7 @@ import java.util.Map;
 /**
  * @author Lehr
  * @create: 2020-01-22
+ * 代表了从web.xml里读取到的一个元素信息
  */
 public class TommyServletDef {
 

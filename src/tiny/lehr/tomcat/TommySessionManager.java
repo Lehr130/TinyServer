@@ -2,9 +2,12 @@ package tiny.lehr.tomcat;
 
 import tiny.lehr.tomcat.bean.TommySession;
 import tiny.lehr.tomcat.container.TommyContext;
+import tiny.lehr.tomcat.lifecircle.TommyLifecycle;
+import tiny.lehr.tomcat.lifecircle.TommyLifecycleListener;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -14,7 +17,7 @@ import java.util.UUID;
  *
  * Session的创建是：当且调用了getSession(true)之后！！！
  */
-public class TommySessionManager {
+public class TommySessionManager implements TommyLifecycle {
 
     private Map<String, TommySession> sessionPool = new HashMap<>();
 
@@ -78,4 +81,64 @@ public class TommySessionManager {
         sessionPool.remove(sessionId);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public void addLifecycleListener(TommyLifecycleListener listener) {
+
+    }
+
+    @Override
+    public List<TommyLifecycleListener> findLifecycleListeners() {
+        return null;
+    }
+
+    @Override
+    public void removeLifecycleListener(TommyLifecycleListener listener) {
+
+    }
+
+    @Override
+    public void start() throws Exception {
+        System.out.println("sessionManager开始啦");
+    }
+
+    @Override
+    public void stop() throws Exception {
+
+    }
+
+    public void backgroundProcess() {
+        clean();
+    }
+
+    //把多余过期的session清理了
+    //FIXME: 线程安全
+    private void clean()
+    {
+        sessionPool.values().forEach(session->{
+
+            Long lastTime = session.getLastAccessedTime();
+            Long validTime = session.getMaxInactiveInterval()*1000L;
+
+            if(lastTime+validTime<System.currentTimeMillis())
+            {
+                //过期了
+                System.out.println("过期了！");
+                removeSession(session.getId());
+            }
+        });
+
+    }
 }

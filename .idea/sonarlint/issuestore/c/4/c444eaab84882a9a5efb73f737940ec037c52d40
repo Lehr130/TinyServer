@@ -1,16 +1,19 @@
 
-Fsquid:S1148a"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
-Gsquid:S1148È"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
-W
-squid:S106£"9Replace this use of System.out or System.err by a logger.(¸ÅÛ8Ç¥´·ş-
-}squid:S1488|"_Immediately return this expression instead of assigning it to the temporary variable "wrapper".(•äÇÙ8İÉÇ¶ş-
+Fsquid:S1148i"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
+Nsquid:S1068"+Remove this unused "appName" private field.(Ç»Ÿ¿şÿÿÿÿ8İÉÇ¶ş-
+Fsquid:S1125")Remove the literal "false" boolean value.(ñäÿO8İÉÇ¶ş-
+Gsquid:S1148É"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
+Gsquid:S1125G")Remove the literal "false" boolean value.(¦‚Î8İÉÇ¶ş-
 V
-squid:S106@"9Replace this use of System.out or System.err by a logger.(Ãé…Œ8İÉÇ¶ş-
-Gsquid:S1125C")Remove the literal "false" boolean value.(¦‚Î8İÉÇ¶ş-
-Isquid:S1068"+Remove this unused "appPath" private field.(•¢è8İÉÇ¶ş-
-esquid:S00112-"FDefine and throw a dedicated exception instead of using a generic one.(€£8İÉÇ¶ş-
-Gsquid:S5411w"*Use the primitive boolean expression here.(ñäÿO8İÉÇ¶ş-
-Hsquid:S5411C"*Use the primitive boolean expression here.(¦‚Î8İÉÇ¶ş-
-hsquid:S1134¾"DTake the required action to fix the issue indicated by this comment.(ªæ¿úÿÿÿÿ8‹ı×œ….
-Fsquid:S1125w")Remove the literal "false" boolean value.(ñäÿO8İÉÇ¶ş-
-Nsquid:S1068"+Remove this unused "appName" private field.(Ç»Ÿ¿şÿÿÿÿ8İÉÇ¶ş-
+squid:S106D"9Replace this use of System.out or System.err by a logger.(Ãé…Œ8İÉÇ¶ş-
+gsquid:S1134"DTake the required action to fix the issue indicated by this comment.(¦ñšŒÿÿÿÿÿ8í¦şß….
+~squid:S1488„"_Immediately return this expression instead of assigning it to the temporary variable "wrapper".(•äÇÙ8İÉÇ¶ş-
+Ksquid:S1612Ø",Replace this lambda with a method reference.(ªÙèß8’ˆåğ….
+Psquid:S1602Ù",Remove useless curly braces around statement(ÒÌâ–øÿÿÿÿ8’ˆåğ….
+Ksquid:S1612ã",Replace this lambda with a method reference.(ô—ß8–æğ….
+esquid:S001120"FDefine and throw a dedicated exception instead of using a generic one.(–àè¸8İÉÇ¶ş-
+Isquid:S1068"+Remove this unused "appPath" private field.(•¢è8İÉÇ¶ş-
+W
+squid:S106§"9Replace this use of System.out or System.err by a logger.(¸ÅÛ8Ç¥´·ş-
+Gsquid:S5411"*Use the primitive boolean expression here.(ñäÿO8İÉÇ¶ş-
+Hsquid:S5411G"*Use the primitive boolean expression here.(¦‚Î8İÉÇ¶ş-

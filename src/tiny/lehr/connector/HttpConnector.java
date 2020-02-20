@@ -81,7 +81,9 @@ public class HttpConnector {
 			//准备好响应报文
 			MyResponse res = new MyResponse(socket, req);
 
-			// 分发到对应的请求处理器去
+            System.out.println(socket.getRemoteSocketAddress());
+
+            // 分发到对应的请求处理器去
 			ProcessorFactory.createProcessor(req).processRequest(req, res);
 		}
 		catch (Exception e)

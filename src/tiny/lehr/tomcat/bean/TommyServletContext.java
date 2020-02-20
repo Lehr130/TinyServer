@@ -29,21 +29,6 @@ public class TommyServletContext implements ServletContext {
         attributeMap = new HashMap<>();
     }
 
-    public Map<String, String> getParamMap() {
-        return paramMap;
-    }
-
-    public void setParamMap(Map<String, String> paramMap) {
-        this.paramMap = paramMap;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     @Override
     public String getContextPath() {

@@ -32,6 +32,11 @@ public class ServletProcessor extends Processor {
         //这里做个处理：如果是servlet请求，就先把他的容器路径解析出来
         req.parseUrl();
 
+        if(engine.isStarted()==false)
+        {
+            engine.start();
+        }
+
         engine.invoke(req, res);
     }
 }
