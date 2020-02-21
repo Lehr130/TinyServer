@@ -52,6 +52,10 @@ public class TommyContext extends TommyContainer {
 
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
     public TommySessionManager getSessionManager() {
         return sessionManager;
     }
@@ -205,7 +209,7 @@ public class TommyContext extends TommyContainer {
         //现在就是可以访问的了
         isPaused = false;
 
-        //开始后台线程 我觉得三秒钟扫描太频繁了
+        //开始后台线程
         threadStart();
 
     }
@@ -234,7 +238,8 @@ public class TommyContext extends TommyContainer {
                 loader.backgroundProcess();
                 sessionManager.backgroundProcess();
                 try {
-                    Thread.sleep(3000);
+                    //原版默认设置的就是15秒
+                    Thread.sleep(15000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -242,7 +247,7 @@ public class TommyContext extends TommyContainer {
 
         },"Lehr's Background Process");
 
-        //backgroundThread.setDaemon(true);
+        backgroundThread.setDaemon(true);
         backgroundThread.start();
     }
 
@@ -258,10 +263,10 @@ public class TommyContext extends TommyContainer {
             return;
 
         threadDone = true;
-        //backgroundThread.interrupt();
+        backgroundThread.interrupt();
 
         //FIXME: 我也不知道为什么 这里调用interrupt居然没用，所以只能暴力来了
-        backgroundThread.stop();
+        //backgroundThread.stop();
         //FIXME: 好吧不知道为什么 stop也被阻塞了？？！！
 
         try {

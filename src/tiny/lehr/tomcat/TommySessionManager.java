@@ -19,9 +19,15 @@ import java.util.UUID;
  */
 public class TommySessionManager implements TommyLifecycle {
 
-    private Map<String, TommySession> sessionPool = new HashMap<>();
+
+    //实际上这里还应该有一个属性来限制内存里的session的量的
+    //还有一个换出机制，把session永久化
+
+    private Map<String, TommySession> sessionPool;
 
     private TommyContext container;
+
+    private TommyStoreManager storeManager;
 
     public TommySessionManager(TommyContext container)
     {
@@ -42,6 +48,8 @@ public class TommySessionManager implements TommyLifecycle {
             Long lastTime = session.getLastAccessedTime();
             Long validTime = session.getMaxInactiveInterval()*1000L;
 
+
+            //FIXME:这里没有考负数作为永久有效的判定情况
 
             if(lastTime+validTime<System.currentTimeMillis())
             {
@@ -112,11 +120,27 @@ public class TommySessionManager implements TommyLifecycle {
     @Override
     public void start() throws Exception {
         System.out.println("sessionManager开始啦");
+
+
+        storeManager = new TommyStoreManager();
+        storeManager.start();
+
+        sessionPool = storeManager.getSessions(container.getAppName());
+
+        if(sessionPool==null)
+        {
+            sessionPool = new HashMap<>();
+        }
+
+
     }
 
     @Override
     public void stop() throws Exception {
 
+        storeManager.store(sessionPool,container.getAppName());
+
+        storeManager.stop();
     }
 
     public void backgroundProcess() {

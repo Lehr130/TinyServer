@@ -7,14 +7,16 @@ import tiny.lehr.utils.EnumerationUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * @author Lehr
  * @create: 2020-02-17
  */
-public class TommySession implements HttpSession {
+public class TommySession implements HttpSession, Serializable {
 
+    private static final long serialVersionUID = -6601903208557464574L;
 
     private Map<String,Object> attributes = new HashMap<>();
 
