@@ -65,7 +65,6 @@ public class TommyFilterChain implements FilterChain {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res) throws IOException, ServletException {
 
-        // TODO: 这里的顺序就真的很迷，debug和实际跑起来结果就是不一样???
         //如果没有递归完
             if(filterList.size()>counter)
             {
@@ -76,8 +75,7 @@ public class TommyFilterChain implements FilterChain {
             {
                 //执行完了filter就触发servlet的方法
                 servlet.service(req,res);
-                //记得清0，因为我这种设计里面一条链子只会被实例化一次的
-                counter = 0 ;
+
             }
 
     }

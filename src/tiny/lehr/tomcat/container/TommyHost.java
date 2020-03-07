@@ -74,8 +74,8 @@ public class TommyHost extends TommyContainer {
 
         loadApps();
 
+        contextMap.values().forEach(h->h.setLogger(getLogger()));
         contextMap.values().forEach(TommyContext::start);
-
     }
 
     @Override

@@ -27,6 +27,8 @@ public class HttpConnector {
 
     private Boolean SHUTDOWN;
 
+
+
     /**
      * 启动前的准备
      *

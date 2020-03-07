@@ -4,6 +4,7 @@ import tiny.lehr.bean.MyRequest;
 import tiny.lehr.bean.MyResponse;
 import tiny.lehr.enums.Message;
 import tiny.lehr.tomcat.container.TommyEngine;
+import tiny.lehr.tomcat.logger.SystemOutLogger;
 
 /**
  * @author Lehr
@@ -34,6 +35,7 @@ public class ServletProcessor extends Processor {
 
         if(engine.isStarted()==false)
         {
+            engine.setLogger(new SystemOutLogger());
             engine.start();
         }
 

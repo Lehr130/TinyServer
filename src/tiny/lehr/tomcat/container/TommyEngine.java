@@ -43,6 +43,7 @@ public class TommyEngine extends TommyContainer {
 
     @Override
     protected void doStart() {
+        hostMap.values().forEach(h->h.setLogger(getLogger()));
         hostMap.values().forEach(TommyHost::start);
     }
 

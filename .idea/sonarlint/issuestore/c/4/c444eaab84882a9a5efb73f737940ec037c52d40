@@ -1,19 +1,30 @@
 
-Fsquid:S1148i"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
-Nsquid:S1068"+Remove this unused "appName" private field.(Ç»Ÿ¿şÿÿÿÿ8İÉÇ¶ş-
-Fsquid:S1125")Remove the literal "false" boolean value.(ñäÿO8İÉÇ¶ş-
-Gsquid:S1148É"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
-Gsquid:S1125G")Remove the literal "false" boolean value.(¦‚Î8İÉÇ¶ş-
+Gsquid:S1148ö"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¦êâÀ†.
+jsquid:S2184ô"FCast one of the operands of this multiplication operation to a "long".(´Î”Úşÿÿÿÿ8“Šƒˆ.
+\
+squid:S106ï"9Replace this use of System.out or System.err by a logger.(”éÀ”ıÿÿÿÿ8¦êâÀ†.
+esquid:S2142•"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€8¦êâÀ†.
+gsquid:S1134"DTake the required action to fix the issue indicated by this comment.(¦ñšŒÿÿÿÿÿ8í¦şß….
+esquid:S00112/"FDefine and throw a dedicated exception instead of using a generic one.(–àè¸8İÉÇ¶ş-
+\
+squid:S106ê"9Replace this use of System.out or System.err by a logger.(éªúÿÿÿÿÿ8¦êâÀ†.
+Gsquid:S1148©"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
+hsquid:S1134³"DTake the required action to fix the issue indicated by this comment.(’”©‡úÿÿÿÿ8¦êâÀ†.
+Gsquid:S5411g"*Use the primitive boolean expression here.(ñäÿO8İÉÇ¶ş-
 V
-squid:S106D"9Replace this use of System.out or System.err by a logger.(Ãé…Œ8İÉÇ¶ş-
-gsquid:S1134"DTake the required action to fix the issue indicated by this comment.(¦ñšŒÿÿÿÿÿ8í¦şß….
-~squid:S1488„"_Immediately return this expression instead of assigning it to the temporary variable "wrapper".(•äÇÙ8İÉÇ¶ş-
-Ksquid:S1612Ø",Replace this lambda with a method reference.(ªÙèß8’ˆåğ….
-Psquid:S1602Ù",Remove useless curly braces around statement(ÒÌâ–øÿÿÿÿ8’ˆåğ….
-Ksquid:S1612ã",Replace this lambda with a method reference.(ô—ß8–æğ….
-esquid:S001120"FDefine and throw a dedicated exception instead of using a generic one.(–àè¸8İÉÇ¶ş-
-Isquid:S1068"+Remove this unused "appPath" private field.(•¢è8İÉÇ¶ş-
+squid:S106h"9Replace this use of System.out or System.err by a logger.(Í‘œ¤8¦êâÀ†.
+\
+squid:S106¤"9Replace this use of System.out or System.err by a logger.(‡£ü·úÿÿÿÿ8¦êâÀ†.
+hsquid:S1134"DTake the required action to fix the issue indicated by this comment.(°Ô”üÿÿÿÿ8¦êâÀ†.
+esquid:S2142™"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€8¦êâÀ†.
+hsquid:S1134"DTake the required action to fix the issue indicated by this comment.(Ë³Ïòıÿÿÿÿ8¦êâÀ†.
+©%squid:RedundantThrowsDeclarationCheck/"qRemove the declaration of thrown exception 'java.lang.Exception', as it cannot be thrown from constructor's body.(–àè¸8¦êâÀ†.
+osquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ºº§ôøÿÿÿÿ8¦êâÀ†.
+Isquid:S00108™")Either remove or fill this block of code.(ä ¹€8¦êâÀ†.
 W
-squid:S106§"9Replace this use of System.out or System.err by a logger.(¸ÅÛ8Ç¥´·ş-
-Gsquid:S5411"*Use the primitive boolean expression here.(ñäÿO8İÉÇ¶ş-
-Hsquid:S5411G"*Use the primitive boolean expression here.(¦‚Î8İÉÇ¶ş-
+squid:S106†"9Replace this use of System.out or System.err by a logger.(°³¦ê8¦êâÀ†.
+Nsquid:S5411–"*Use the primitive boolean expression here.(–êÔªûÿÿÿÿ8¦êâÀ†.
+Fsquid:S1148Q"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8İÉÇ¶ş-
+Fsquid:S1125g")Remove the literal "false" boolean value.(ñäÿO8İÉÇ¶ş-
+}squid:S1488l"_Immediately return this expression instead of assigning it to the temporary variable "wrapper".(•äÇÙ8İÉÇ¶ş-
+esquid:S2142õ"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€8¦êâÀ†.

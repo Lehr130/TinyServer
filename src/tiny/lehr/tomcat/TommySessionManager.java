@@ -1,6 +1,7 @@
 package tiny.lehr.tomcat;
 
 import tiny.lehr.tomcat.bean.TommySession;
+import tiny.lehr.tomcat.bean.TommySessionFacade;
 import tiny.lehr.tomcat.container.TommyContext;
 import tiny.lehr.tomcat.lifecircle.TommyLifecycle;
 import tiny.lehr.tomcat.lifecircle.TommyLifecycleListener;
@@ -75,7 +76,7 @@ public class TommySessionManager implements TommyLifecycle {
         TommySession session = new TommySession(this,sessionId,container.getServletContext());
         sessionPool.put(sessionId,session);
 
-        return session;
+        return new TommySessionFacade(session);
 
     }
 

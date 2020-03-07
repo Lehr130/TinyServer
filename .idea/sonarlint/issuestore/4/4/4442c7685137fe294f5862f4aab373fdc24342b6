@@ -1,2 +1,5 @@
 
-hsquid:CallToDeprecatedMethoda":Remove this use of "HttpSessionContext"; it is deprecated.(ıê[8éÛÈ™….
+Osquid:S1948",Make "attributes" transient or serializable.(ãÙî ûÿÿÿÿ8¢øä¾†.
+Gsquid:S1948"")Make "manager" transient or serializable.(üà—ñ8¢øä¾†.
+Nsquid:S1948 "0Make "servletContext" transient or serializable.(Ÿôµ8¢øä¾†.
+hsquid:CallToDeprecatedMethodc":Remove this use of "HttpSessionContext"; it is deprecated.(ıê[8éÛÈ™….

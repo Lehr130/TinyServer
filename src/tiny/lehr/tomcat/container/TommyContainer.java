@@ -4,6 +4,7 @@ import tiny.lehr.bean.MyRequest;
 import tiny.lehr.bean.MyResponse;
 import tiny.lehr.tomcat.TommyPipeline;
 import tiny.lehr.tomcat.lifecircle.*;
+import tiny.lehr.tomcat.logger.TommyLogger;
 import tiny.lehr.tomcat.valve.TommyValve;
 
 import java.util.List;
@@ -13,8 +14,7 @@ import java.util.List;
  * @author Lehr
  * @create 2020-01-16
  * 模仿Tomcat的那个Container设计
- * But I change it as an abstract class
- * in order to make my program much more clean
+ *
  * <p>
  * 是个标识性接口
  */
@@ -24,14 +24,24 @@ public abstract class TommyContainer implements TommyLifecycle {
     //一个监听器管理器？？？
     private TommyLifecycleSupport lifecycle = new TommyLifecycleSupport(this);
 
-    private TommyPipeline pipeline = new TommyPipeline();
+    public TommyLogger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(TommyLogger logger) {
+        this.logger = logger;
+    }
+
+    private TommyPipeline pipeline;
+
+    private TommyLogger logger;
 
     protected TommyLifecycleSupport getLifecycle() {
         return lifecycle;
     }
 
     /**
-     * make this container work
+     *
      *
      * @param req
      * @param res
@@ -43,7 +53,7 @@ public abstract class TommyContainer implements TommyLifecycle {
 
 
     /**
-     * add a new valve into the pipline
+     *
      *
      * @param valve
      */
@@ -68,7 +78,7 @@ public abstract class TommyContainer implements TommyLifecycle {
     protected abstract void basicValveInvoke(MyRequest req, MyResponse res);
 
     /**
-     * send this inner class into the pipline as the basic valve
+     *
      */
     class BasicValve implements TommyValve {
 
@@ -127,6 +137,8 @@ public abstract class TommyContainer implements TommyLifecycle {
     @Override
     public synchronized void start(){
 
+        logger.debug("正在启动容器");
+
         if (started) {
             System.out.println("md都开始了还搞锤子");
             return;
@@ -134,6 +146,8 @@ public abstract class TommyContainer implements TommyLifecycle {
 
         //我设计这个是为了一开始好添加监听器的
         beforeStart();
+
+        pipeline = new TommyPipeline();
 
         lifecycle.fireLifecycleEvent(BEFORE_START_EVENT,null);
 
@@ -155,6 +169,7 @@ public abstract class TommyContainer implements TommyLifecycle {
 
         lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
 
+        logger.debug("容器启动完成");
     }
 
 
@@ -163,6 +178,8 @@ public abstract class TommyContainer implements TommyLifecycle {
 
     @Override
     public synchronized void stop(){
+
+        logger.debug("正在停止容器");
 
         if (!started) {
             System.out.println("md都结束了还搞锤子");
@@ -184,6 +201,7 @@ public abstract class TommyContainer implements TommyLifecycle {
         //TODO: 这里还有报错需要改进
 
         lifecycle.fireLifecycleEvent(AFTER_STOP_EVENT, null);
+        logger.debug("容器停止完成");
     }
 
 

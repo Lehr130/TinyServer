@@ -117,4 +117,8 @@ public class TommyFilterConfig implements FilterConfig {
     public Filter getFilter() {
         return filter;
     }
+
+    public void destory(){
+        filter.destroy();
+    }
 }

@@ -399,7 +399,6 @@ public class MyRequest implements HttpServletRequest {
     @Override
     public HttpSession getSession(boolean b) {
 
-        // FIXME:门面一下
         return doGetSession(b);
 
     }

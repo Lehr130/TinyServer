@@ -91,3 +91,15 @@ r
 Bsrc/tiny/lehr/tomcat/lifecircle/TommyContextLifecycleListener.java,8/8/885ed179e9df2a1222c7545bd8424618bf76b576
 j
 :src/tiny/lehr/tomcat/lifecircle/TommyLifecycleSupport.java,b/a/ba6e7511d6fb22ee3093f40de1d7a48870b311d1
+[
++src/tiny/lehr/tomcat/TommyStoreManager.java,b/3/b3b8b342de36a9a3a19ecc7413a2e9718b91d442
+q
+Asrc/tiny/lehr/tomcat/lifecircle/TommyEngineLifecycleListener.java,3/3/336ec23c1bddcdc7251b3c60b948c0c172b807cd
+U
+%src/tiny/lehr/tomcat/TommyMapper.java,b/4/b467446c2c5570d7b348fe2f4739f9a09d84be5f
+`
+0src/tiny/lehr/tomcat/logger/SystemOutLogger.java,2/7/27bf381c23e3670aa306c8d16d0044f4cd883a39
+\
+,src/tiny/lehr/tomcat/logger/TommyLogger.java,f/4/f43550e21c52065452bcb7ce38723b5a2fc0ccad
+[
++src/tiny/lehr/tomcat/logger/TestLogger.java,c/6/c67e6dc5244d3f077bfedee286bf74906da5bd3b

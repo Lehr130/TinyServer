@@ -1,8 +1,8 @@
 
-Psquid:S1135"2Complete the task associated to this TODO comment.(Ğî¼º8•ÆÅ­ş-
-‚squid:S1488:"_Immediately return this expression instead of assigning it to the temporary variable "context".(ô½Íìøÿÿÿÿ8â‚©ş-
-esquid:S00112""FDefine and throw a dedicated exception instead of using a generic one.(Í½Ÿ“8Î¥—©ş-
-Usquid:S1135"2Complete the task associated to this TODO comment.(¦Ü»şÿÿÿÿ8¦óÄ­ş-
 Jsquid:S1068",Remove this unused "hostname" private field.(Ûæ¾Õ8çŠİ¨ş-
-¤squid:S1186K"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ëë¸µûÿÿÿÿ8ı‘øñ….
-¤squid:S1186P"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ò‰æÃıÿÿÿÿ8ı‘øñ….
+esquid:S00112 "FDefine and throw a dedicated exception instead of using a generic one.(Í½Ÿ“8Î¥—©ş-
+Psquid:S1135"2Complete the task associated to this TODO comment.(Ğî¼º8•ÆÅ­ş-
+jsquid:S00112"FDefine and throw a dedicated exception instead of using a generic one.(É¤ïşÿÿÿÿ8Î¦ãÀ†.
+®%squid:RedundantThrowsDeclarationCheck"qRemove the declaration of thrown exception 'java.lang.Exception', as it cannot be thrown from constructor's body.(É¤ïşÿÿÿÿ8Î¦ãÀ†.
+‚squid:S14888"_Immediately return this expression instead of assigning it to the temporary variable "context".(ô½Íìøÿÿÿÿ8â‚©ş-
+Usquid:S1135"2Complete the task associated to this TODO comment.(¦Ü»şÿÿÿÿ8¦óÄ­ş-

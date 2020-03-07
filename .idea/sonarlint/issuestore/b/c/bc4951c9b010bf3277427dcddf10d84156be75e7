@@ -1,6 +1,7 @@
 
-©%squid:RedundantThrowsDeclarationCheckD"xRemove the declaration of thrown exception 'java.io.FileNotFoundException' which is a subclass of 'java.io.IOException'.(†å÷ô
-Vsquid:S1135ƒ"2Complete the task associated to this TODO comment.(¼‹ƒ‡ùÿÿÿÿ8½Ðª·þ-
-asquid:S3027r"JPut single-quotes around '?' to use the faster "lastIndexOf(char)" method.(ß†Àõ
 Šsquid:S1319·"mThe return type of this method should be an interface such as "Map" rather than the implementation "HashMap".(”ˆ­½ûÿÿÿÿ
+Vsquid:S1135ƒ"2Complete the task associated to this TODO comment.(¼‹ƒ‡ùÿÿÿÿ8½Ðª·þ-
+©%squid:RedundantThrowsDeclarationCheckD"xRemove the declaration of thrown exception 'java.io.FileNotFoundException' which is a subclass of 'java.io.IOException'.(†å÷ô
+asquid:S3027r"JPut single-quotes around '?' to use the faster "lastIndexOf(char)" method.(ß†Àõ
 fsquid:S3027w"JPut single-quotes around '?' to use the faster "lastIndexOf(char)" method.(†È±‰ûÿÿÿÿ
+¤%squid:RedundantThrowsDeclarationCheckD"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(†å÷ô8ßŽÌ¿†.

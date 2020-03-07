@@ -29,8 +29,6 @@ public final class TommyLifecycleEvent extends EventObject {
 
     private String type = null;
 
-    // ------------------------------------------------------------- Properties
-
     public Object getData() {
 
         return (this.data);

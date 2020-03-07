@@ -1,13 +1,18 @@
 
-?squid:S1148N"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-¥squid:S1186¿"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¸¼Û¬ûÿÿÿÿ8ª¦˜ñ….
-zsquid:S2177X"WRename this method; there is a "private" method in the parent class with the same name.(—¤ŒŒşÿÿÿÿ8ÁÆü-
-Jsquid:S1168°"+Return an empty collection instead of null.(¥¹ï8ª¦˜ñ….
-¥squid:S1186ª"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‚£”ùúÿÿÿÿ8ª¦˜ñ….
-Ksquid:EmptyStatementUsageCheck"Remove this empty statement.(Åñ­õşÿÿÿÿ
 W
-squid:S106»"9Replace this use of System.out or System.err by a logger.(‹ËµÓ8Î›µñ….
-Isquid:S00108“")Either remove or fill this block of code.(ıàÑÎ8ƒëÆü-
+squid:S106¶"9Replace this use of System.out or System.err by a logger.(‹ËµÓ8Î›µñ….
+¥squid:S1186½"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(êÀŠÉüÿÿÿÿ8ƒŞîÔˆ.
 jsquid:CommentedOutCodeLine†"<This block of commented-out lines of code should be removed.(øµôğ8Ğçı-
-fsquid:S2674E"JCheck the return value of the "read" call to see how many bytes were read.(”ê†úÿÿÿÿ
- squid:S1186´"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ì¦óª8ª¦˜ñ….
+Qsquid:S1135á"2Complete the task associated to this TODO comment.(ÑÈÀÚ8ƒŞîÔˆ.
+W
+squid:S106Ã"9Replace this use of System.out or System.err by a logger.(·÷øø8ƒŞîÔˆ.
+usquid:S2177]"WRename this method; there is a "private" method in the parent class with the same name.(´’œâ8ƒŞîÔˆ.
+¥squid:S1186¤"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‚£”ùúÿÿÿÿ8ª¦˜ñ….
+Jsquid:S1168ª"+Return an empty collection instead of null.(¥¹ï8ª¦˜ñ….
+Isquid:S00108’")Either remove or fill this block of code.(ıàÑÎ8ƒëÆü-
+jsquid:HiddenFieldCheck×";Rename "records" which hides the field declared at line 28.(ÑŸã¸şÿÿÿÿ8ƒŞîÔˆ.
+fsquid:S2674K"JCheck the return value of the "read" call to see how many bytes were read.(”ê†úÿÿÿÿ
+ squid:S1186®"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ì¦óª8ª¦˜ñ….
+?squid:S1148T"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+W
+squid:S106Ç"9Replace this use of System.out or System.err by a logger.(š­ã‡8ƒŞîÔˆ.

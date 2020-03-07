@@ -90,7 +90,6 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
                 }
             }
         }
-
     }
 
     private void loadServlet() throws Exception {
@@ -101,7 +100,6 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
 
         //门面对象包一下
         myServlet.init(new TommyServletConfigFacade(this));
-
 
     }
 
@@ -173,6 +171,8 @@ public class TommyWrapper extends TommyContainer implements ServletConfig {
 
     @Override
     protected void doStart() {
+
+
         System.out.println("Wrapper is starting...");
     }
 

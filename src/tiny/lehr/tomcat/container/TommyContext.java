@@ -136,7 +136,7 @@ public class TommyContext extends TommyContainer {
     }
 
     /**
-     * 一个小知识点：重写的时候权限范围不能比父类更小
+     *
      * 设置基础阀任务：选择正确的Wrapper并启动
      *
      * @param req
@@ -203,8 +203,8 @@ public class TommyContext extends TommyContainer {
 
         //一个一个启动子容器
         //我这里没有去做类型判断，因为我觉得这样好像没有毛病
+        wrappers.values().forEach(w->w.setLogger(getLogger()));
         wrappers.values().forEach(TommyWrapper::start);
-
 
         //现在就是可以访问的了
         isPaused = false;
@@ -224,6 +224,8 @@ public class TommyContext extends TommyContainer {
 
         //停止子容器
         wrappers.values().forEach(TommyWrapper::stop);
+        //销毁Filter
+        filterPool.values().forEach(TommyFilterConfig::destory);
     }
 
 
@@ -238,8 +240,8 @@ public class TommyContext extends TommyContainer {
                 loader.backgroundProcess();
                 sessionManager.backgroundProcess();
                 try {
-                    //原版默认设置的就是15秒
-                    Thread.sleep(15000);
+                    //原版默认设置的就是10秒
+                    Thread.sleep(10*1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

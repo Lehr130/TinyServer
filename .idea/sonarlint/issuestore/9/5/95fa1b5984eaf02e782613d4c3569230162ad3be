@@ -1,8 +1,10 @@
 
-Isquid:S5411…"*Use the primitive boolean expression here.(”Ø°ó8›ÚÎğ….
-V
-squid:S106h"9Replace this use of System.out or System.err by a logger.(éÊ‘Û8®‰²ğ….
+Qsquid:S1135É"2Complete the task associated to this TODO comment.(çì8¤ïøğ….
 \
-squid:S106†"9Replace this use of System.out or System.err by a logger.(—ø¾›üÿÿÿÿ8ñàÏğ….
-Qsquid:S1135”"2Complete the task associated to this TODO comment.(çì8¤ïøğ….
-Msquid:S5411g"*Use the primitive boolean expression here.(ì Ë¾úÿÿÿÿ8®‰²ğ….
+squid:S106¹"9Replace this use of System.out or System.err by a logger.(—ø¾›üÿÿÿÿ8ñàÏğ….
+jsquid:S00112q"FDefine and throw a dedicated exception instead of using a generic one.(â¨‹›úÿÿÿÿ8£ØâÀ†.
+Nsquid:S5411"*Use the primitive boolean expression here.(ì Ë¾úÿÿÿÿ8®‰²ğ….
+Isquid:S5411¸"*Use the primitive boolean expression here.(”Ø°ó8›ÚÎğ….
+Gsquid:S1148 "#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8£ØâÀ†.
+W
+squid:S106"9Replace this use of System.out or System.err by a logger.(éÊ‘Û8®‰²ğ….
