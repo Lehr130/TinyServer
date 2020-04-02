@@ -177,17 +177,19 @@ public class MyRequest implements HttpServletRequest {
 
 
         // 跳过空行， 如果有请求体的话
-        Boolean isFirst = true;
+
+        //把请求头里的参数带上！
+        if(uri.contains("?"))
+        {
+            int paraIndex = uri.indexOf('?');
+            String uriPara = uri.substring(paraIndex+1);
+            uri = uri.substring(0, paraIndex);
+            requestLine[count] = requestLine[count] + "&" + uriPara;
+        }
+
+        // 处理请求体 "adsf=dsaf&adsf=dsaf"
         if (requestLine[++count].trim().length() > 0) {
-            //把请求头里的参数带上！
-            if(uri.contains("?"))
-            {
-                int paraIndex = uri.indexOf('?');
-                String uriPara = uri.substring(paraIndex+1);
-                uri = uri.substring(0, paraIndex);
-                requestLine[count] = requestLine[count] + "&" + uriPara;
-            }
-            // 处理请求体 "adsf=dsaf&adsf=dsaf"
+
             //这里注意，结构应该是string string[] 比如t1=1&t1=2这种checkBox的情况
             parameters = UrlUtils.getParamMap(requestLine[count]);
         }

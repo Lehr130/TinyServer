@@ -1,31 +1,31 @@
 
-Â%squid:RedundantThrowsDeclarationCheckï"ˆRemove the declaration of thrown exception 'tiny.lehr.exceptions.IllegalParamInputException', as it cannot be thrown from method's body.(¥ñúî8˜¯çÅ….
-¥%squid:RedundantThrowsDeclarationCheckï"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(¥ñúî8˜¯çÅ….
-¢%squid:RedundantThrowsDeclarationCheck©"jRemove the declaration of thrown exception 'java.lang.IllegalStateException' which is a runtime exception.(ƒ“Ñ8˜¯çÅ….
-¥squid:S1186æ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‹Å£»ıÿÿÿÿ8˜¯çÅ….
-Hsquid:S1125©")Remove the literal "false" boolean value.(Ü×˜8˜¯çÅ….
-jsquid:S3027Í"FPut single-quotes around '/' to use the faster "indexOf(char)" method.(ãıáÖüÿÿÿÿ8˜¯çÅ….
-`squid:S1854ƒ"<Remove this useless assignment to local variable "filename".(†‹º¢ıÿÿÿÿ8˜¯çÅ….
-¥squid:S1186á"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(„”£êüÿÿÿÿ8˜¯çÅ….
-V
-squid:S106o"9Replace this use of System.out or System.err by a logger.(òÔÇÍ8İ‘¹….
-gsquid:S1134v"DTake the required action to fix the issue indicated by this comment.(½êã²ÿÿÿÿÿ8˜¯çÅ….
-W
-squid:S106Ú"9Replace this use of System.out or System.err by a logger.(…¦Ğş8˜¯çÅ….
-:squid:S3626“"Remove this redundant jump.(ûÁİ…8˜¯çÅ….
-jsquid:CommentedOutCodeLineŒ"<This block of commented-out lines of code should be removed.(ï”Éõ8˜¯çÅ….
-Qsquid:S1135‹"2Complete the task associated to this TODO comment.(Üı‚Å8˜¯çÅ….
+±%squid:RedundantThrowsDeclarationCheckï"xRemove the declaration of thrown exception 'java.io.FileNotFoundException' which is a subclass of 'java.io.IOException'.(¥ñúî8˜¯çÅ….
 V
 squid:S106j"9Replace this use of System.out or System.err by a logger.(òÔÇÍ8İ‘¹….
+¥%squid:RedundantThrowsDeclarationCheckï"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(¥ñúî8˜¯çÅ….
+jsquid:S3027Í"FPut single-quotes around '/' to use the faster "indexOf(char)" method.(ãıáÖüÿÿÿÿ8˜¯çÅ….
 gsquid:S1134"DTake the required action to fix the issue indicated by this comment.(ÏõÈşÿÿÿÿ8­‚­Å….
 ¥squid:S1186Š"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÉêàŠüÿÿÿÿ8˜¯çÅ….
-Qsquid:S1481ƒ"-Remove this unused "filename" local variable.(†‹º¢ıÿÿÿÿ8˜¯çÅ….
-esquid:S3027Î"FPut single-quotes around '/' to use the faster "indexOf(char)" method.(­î£¬8İ‘¹….
-Qsquid:S1135ö"2Complete the task associated to this TODO comment.(¿­ÈÎ8˜¯çÅ….
 Æ%squid:RedundantThrowsDeclarationCheckØ"‡Remove the declaration of thrown exception 'tiny.lehr.exceptions.BadRequestMethodException', as it cannot be thrown from method's body.(œÁòîøÿÿÿÿ8˜¯çÅ….
-±%squid:RedundantThrowsDeclarationCheckï"xRemove the declaration of thrown exception 'java.io.FileNotFoundException' which is a subclass of 'java.io.IOException'.(¥ñúî8˜¯çÅ….
+`squid:S1854ƒ"<Remove this useless assignment to local variable "filename".(†‹º¢ıÿÿÿÿ8˜¯çÅ….
+Qsquid:S1135ö"2Complete the task associated to this TODO comment.(¿­ÈÎ8˜¯çÅ….
+¥squid:S1186á"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(„”£êüÿÿÿÿ8˜¯çÅ….
+esquid:S3027Î"FPut single-quotes around '/' to use the faster "indexOf(char)" method.(­î£¬8İ‘¹….
+Jsquid:S1168ì"+Return an empty collection instead of null.(¥¹ï8˜¯çÅ….
+Qsquid:S1481ƒ"-Remove this unused "filename" local variable.(†‹º¢ıÿÿÿÿ8˜¯çÅ….
+jsquid:CommentedOutCodeLineŒ"<This block of commented-out lines of code should be removed.(ï”Éõ8˜¯çÅ….
+V
+squid:S106o"9Replace this use of System.out or System.err by a logger.(òÔÇÍ8İ‘¹….
+:squid:S3626“"Remove this redundant jump.(ûÁİ…8˜¯çÅ….
+¢%squid:RedundantThrowsDeclarationCheck©"jRemove the declaration of thrown exception 'java.lang.IllegalStateException' which is a runtime exception.(ƒ“Ñ8˜¯çÅ….
+¥squid:S1186æ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‹Å£»ıÿÿÿÿ8˜¯çÅ….
+W
+squid:S106Ú"9Replace this use of System.out or System.err by a logger.(…¦Ğş8˜¯çÅ….
+gsquid:S1134v"DTake the required action to fix the issue indicated by this comment.(½êã²ÿÿÿÿÿ8˜¯çÅ….
 isquid:CommentedOutCodeLinen"<This block of commented-out lines of code should be removed.(ÒÔŞá8ÿÈßº….
+Psquid:S1481´",Remove this unused "isFirst" local variable.(ÊÓ®âùÿÿÿÿ8˜¯çÅ….
+Hsquid:S1125©")Remove the literal "false" boolean value.(Ü×˜8˜¯çÅ….
+Qsquid:S1135‹"2Complete the task associated to this TODO comment.(Üı‚Å8˜¯çÅ….
+Â%squid:RedundantThrowsDeclarationCheckï"ˆRemove the declaration of thrown exception 'tiny.lehr.exceptions.IllegalParamInputException', as it cannot be thrown from method's body.(¥ñúî8˜¯çÅ….
 ¨%squid:RedundantThrowsDeclarationCheck¤"jRemove the declaration of thrown exception 'java.lang.IllegalStateException' which is a runtime exception.(º‡š¾üÿÿÿÿ8˜¯çÅ….
 Lsquid:S1068)".Remove this unused "remotePort" private field.(”É¹ö8ÎÜçÅ….
-Jsquid:S1168ì"+Return an empty collection instead of null.(¥¹ï8˜¯çÅ….
-Psquid:S1481´",Remove this unused "isFirst" local variable.(ÊÓ®âùÿÿÿÿ8˜¯çÅ….

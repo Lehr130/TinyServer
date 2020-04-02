@@ -1,0 +1,5 @@
+#!/bin/sh
+
+curl http://localhost:9999/lehr/github/addlog
+
+exec git update-server-info

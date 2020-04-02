@@ -80,6 +80,8 @@ public class HttpConnector {
 			// 接收请求 并完成大量分析
 			MyRequest req = new MyRequest(socket);
 
+
+
 			//准备好响应报文
 			MyResponse res = new MyResponse(socket, req);
 
